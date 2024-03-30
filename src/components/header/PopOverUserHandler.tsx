@@ -5,6 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { Clipboard, ExternalLink, LayoutDashboard, LockKeyhole, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { ExtendedUser } from "@/next-auth";
+import { useRouter } from "next/navigation";
 
 
 type Props = {
@@ -12,11 +13,15 @@ type Props = {
 };
 export default function PopOverUserHandler({ user }: Props) {
 
+  const router= useRouter()
   if (!user)
-      return <div></div>
-
-  function onLogout(){
-    signOut({ callbackUrl: '/' })    
+    return <div></div>
+  
+  async function onLogout(){
+    
+    await signOut({ redirect: false })
+    router.refresh()
+    router.push("/auth/login")
   }
       
   return (
@@ -29,7 +34,7 @@ export default function PopOverUserHandler({ user }: Props) {
 
           <div className="border-b mx-4 my-2" />
 
-          {user.role === 'SUPER' && <AdminMenu />}
+          {user.role === 'ADMIN' && <AdminMenu />}
 
           <div className="border-b mx-4 mb-2 mt-16" />
 

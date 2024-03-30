@@ -41,7 +41,7 @@ export const {
       await deleteOTPConfirmation(oTPConfirmation.id);
 
       return true;
-    },
+    },    
     async session({ token, session }) {
       //console.log("session token", token);
       

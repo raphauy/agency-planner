@@ -12,12 +12,13 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { SelectorData } from "./selectors"
 
+const alowedSlugs= ["pilars", "publications", "comments"]
 
 export default function FunctionalitySelector() {
 
     const [open, setOpen] = useState(false)
     const [searchValue, setSearchValue] = useState("")
-    const [name, setName] = useState("Admin")
+    const [name, setName] = useState("")
     const [image, setImage] = useState("")
     const [selectors, setSelectors]= useState<SelectorData[]>([])
     const router= useRouter()
@@ -46,7 +47,9 @@ export default function FunctionalitySelector() {
           setName(name)
           image && setImage(image)
         } else {
-          router.push(`/${agencySlug}/${clientSlug}`)
+          if (!alowedSlugs.includes(functionalitySlug)) {
+            router.push(`/${agencySlug}/${clientSlug}`)
+          }
         }
       })
       .catch((error) => {
@@ -62,7 +65,7 @@ export default function FunctionalitySelector() {
         return selectors.filter((item) => item.name.toLowerCase().includes(lowerCaseSearchValue))
     }, [selectors, searchValue])
   
-    if (!functionalitySlug) return <div></div>
+    if (!name) return <div></div>
 
     return (
       <div className="px-1 flex items-center">

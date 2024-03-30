@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, ListChecks, Megaphone, User } from "lucide-react"
+import { LayoutDashboard, ListChecks, Megaphone, Receipt, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -26,7 +26,12 @@ const data= [
         href: `/admin/functionalities`,
         icon: ListChecks,
         text: "Functionalities"
-      },
+    },
+    {
+        href: `/admin/billableitems`,
+        icon: Receipt,
+        text: "Billing"
+    },
   ]
 
 export default function MenuAdmin() {

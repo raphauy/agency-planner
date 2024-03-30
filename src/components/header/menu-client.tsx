@@ -4,7 +4,7 @@ import { useAdminRoles, useClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { UserRole } from "@prisma/client"
-import { BriefcaseBusiness, LayoutDashboard, LockKeyhole, User } from "lucide-react"
+import { BriefcaseBusiness, LayoutDashboard, LockKeyhole, Newspaper, Server, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -32,6 +32,18 @@ export default function MenuClient() {
             href: `/${agencySlug}/${clientSlug}`,
             icon: LayoutDashboard,
             text: "Dashboard",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/pilars`,
+            icon: Server,
+            text: "Pilares",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/publications`,
+            icon: Newspaper,
+            text: "Publicaciones",
             roles: alowedRoles
         },
     ]

@@ -1,11 +1,11 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-
 import { LoginSchema, deleteOTPCode, getOTPCodeByEmail, getUserByEmail } from "@/services/login-services";
 
+// const isLocalhost = process.env.NEXT_PUBLIC_URL === "http://localhost:3000" || process.env.NEXT_PUBLIC_URL?.startsWith("https")
 
 export default {
-  //trustHost: true,
+//  trustHost: isLocalhost,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -40,4 +40,5 @@ export default {
       }
     })
   ],
+  //secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthConfig

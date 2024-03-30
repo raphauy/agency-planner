@@ -4,7 +4,7 @@ import { useAdminRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { UserRole } from "@prisma/client"
-import { BriefcaseBusiness, LayoutDashboard, LockKeyhole, User } from "lucide-react"
+import { BriefcaseBusiness, LayoutDashboard, LockKeyhole, Receipt, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -48,6 +48,11 @@ export default function MenuAgency() {
             icon: LockKeyhole,
             text: "Permisos",
             roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/billing`,
+            icon: Receipt,
+            text: "Billing"
         },
     ]
         

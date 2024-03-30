@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import SideBar from "./side-bar";
 import { getCurrentUser } from "@/lib/utils";
 
 interface Props {
@@ -14,7 +13,7 @@ export default async function AdminLayout({ children }: Props) {
   }
 
   if (currentUser?.role !== "ADMIN") {
-    return redirect("/unauthorized?message=You are not authorized to access this page")
+    return redirect("/auth/unauthorized?message=You are not authorized to access this page")
   }
 
   return (

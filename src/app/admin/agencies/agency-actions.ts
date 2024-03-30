@@ -27,14 +27,14 @@ export async function createOrUpdateAgencyAction(id: string | null, data: Agency
 export async function createAgencyWithIgHandleAction(igHandle: string): Promise<AgencyDAO | null> {    
     const igProfile= await getIgProfile(igHandle)
     if (!igProfile) {
-      throw new Error("Instagram profile not found")
+      throw new Error("No se pudo encontrar el perfil de Instagram")
     }
 
     const picUrl= igProfile.profile_pic_url
-    const image= await uploadFileWithUrl(picUrl)
-    if (!image) {
-      throw new Error("No se pudo encontrar el perfil de Instagram")
-    }
+    const uploadRes= await uploadFileWithUrl(picUrl)
+    const image= uploadRes?.url
+    const bytes= uploadRes?.bytes
+    console.log("Uploaded image, bytes:", bytes);
   
     const slug= generateSlug(igProfile.full_name)
     const data= {

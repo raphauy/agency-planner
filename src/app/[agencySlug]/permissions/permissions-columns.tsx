@@ -23,10 +23,9 @@ export const columns: ColumnDef<PermissionsDAO>[] = [
     cell: ({ row }) => {
       const data= row.original
       return (
-        <div className="space-y-2">
-          <p className="font-bold text-base mb-7">{data.userName}</p>
-          <p>({data.userEmail})</p>
-          <p>{data.userRole}</p>
+        <div>
+          <p className="font-bold text-base mb-2">{data.userName}</p>
+          <p className="ml-7 text-xs">({data.userRole})</p>
         </div>
       )
     }

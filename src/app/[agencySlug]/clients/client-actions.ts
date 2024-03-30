@@ -1,6 +1,6 @@
 "use server"
   
-import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, updateClient } from "@/services/client-services"
+import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAO, getClientDAOBySlug, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, updateClient } from "@/services/client-services"
 import { revalidatePath } from "next/cache"
 
 import { SelectorData } from "@/components/header/selectors/selectors"
@@ -9,6 +9,7 @@ import { getComplentaryUsers, setUsers } from "@/services/client-services"
 import { getIgProfile } from "@/services/instagram-services"
 import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
+import { BillableItemFormValues, createBillableItem } from "@/services/billableitem-services"
     
 
 export async function getClientDAOAction(id: string): Promise<ClientDAO | null> {
@@ -63,10 +64,10 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
     
 
     const picUrl= igProfile.profile_pic_url
-    const image= await uploadFileWithUrl(picUrl)
-    if (!image) {
-      throw new Error("No se pudo encontrar el perfil de Instagram")
-    }
+    const uploadRes= await uploadFileWithUrl(picUrl)
+    const image= uploadRes?.url
+    const bytes= uploadRes?.bytes
+    console.log("Uploaded image, bytes:", bytes);
   
     const slug= generateSlug(igProfile.full_name)
     const data= {
@@ -80,6 +81,23 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
 
     const created= await createClient(data)
   
+    if (image){
+        const billableItemData: BillableItemFormValues= {
+        description: 'File storage',
+        quantity: bytes as number,
+        unitPrice: 0.01,
+        url: image,
+        billingTypeId: 'clucl0xwu0000n1qeshoeot27',
+        agencyId,
+        clientId: created.id,
+        }
+        const billableCreated= await createBillableItem(billableItemData)
+        console.log('billableCreated', billableCreated)  
+    } else {
+        console.log('no image to create billable item for client ' + created.name)
+    }
+    
+    
     const agencySlug= await getCurrentAgencySlug()
     revalidatePath(`/${agencySlug}`)
 
@@ -116,4 +134,13 @@ export async function getClientsDAOByAgencySlugAction(agencySlug: string): Promi
     revalidatePath(`/${agencySlug}`)
 
     return clients as ClientDAO[]
+}
+
+export async function getClientDAOBySlugAction(slug: string): Promise<ClientDAO | null> {
+    const client= await getClientDAOBySlug(slug)
+    console.log("slug", slug)
+    
+    console.log(client)
+
+    return client as ClientDAO
 }

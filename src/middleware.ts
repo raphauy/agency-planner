@@ -32,28 +32,32 @@ export default auth((req) => {
     }
 
     if (!isLoggedIn && !isPublicRoute) {
+
         let callbackUrl = nextUrl.pathname;
         if (nextUrl.search) {
             callbackUrl += nextUrl.search;
         }
 
-        const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+        const encodedCallbackUrl = (callbackUrl && callbackUrl !== "/") ? "?callbackUrl=" + encodeURIComponent(callbackUrl) : "";
 
-        return Response.redirect(new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`,nextUrl));
+        return Response.redirect(new URL(`/auth/login${encodedCallbackUrl}`, nextUrl))
     }
 
     if (subdomain) {
         const searchParams = nextUrl.searchParams.toString()
-        const newPath = "/" + nextUrl.pathname.split('/').filter(Boolean).slice(1).join('/')
+        const path = nextUrl.pathname
+        if (path.startsWith("/auth"))
+            return
+        
+        const newPath = "/" + path.split('/').filter(Boolean).slice(1).join('/')
         console.log('newPath', newPath)        
         const pathWithSearchParams = `${newPath}${searchParams.length > 0 ? `?${searchParams}` : ''}`
-        console.log('pathWithSearchParams', pathWithSearchParams)
+        // console.log('pathWithSearchParams', pathWithSearchParams)
 
         subdomain= subdomain.substring(0, subdomain.length - 1)
         console.log('subdomain', subdomain)
         return NextResponse.rewrite(new URL(`/${subdomain}${pathWithSearchParams}`, req.url))
     }
-    
     
 
     return

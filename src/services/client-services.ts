@@ -5,6 +5,8 @@ import { AgencyDAO } from "./agency-services"
 import { getUsersDAO } from "./user-services"
 import { getCurrentAgencyId, getCurrentAgencySlug, getCurrentUser } from "@/lib/utils"
 import { FunctionalityDAO } from "./functionality-services"
+import { BillableItemFormValues, createBillableItem } from "./billableitem-services"
+import { PilarDAO } from "./pilar-services"
 
 export type ClientDAO = {
 	id: string
@@ -19,6 +21,7 @@ export type ClientDAO = {
 	users: UserDAO[]
 	agency: AgencyDAO
   functionalities: FunctionalityDAO[]
+  pilars: PilarDAO[]
 	agencyId: string
 }
 
@@ -88,6 +91,9 @@ export async function getClientDAOBySlug(slug: string) {
     where: {
       slug
     },
+    include: {
+      pilars: true,
+    }
   })
   return found as ClientDAO
 
@@ -97,8 +103,7 @@ export async function createClient(data: ClientFormValues) {
   const created = await prisma.client.create({
     data
   })
-  const currentUser= await getCurrentUser()
-  const agencyId= currentUser?.agencyId
+  const agencyId= data.agencyId
   // link the client to all AGENCY_ADMIN users of agency with agencyId and the AGENCY_OWNER user of the agency with agencyId
   const allUsers= await getUsersDAO()
   const agencyAdminUsers= allUsers.filter(c => c.role === 'AGENCY_ADMIN' && c.agencyId === agencyId)
@@ -106,6 +111,8 @@ export async function createClient(data: ClientFormValues) {
   if (agencyOwner) {
     agencyAdminUsers.push(agencyOwner)
   }
+  console.log(`connecting ${agencyAdminUsers.length} users to the client ${created.name}`)
+
   await setUsers(created.id, agencyAdminUsers)
 
   return created
