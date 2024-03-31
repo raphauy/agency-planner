@@ -2,13 +2,19 @@ import { getAgencysDAO } from "@/services/agency-services";
 import AgencySelector from "./agency-selector";
 import { getCurrentRole } from "@/lib/utils";
 import ClientSelector from "./client-selector";
-import FunctionalitySelector from "./functionality-selector";
+import ChannelSelector from "./channel-selector";
 import { LucideIcon } from "lucide-react";
 
 export type SelectorData={
   slug: string,
   name: string,
   image?: string
+}
+
+export type ChannelSelectorData={
+  slug: string,
+  name: string,
+  icon: string
 }
 
 export default async function Selectors() {
@@ -21,7 +27,7 @@ export default async function Selectors() {
     <div className="w-full flex items-center px-2 mt-1">
         <AgencySelector selectors={agencySelectors} />        
         <ClientSelector />
-        <FunctionalitySelector />
+        <ChannelSelector />
     </div>
   )
 }

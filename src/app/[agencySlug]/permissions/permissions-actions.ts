@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 
 import { getCurrentAgencySlug } from "@/lib/utils"
 import { changeClientUserPermission } from "@/services/user-services"
-import { changeClientFunctionalityPermission } from "@/services/functionality-services"
+import { changeClientChannelPermission } from "@/services/channel-services"
     
 
 export async function changeClientUserPermissionAction(userId: string, clientId: string) {
@@ -16,8 +16,8 @@ export async function changeClientUserPermissionAction(userId: string, clientId:
     return res
 }
 
-export async function changeClientFunctionalityPermissionAction(functionalityId: string, clientId: string) {
-    const res= await changeClientFunctionalityPermission(functionalityId, clientId)
+export async function changeClientChannelPermissionAction(channelId: string, clientId: string) {
+    const res= await changeClientChannelPermission(channelId, clientId)
 
     const agencySlug= await getCurrentAgencySlug()
     revalidatePath(`/${agencySlug}/permissions`)

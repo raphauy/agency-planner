@@ -138,9 +138,6 @@ export async function getClientsDAOByAgencySlugAction(agencySlug: string): Promi
 
 export async function getClientDAOBySlugAction(slug: string): Promise<ClientDAO | null> {
     const client= await getClientDAOBySlug(slug)
-    console.log("slug", slug)
-    
-    console.log(client)
 
     return client as ClientDAO
 }

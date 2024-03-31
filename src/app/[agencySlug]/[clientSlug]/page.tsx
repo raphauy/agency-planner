@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
+import { getChannelsByClientSlug } from "@/services/channel-services"
 import { getClientDAOBySlug } from "@/services/client-services"
-import { getFunctionalitiesByClientSlug } from "@/services/functionality-services"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -20,7 +20,7 @@ export default async function ClientPage({ params }: Props) {
     redirect("/auth/404")
   }
 
-  const functionalities= await getFunctionalitiesByClientSlug(clientSlug)
+  const channels= await getChannelsByClientSlug(clientSlug)
 
   return (
     <div>
@@ -32,10 +32,10 @@ export default async function ClientPage({ params }: Props) {
 
       <div className="flex gap-4">
         {
-          functionalities.map((functionality) => (
-            <Link key={functionality.slug} href={`/${agencySlug}/${clientSlug}/${functionality.slug}`}>
+          channels.map((channel) => (
+            <Link key={channel.slug} href={`/${agencySlug}/${clientSlug}/${channel.slug}`}>
               <Button>
-                {functionality.name}
+                {channel.name}
               </Button>
             </Link>
           ))

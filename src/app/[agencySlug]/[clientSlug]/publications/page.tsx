@@ -1,11 +1,19 @@
-import { getPublicationsDAO } from "@/services/publication-services"
+import { getPublicationsDAO, getPublicationsDAOByClientSlug } from "@/services/publication-services"
 import { PublicationDialog } from "./publication-dialogs"
 import { DataTable } from "./publication-table"
 import { columns } from "./publication-columns"
 
-export default async function UsersPage() {
+type Props = {
+  params: {
+      agencySlug: string
+      clientSlug: string
+  }
+}
+
+export default async function UsersPage({ params }: Props) {
+  const clientSlug= params.clientSlug
   
-  const data= await getPublicationsDAO()
+  const data= await getPublicationsDAOByClientSlug(clientSlug)
 
   return (
     <div className="w-full">      

@@ -1,53 +1,54 @@
 "use client"
 
-import { getFunctionalitiesSelectorsOfCurrentClientAction } from "@/app/[agencySlug]/[clientSlug]/actions"
+import { getChannelSelectorsOfCurrentClientAction } from "@/app/[agencySlug]/[clientSlug]/actions"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { SlashIcon } from "@radix-ui/react-icons"
-import { Check, ChevronsRight, ChevronsUpDown } from "lucide-react"
-import Image from "next/image"
+import * as LucideIcons from "lucide-react"
+import { Check, ChevronsRight, ChevronsUpDown, LucideIcon } from "lucide-react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import { SelectorData } from "./selectors"
+import React, { useEffect, useMemo, useState } from "react"
+import { ChannelSelectorData } from "./selectors"
 
-const alowedSlugs= ["pilars", "publications", "comments"]
+const alowedSlugs= ["pilars", "publications", "comments", "settings"]
 
-export default function FunctionalitySelector() {
+export default function ChannelSelector() {
 
     const [open, setOpen] = useState(false)
     const [searchValue, setSearchValue] = useState("")
     const [name, setName] = useState("")
-    const [image, setImage] = useState("")
-    const [selectors, setSelectors]= useState<SelectorData[]>([])
+    const [icon, setIcon] = useState<LucideIcon>()
+    const [selectors, setSelectors]= useState<ChannelSelectorData[]>([])
     const router= useRouter()
     const path= usePathname()
     const params= useParams()
     const agencySlug= params.agencySlug as string    
     const clientSlug= params.clientSlug as string
 
-    const functionalitySlug= path.split("/")[3]
+    const channelSlug= path.split("/")[3]
 
     useEffect(() => {
       if (!agencySlug) return
 
       if (!clientSlug) return
 
-      getFunctionalitiesSelectorsOfCurrentClientAction(clientSlug)
+      getChannelSelectorsOfCurrentClientAction(clientSlug)
       .then((data) => {
         setName("")
-        setImage("")
+        setIcon(undefined)
         setSelectors(data)
         
-        const selectedItem= data.find(selector => selector.slug === functionalitySlug)
+        const selectedItem= data.find(selector => selector.slug === channelSlug)
         if (selectedItem) {
-          const image= selectedItem?.image
+          const icon= selectedItem?.icon
           const name= selectedItem?.name
           setName(name)
-          image && setImage(image)
+          // @ts-ignore
+          setIcon(LucideIcons[icon])
         } else {
-          if (!alowedSlugs.includes(functionalitySlug)) {
+          if (!alowedSlugs.includes(channelSlug)) {
             router.push(`/${agencySlug}/${clientSlug}`)
           }
         }
@@ -56,7 +57,7 @@ export default function FunctionalitySelector() {
         console.error(error)
       })
     
-  }, [clientSlug, agencySlug, functionalitySlug, router])
+  }, [clientSlug, agencySlug, channelSlug, router])
 
     const filteredValues = useMemo(() => {
         if (!searchValue) return selectors
@@ -79,7 +80,7 @@ export default function FunctionalitySelector() {
               className="justify-between w-full text-gray-700 whitespace-nowrap bg-intraprop-color min-w-[230px]"
             >
               <div className="flex items-center gap-2">
-                { image && <Image src={image} alt={name} width={20} height={20} className="rounded-full" />}
+                {icon && React.createElement(icon, {className: cn("w-5 h-5 mb-0.5", name === "Linkedin" && "mb-1.5")})}
                 <p>{name}</p>
               </div>
               <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
@@ -103,15 +104,16 @@ export default function FunctionalitySelector() {
                             let restOfPath = path.split("/").slice(4).join("/")
                             router.push(`/${agencySlug}/${clientSlug}/${item.slug}/${restOfPath}`)
                           }
-                          setSearchValue("")
                           setOpen(false)
-                          setName(item.name)
-                          item.image && setImage(item.image)
                         }}
                         >
                         <Check className={cn("mr-2 h-4 w-4", name === item.name ? "opacity-100" : "opacity-0")}/>
                         <div className="flex items-center gap-2">
-                        {item.image && <Image src={item.image} alt={item.name} width={20} height={20} className="rounded-full" />}
+
+                        {
+                          // @ts-ignore
+                          item.icon && React.createElement(LucideIcons[item.icon], {className: "w-5 h-5 mb-1"})
+                        }
                         {item.name}
                         </div>
                         </CommandItem>

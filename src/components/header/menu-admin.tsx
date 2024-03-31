@@ -23,9 +23,9 @@ const data= [
       text: "Users"
     },
     {
-        href: `/admin/functionalities`,
+        href: `/admin/channels`,
         icon: ListChecks,
-        text: "Functionalities"
+        text: "Canales"
     },
     {
         href: `/admin/billableitems`,

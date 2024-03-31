@@ -7,6 +7,7 @@ import { getCurrentAgencyId, getCurrentAgencySlug, getCurrentUser } from "@/lib/
 import { FunctionalityDAO } from "./functionality-services"
 import { BillableItemFormValues, createBillableItem } from "./billableitem-services"
 import { PilarDAO } from "./pilar-services"
+import { ChannelDAO } from "./channel-services"
 
 export type ClientDAO = {
 	id: string
@@ -20,7 +21,7 @@ export type ClientDAO = {
 	updatedAt: Date
 	users: UserDAO[]
 	agency: AgencyDAO
-  functionalities: FunctionalityDAO[]
+  channels: ChannelDAO[]
   pilars: PilarDAO[]
 	agencyId: string
 }
@@ -59,7 +60,7 @@ export async function getClientsDAOByAgencyId(agencyId: string) {
     include: {
       users: true,
       agency: true,
-      functionalities: true,
+      channels: true,
     }
   })
   return found as ClientDAO[]
@@ -87,7 +88,7 @@ export async function getClientDAO(id: string) {
 }
 
 export async function getClientDAOBySlug(slug: string) {
-  const found = await prisma.client.findUnique({
+  const found = await prisma.client.findFirst({
     where: {
       slug
     },
@@ -100,11 +101,14 @@ export async function getClientDAOBySlug(slug: string) {
 }
     
 export async function createClient(data: ClientFormValues) {
+  const slug= await getUniqueSlug(data)
+  data.slug= slug
+
   const created = await prisma.client.create({
     data
   })
-  const agencyId= data.agencyId
   // link the client to all AGENCY_ADMIN users of agency with agencyId and the AGENCY_OWNER user of the agency with agencyId
+  const agencyId= data.agencyId
   const allUsers= await getUsersDAO()
   const agencyAdminUsers= allUsers.filter(c => c.role === 'AGENCY_ADMIN' && c.agencyId === agencyId)
   const agencyOwner= allUsers.find(c => c.role === 'AGENCY_OWNER' && c.agencyId === agencyId)
@@ -116,6 +120,30 @@ export async function createClient(data: ClientFormValues) {
   await setUsers(created.id, agencyAdminUsers)
 
   return created
+}
+
+async function getUniqueSlug(data: ClientFormValues) {
+  let slug= data.slug
+  let i= 2
+  while (true && i < 10) {
+    console.log('checking slug', slug);
+    
+    let exists= await prisma.client.findFirst({
+      where: {
+        agencyId: data.agencyId,
+        slug
+      }
+    })
+    console.log('exists', exists)
+    
+    if (!exists) {
+      break
+    }
+    slug= `${data.slug}-${i}`
+    i++    
+  }
+
+  return slug
 }
 
 export async function updateClient(id: string, data: ClientFormValues) {
@@ -245,4 +273,70 @@ export async function getClientsOfCurrentUser() {
   if (!currentUser?.id) return []
 
   return getClientsOfUser(currentUser.id)
+}
+
+export async function setName(id: string, name: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      name
+    }
+  })
+  return updated
+}
+
+export async function setDescription(id: string, description: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      description
+    }
+  })
+  return updated
+}
+
+export async function setSlug(id: string, slug: string) {
+  const client= await getClientDAO(id)
+  const agencyId= client.agencyId
+  // check if the slug exists for the agency
+  const exists= await prisma.client.findFirst({
+    where: {
+      agencyId,
+      slug
+    }
+  })
+
+  if (exists) {
+    return "El slug ya existe para esta agencia"
+  }
+
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      slug
+    }
+  })
+  if (!updated) return "Error al actualizar el slug"
+
+  return "OK"
+}
+
+export async function setImage(id: string, image: string) {
+  console.log('setting image', image);
+  
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      image
+    }
+  })
+  return updated
 }

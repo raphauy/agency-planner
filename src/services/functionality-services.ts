@@ -66,55 +66,55 @@ export async function deleteFunctionality(id: string) {
 }
 
 
-export async function changeClientFunctionalityPermission(functionalityId: string, clientId: string) {
-  // if functionality have client, remove it
-  // if functionality don't have client, add it
+// export async function changeClientFunctionalityPermission(functionalityId: string, clientId: string) {
+//   // if functionality have client, remove it
+//   // if functionality don't have client, add it
 
-  const found= await prisma.functionality.findUnique({
-    where: {
-      id: functionalityId
-    },
-    include: {
-      clients: true
-    }
-  })
+//   const found= await prisma.functionality.findUnique({
+//     where: {
+//       id: functionalityId
+//     },
+//     include: {
+//       clients: true
+//     }
+//   })
 
-  if (!found) {
-    throw new Error("Functionality not found")
-  }
+//   if (!found) {
+//     throw new Error("Functionality not found")
+//   }
 
-  const hasClient= found.clients.some((client) => client.id === clientId)
+//   const hasClient= found.clients.some((client) => client.id === clientId)
 
-  if (hasClient) {
-    await prisma.functionality.update({
-      where: {
-        id: functionalityId
-      },
-      data: {
-        clients: {
-          disconnect: {
-            id: clientId
-          }
-        }
-      }
-    })
-  } else {
-    await prisma.functionality.update({
-      where: {
-        id: functionalityId
-      },
-      data: {
-        clients: {
-          connect: {
-            id: clientId
-          }
-        }
-      }
-    })
-  }
+//   if (hasClient) {
+//     await prisma.functionality.update({
+//       where: {
+//         id: functionalityId
+//       },
+//       data: {
+//         clients: {
+//           disconnect: {
+//             id: clientId
+//           }
+//         }
+//       }
+//     })
+//   } else {
+//     await prisma.functionality.update({
+//       where: {
+//         id: functionalityId
+//       },
+//       data: {
+//         clients: {
+//           connect: {
+//             id: clientId
+//           }
+//         }
+//       }
+//     })
+//   }
 
-  return true
-}
+//   return true
+// }
 
 export async function getFunctionalitiesOfAgency(agencyId: string) {
   const found= await prisma.functionality.findMany({

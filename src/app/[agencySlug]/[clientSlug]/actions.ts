@@ -1,17 +1,18 @@
 "use server"
 
-import { SelectorData } from "@/components/header/selectors/selectors";
+import { ChannelSelectorData, SelectorData } from "@/components/header/selectors/selectors";
+import { getChannelsByClientSlug } from "@/services/channel-services";
 import { getFunctionalitiesByClientSlug } from "@/services/functionality-services";
 
 
-export async function getFunctionalitiesSelectorsOfCurrentClientAction(clientSlug: string): Promise<SelectorData[]> {
+export async function getChannelSelectorsOfCurrentClientAction(clientSlug: string): Promise<ChannelSelectorData[]> {
 
-    const functionalities= await getFunctionalitiesByClientSlug(clientSlug)
-    const selectors= functionalities.map(f => {
+    const channels= await getChannelsByClientSlug(clientSlug)
+    const selectors= channels.map(f => {
         return {
             name: f.name,
             slug: f.slug,
-            image: f.image
+            icon: f.icon
         }
     })
 

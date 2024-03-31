@@ -9,40 +9,54 @@ import { X } from "lucide-react"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useRoles } from "@/app/admin/users/use-roles"
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
   
 interface DataTableToolbarProps<TData> {
   table: TanstackTable<TData>;
-  functionalityNames: string[]
 }
 
-export function DataTableToolbar<TData>({ table, functionalityNames }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
-
-  const roles= useRoles()
 
   return (
     <div className="flex gap-1 dark:text-white items-center">
-
-      {table.getColumn("name") && roles && (
-        <DataTableFacetedFilter
-          column={table.getColumn("name")}
-          title="Funcionalidad"
-          options={functionalityNames}
-        />
-      )}
-
-      {isFiltered && (
-        <Button
-          variant="ghost"
-          onClick={() => table.resetColumnFilters()}
-          className="h-8 px-2 lg:px-3"
-        >
-          Reset
-          <X className="w-4 h-4 ml-2" />
-        </Button>
-      )}
+        
+          <Input className="max-w-xs" placeholder="name filter..."
+              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}                
+          />
+          
+      
+          <Input className="max-w-xs" placeholder="slug filter..."
+              value={(table.getColumn("slug")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("slug")?.setFilterValue(event.target.value)}                
+          />
+          
+      
+          <Input className="max-w-xs" placeholder="icon filter..."
+              value={(table.getColumn("icon")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("icon")?.setFilterValue(event.target.value)}                
+          />
+          
+        {/* {table.getColumn("role") && roles && (
+          <DataTableFacetedFilter
+            column={table.getColumn("role")}
+            title="Rol"
+            options={roles}
+          />
+        )} */}
+        {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={() => table.resetColumnFilters()}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <X className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+        <div className="flex-1 ">
+          <DataTableViewOptions table={table}/>
+        </div>
     </div>
   )
 }
@@ -52,7 +66,6 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   columnsOff?: string[]
   subject: string
-  functionalityNames: string[]
 }
 
 export function DataTable<TData, TValue>({
@@ -60,7 +73,6 @@ export function DataTable<TData, TValue>({
   data,
   columnsOff,
   subject,
-  functionalityNames
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -100,7 +112,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-4 dark:text-white">
-      <DataTableToolbar table={table} functionalityNames={functionalityNames}/>
+      <DataTableToolbar table={table}/>
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -129,7 +141,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="align-top min-h-fit">                      
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

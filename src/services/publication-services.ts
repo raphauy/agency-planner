@@ -43,6 +43,20 @@ export async function getPublicationsDAO() {
   return found as PublicationDAO[]
 }
 
+export async function getPublicationsDAOByClientSlug(clientSlug: string) {
+  const found = await prisma.publication.findMany({
+    where: {
+      client: {
+        slug: clientSlug
+      }
+    },
+    orderBy: {
+      id: 'asc'
+    },
+  })
+  return found as PublicationDAO[]
+}
+
 export async function getPublicationDAO(id: string) {
   const found = await prisma.publication.findUnique({
     where: {

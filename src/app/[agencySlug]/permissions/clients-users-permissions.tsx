@@ -32,7 +32,6 @@ export default function ClientsPermissions({ agencyId, userId, userClients }: Pr
         setLoader(true)
         changeClientUserPermissionAction(userId, clientId)
         .then(() => {
-            console.log("Client updated")
             toast({ title: "Cliente modicado"})
         })
         .catch((error) => {

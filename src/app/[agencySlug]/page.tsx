@@ -40,7 +40,7 @@ export default async function AgencyPage({ params }: Props) {
 
               <div className="flex items-center mb-4 text-gray-900 font-bold justify-between">
                 <Link href={`/${client.agency.slug}/${client.slug}`} prefetch={false} className="h-full flex items-center gap-2">
-                  {client.image && <Image src={client.image} alt={client.name} width={40} height={40} className="rounded-full" />}
+                  {client.image && <Image src={client.image} alt={client.name} width={40} height={40} className="rounded-full w-10 h-10" />}
                   <p className="dark:text-white flex-1">{client.name}</p>
                 </Link>
                 <Link href={`https://instagram.com/${client.igHandle}`} prefetch={false} target="_blank">

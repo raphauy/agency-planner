@@ -1,14 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { ChannelDAO } from "@/services/channel-services"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
-import ClientsFunctionalityPermissions from "./clients-functionality-permissions"
-import { ClientDAO } from "@/services/client-services"
-import { FunctionalityDAO } from "@/services/functionality-services"
+import ClientsChannelPermissions from "./clients-channel-permissions"
 
 
-export const columns: ColumnDef<FunctionalityDAO>[] = [
+export const columns: ColumnDef<ChannelDAO>[] = [
   
   {
     accessorKey: "name",
@@ -27,7 +26,10 @@ export const columns: ColumnDef<FunctionalityDAO>[] = [
           <p className="font-bold text-base mb-7">{data.name}</p>
         </div>
       )
-    }
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
 
   {
@@ -56,7 +58,7 @@ export const columns: ColumnDef<FunctionalityDAO>[] = [
      
       const data= row.original
 
-      return <ClientsFunctionalityPermissions functionality={data} />
+      return <ClientsChannelPermissions channel={data} />
     }
   },
 
