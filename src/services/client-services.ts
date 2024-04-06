@@ -17,6 +17,9 @@ export type ClientDAO = {
 	description: string | undefined
 	igHandle: string | undefined
 	brandVoice: string | undefined
+  copyPrompt: string | undefined
+  includeBrandVoice: boolean
+  includeLastCopys: boolean
 	createdAt: Date
 	updatedAt: Date
 	users: UserDAO[]
@@ -94,6 +97,8 @@ export async function getClientDAOBySlug(slug: string) {
     },
     include: {
       pilars: true,
+      agency: true,
+      channels: true,
     }
   })
   return found as ClientDAO
@@ -262,6 +267,7 @@ export async function getClientsOfUser(userId: string) {
     include: {
       agency: true,
       users: true,
+      channels: true,
     }
   })
 
@@ -336,6 +342,54 @@ export async function setImage(id: string, image: string) {
     },
     data: {
       image
+    }
+  })
+  return updated
+}
+
+export async function setBrandVoice(id: string, brandVoice: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      brandVoice
+    }
+  })
+  return updated
+}
+
+export async function setCopyPrompt(id: string, copyPrompt: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      copyPrompt
+    }
+  })
+  return updated
+}
+
+export async function setIncludeBrandVoice(id: string, includeBrandVoice: boolean) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      includeBrandVoice
+    }
+  })
+  return updated
+}
+
+export async function setIncludeLastCopys(id: string, includeLastCopys: boolean) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      includeLastCopys
     }
   })
   return updated

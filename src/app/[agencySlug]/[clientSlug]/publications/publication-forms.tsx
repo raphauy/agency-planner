@@ -214,6 +214,9 @@ export function PublicationForm({ id, closeDialog }: Props) {
   )
 }
 
+
+
+
 export function DeletePublicationForm({ id, closeDialog }: Props) {
   const [loading, setLoading] = useState(false)
 
@@ -222,7 +225,7 @@ export function DeletePublicationForm({ id, closeDialog }: Props) {
     setLoading(true)
     deletePublicationAction(id)
     .then(() => {
-      toast({title: "Publication deleted" })
+      toast({title: "Publication eliminada" })
     })
     .catch((error) => {
       toast({title: "Error", description: error.message, variant: "destructive"})

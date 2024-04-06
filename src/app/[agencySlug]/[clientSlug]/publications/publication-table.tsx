@@ -9,9 +9,14 @@ import { X } from "lucide-react"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-  
-interface DataTableToolbarProps<TData> {
-  table: TanstackTable<TData>;
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { PublicationStatus, PublicationType } from "@prisma/client"
+
+const types= Object.values(PublicationType)
+const statuses= Object.values(PublicationStatus)
+
+type DataTableToolbarProps<TData>= {
+  table: TanstackTable<TData>
 }
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
@@ -19,53 +24,43 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
 
   return (
     <div className="flex gap-1 dark:text-white items-center">
-        
-          <Input className="max-w-xs" placeholder="type filter..."
-              value={(table.getColumn("type")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("type")?.setFilterValue(event.target.value)}                
-          />
+
+      {table.getColumn("type") && (
+        <DataTableFacetedFilter
+          column={table.getColumn("type")}
+          title="Tipo"
+          options={types}
+        />
+      )}
+
+      {table.getColumn("status") && (
+        <DataTableFacetedFilter
+          column={table.getColumn("status")}
+          title="Estado"
+          options={statuses}
+        />
+      )}
+
+      <Input className="max-w-xs" placeholder="título..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}                
+      />
+
+      <Input className="max-w-xs" placeholder="copy..."
+          value={(table.getColumn("copy")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("copy")?.setFilterValue(event.target.value)}                
+      />
           
-      
-          <Input className="max-w-xs" placeholder="status filter..."
-              value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("status")?.setFilterValue(event.target.value)}                
-          />
-          
-      
-          <Input className="max-w-xs" placeholder="title filter..."
-              value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}                
-          />
-          
-      
-          <Input className="max-w-xs" placeholder="images filter..."
-              value={(table.getColumn("images")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("images")?.setFilterValue(event.target.value)}                
-          />
-          
-      
-          <Input className="max-w-xs" placeholder="copy filter..."
-              value={(table.getColumn("copy")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("copy")?.setFilterValue(event.target.value)}                
-          />
-          
-        {/* {table.getColumn("role") && roles && (
-          <DataTableFacetedFilter
-            column={table.getColumn("role")}
-            title="Rol"
-            options={roles}
-          />
-        )} */}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <X className="w-4 h-4 ml-2" />
-          </Button>
-        )}
+      {isFiltered && (
+        <Button
+          variant="ghost"
+          onClick={() => table.resetColumnFilters()}
+          className="h-8 px-2 lg:px-3"
+        >
+          Reset
+          <X className="w-4 h-4 ml-2" />
+        </Button>
+      )}
         <div className="flex-1 ">
           <DataTableViewOptions table={table}/>
         </div>

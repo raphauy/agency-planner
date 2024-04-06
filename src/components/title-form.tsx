@@ -43,7 +43,7 @@ export function TitleForm({ id, label, initialValue, update }: Props) {
 
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 rounded-md p-4 dark:bg-black">
       <div className="font-medium flex flex-col">
         {label ? <p>{label}:</p> : "Título:"}
             {

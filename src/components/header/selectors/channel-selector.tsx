@@ -30,13 +30,16 @@ export default function ChannelSelector() {
     const channelSlug= path.split("/")[3]
 
     useEffect(() => {
+      setName("")
       if (!agencySlug) return
 
       if (!clientSlug) return
 
       getChannelSelectorsOfCurrentClientAction(clientSlug)
       .then((data) => {
-        setName("")
+        // if (path.endsWith(clientSlug))
+        //   setName("Seleccionar canal")
+
         setIcon(undefined)
         setSelectors(data)
         
@@ -57,7 +60,7 @@ export default function ChannelSelector() {
         console.error(error)
       })
     
-  }, [clientSlug, agencySlug, channelSlug, router])
+  }, [clientSlug, agencySlug, channelSlug, router, path])
 
     const filteredValues = useMemo(() => {
         if (!searchValue) return selectors
@@ -77,11 +80,11 @@ export default function ChannelSelector() {
               variant="ghost"
               role="combobox"
               aria-expanded={open}
-              className="justify-between w-full text-gray-700 whitespace-nowrap bg-intraprop-color min-w-[230px]"
+              className="justify-between w-full whitespace-nowrap min-w-[230px]"
             >
               <div className="flex items-center gap-2">
                 {icon && React.createElement(icon, {className: cn("w-5 h-5 mb-0.5", name === "Linkedin" && "mb-1.5")})}
-                <p>{name}</p>
+                <p className="dark:text-white">{name}</p>
               </div>
               <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
             </Button>

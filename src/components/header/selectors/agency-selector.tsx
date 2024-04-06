@@ -61,7 +61,7 @@ export default function AgencySelector({ selectors= [] }: Props) {
         <SlashIcon className="w-5 h-5 opacity-50" />
         <Button variant="ghost" className="flex gap-2">
           { agency?.image && <Image src={agency?.image} alt={name} width={20} height={20} className="rounded-full" />}
-          <p className="text-base text-gray-800">{user.agencyName}</p>
+          <p className="text-base">{user.agencyName}</p>
         </Button>
       </Link>
     )
@@ -79,11 +79,11 @@ export default function AgencySelector({ selectors= [] }: Props) {
             variant="ghost"
             role="combobox"
             aria-expanded={open}
-            className="justify-between w-full text-gray-700 whitespace-nowrap bg-intraprop-color min-w-[230px]"
+            className="justify-between w-full whitespace-nowrap min-w-[230px]"
           >
             <div className="flex items-center gap-2">
               { image && <Image src={image} alt={name} width={20} height={20} className="rounded-full" />}
-              <p>{name}</p>
+              <p className="dark:text-white">{name}</p>
             </div>
             <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
           </Button>

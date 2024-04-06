@@ -16,9 +16,9 @@ export default async function Logo() {
           </div>
         </Link> ) : (
           <Link href="/">
-          <div className="text-2xl font-bold pl-3">
-            <p className="text-gray-700">agency</p>
-            <p className="text-gray-300 tracking-tight mt-[-8px]">planner</p>
+          <div className="text-2xl font-bold pl-3 flex py-2">
+            <p className="text-gray-700 whitespace-nowrap">agency-planner</p>
+            <p className="text-gray-300">.com</p>
           </div>
         </Link>
     

@@ -15,14 +15,14 @@ export default function MenuClient() {
     const userRole= user?.role
     const alowedRoles= useClientRoles()
 
-    const clientSlug= useParams().clientSlug
-    
     const path= usePathname()
     const params= useParams()
-    const agencySlug= params.agencySlug
+
+    const agencySlug= params.agencySlug as string
     if (!agencySlug)
         return <div>Agency not found</div>
 
+    const clientSlug= params.clientSlug as string    
     if (!clientSlug)
         return <div>Client not found</div>
 
@@ -52,29 +52,31 @@ export default function MenuClient() {
             roles: alowedRoles
         },
     ]
+
+    if (!data.map(item => item.href).includes(path))
+        return <div></div>
+
+
         
     return (
-        <div className="flex items-center justify-between">
-            <nav>
-                <ul className="flex items-center">
-                    {data.map((item, index) => {
-                        if (item.roles && userRole && !item.roles.includes(userRole))
-                            return null
-                        return (
-                            <li key={index} className={cn("border-b-primary", path === item.href && "border-b-2")}>
-                                <Link href={item.href}>
-                                    <Button variant="ghost">
-                                        <item.icon className="w-4 h-4 mr-1 mb-0.5" />
-                                        {item.text}
-                                    </Button>
-                                </Link>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </nav>
-            <p className="mr-4">{user?.name} - {userRole}</p>
-        </div>
+        <nav>
+            <ul className="flex items-center">
+                {data.map((item, index) => {
+                    if (item.roles && userRole && !item.roles.includes(userRole))
+                        return null
+                    return (
+                        <li key={index} className={cn("border-b-primary", path === item.href && "border-b-2")}>
+                            <Link href={item.href}>
+                                <Button variant="ghost">
+                                    <item.icon className="w-4 h-4 mr-1 mb-0.5" />
+                                    {item.text}
+                                </Button>
+                            </Link>
+                        </li>
+                    )
+                })}
+            </ul>
+        </nav>
     )
 }
 

@@ -11,8 +11,8 @@ const CLOUDINARY_PRESET= process.env.NEXT_PUBLIC_CLOUDINARY_PRESET
 
 type Props = {
   initialImages: string[]
-  addImage: (imageUrl: string) => void
-  removeImage: (imageUrl: string) => void
+  addImage?: (imageUrl: string) => void
+  removeImage?: (imageUrl: string) => void
 }
 export default function IgCarousel({ initialImages, addImage, removeImage }: Props) {
 
@@ -34,10 +34,12 @@ export default function IgCarousel({ initialImages, addImage, removeImage }: Pro
 
   function handleUpload(result: any) {    
     const img: string = result.info.secure_url
-    addImage(img)
+    addImage && addImage(img)
   }
 
   function handleRemoveImage(image: string) {
+    if (!removeImage) return
+    
     removeImage(image)
     if (images.length === 1) {
       setShowPlaceholder(false)
@@ -56,53 +58,70 @@ export default function IgCarousel({ initialImages, addImage, removeImage }: Pro
                 <Image src={image} alt="carousel image" width={600} height={600} 
                   className="object-cover w-full rounded-lg"
                 />
-                <div className="absolute bottom-3 right-3">
-                  <Trash2 
-                    className="w-6 h-6 p-1 bg-gray-200 cursor-pointer border border-gray-500 rounded-md hover:bg-gray-300" 
-                    onClick={() => handleRemoveImage(image)
-                  } />
-                </div>
-
+                {
+                  removeImage &&
+                    <div className="absolute bottom-3 right-3">
+                      <Trash2 
+                        className="w-6 h-6 p-1 bg-gray-200 cursor-pointer border border-gray-500 rounded-md hover:bg-gray-300" 
+                        onClick={() => handleRemoveImage(image)
+                      } />
+                    </div>
+                }
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div onClick={() => setSelectedIndex(selectedIndex - 1)}>
-            <CarouselPrevious className="left-4"/>
-          </div>
-          <div onClick={() => setSelectedIndex(selectedIndex + 1)}>
-            <CarouselNext className="right-4"  />
-          </div>
-          
-          <div className="absolute rounded-full bottom-3 w-full flex justify-center gap-1">
-            {
-              images.map((_, index) => (
-                <div key={index} 
-                  className={cn("h-2 w-2 rounded-full",index === selectedIndex ? "bg-blue-400" : "bg-gray-400")}
-                />
-              ))
-            }
-          </div>
-
+          {
+            images.length > 1 &&
+            <>
+              <div onClick={() => setSelectedIndex(selectedIndex - 1)}>
+                <CarouselPrevious className="left-4"/>
+              </div>
+              <div onClick={() => setSelectedIndex(selectedIndex + 1)}>
+                <CarouselNext className="right-4"  />
+              </div>
+              <div className="absolute rounded-full bottom-3 w-full flex justify-center gap-1">
+                {
+                  images.map((_, index) => (
+                    <div key={index} 
+                      className={cn("h-2 w-2 rounded-full",index === selectedIndex ? "bg-blue-400" : "bg-gray-400")}
+                    />
+                  ))
+                }
+              </div>
+            </>
+          }
         </Carousel>
         
       }
-      <CldUploadButton
-        className="flex flex-col items-center w-full mt-1 gap-2"
-        options={ { maxFiles: 1, tags: ["cambiar"], folder: "agency/dev" } }
-        onSuccess={handleUpload}
-        uploadPreset={CLOUDINARY_PRESET}
-      >
-        <div>
-        {
-          showPlaceholder &&
-          <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
-            className="object-cover w-full rounded-lg"
-          />
-        }
-        </div>
+      {
+        addImage ?
+          <CldUploadButton
+          className="flex flex-col items-center w-full mt-1 gap-2"
+          options={ { maxFiles: 1, tags: ["cambiar"], folder: "agency/dev" } }
+          onSuccess={handleUpload}
+          uploadPreset={CLOUDINARY_PRESET}
+        >
+          <div>
+          {
+            showPlaceholder &&
+            <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
+              className="object-cover w-full rounded-lg"
+            />
+          }
+          </div>
 
-        <Upload className='w-32 h-10 p-2 bg-gray-200 border border-gray-500 rounded-md hover:bg-gray-300' />
-      </CldUploadButton>
+          <Upload className='w-32 h-10 p-2 bg-gray-200 border border-gray-500 rounded-md hover:bg-gray-300' />
+        </CldUploadButton>
+        :
+        <div>
+          {
+            showPlaceholder &&
+            <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
+              className="object-cover w-full rounded-lg"
+            />
+          }
+        </div>
+      }
 
     </div>
 )

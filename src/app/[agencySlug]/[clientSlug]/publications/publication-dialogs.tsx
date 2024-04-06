@@ -48,7 +48,7 @@ export function DeletePublicationDialog({ id, description }: DeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Publication</DialogTitle>
+          <DialogTitle>Eliminar publicación</DialogTitle>
           <DialogDescription className="py-8">{description}</DialogDescription>
         </DialogHeader>
         <DeletePublicationForm closeDialog={() => setOpen(false)} id={id} />
@@ -56,13 +56,3 @@ export function DeletePublicationDialog({ id, description }: DeleteProps) {
     </Dialog>
   )
 }
-
-interface CollectionProps{
-  id: string
-  title: string
-}
-
-
-
-
-  

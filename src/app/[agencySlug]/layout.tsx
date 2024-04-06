@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentRole, getCurrentUser } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface Props {
   children: React.ReactNode
@@ -30,7 +31,9 @@ export default async function AdminLayout({ children, params }: Props) {
 
   return (
     <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1350px]">
-      {children}
+      <TooltipProvider delayDuration={0}>
+        {children}
+      </TooltipProvider>
     </div>
   )
 }

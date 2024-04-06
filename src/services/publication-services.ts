@@ -2,6 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { PublicationStatus, PublicationType } from "@prisma/client"
 import { ClientDAO } from "./client-services"
+import { PilarDAO } from "./pilar-services"
 
 export type PublicationDAO = {
 	id: string
@@ -11,12 +12,13 @@ export type PublicationDAO = {
 	images: string | undefined
 	hashtags: string | undefined
 	copy: string | undefined
-	link: string | undefined
+	publicationDate: Date | null
 	createdAt: Date
 	updatedAt: Date
 	clientId: string
-	pilarId: string | undefined
   client: ClientDAO
+	pilarId: string | undefined
+  pilar: PilarDAO | undefined
 }
 
 export const publicationSchema = z.object({	
@@ -26,6 +28,7 @@ export const publicationSchema = z.object({
 	images: z.string().optional(),
 	hashtags: z.string().optional(),
 	copy: z.string().optional(),
+  publicationDate: z.date().optional().nullable(),
 	link: z.string().optional(),
 	clientId: z.string({required_error: "clientId is required."}),
 	pilarId: z.string().optional(),
@@ -51,8 +54,9 @@ export async function getPublicationsDAOByClientSlug(clientSlug: string) {
       }
     },
     orderBy: {
-      id: 'asc'
+      publicationDate: 'desc'
     },
+
   })
   return found as PublicationDAO[]
 }
@@ -62,6 +66,10 @@ export async function getPublicationDAO(id: string) {
     where: {
       id
     },
+    include: {
+      client: true,
+      pilar: true
+    }
   })
   return found as PublicationDAO
 }

@@ -102,6 +102,9 @@ model Client {
     description       String?                   // gennext: show.column
     igHandle          String?                   // gennext: show.column
     brandVoice        String?
+    copyPrompt        String? @default("Escribe el copy basado en el título...")
+    includeBrandVoice Boolean? @default(true)
+    includeLastCopys  Boolean? @default(true)
 
     createdAt         DateTime  @default(now()) // gennext: skip.zod
     updatedAt         DateTime  @updatedAt      // gennext: skip.zod
@@ -182,8 +185,8 @@ model Publication {
   title             String                                // genext: show.column
   images            String?                               // genext: show.column
   hashtags          String?                               
-  copy              String?                               // genext: show.column
-  link              String?
+  copy              String?                               // genext: show.column  
+  publicationDate   DateTime?                             // genext: show.column
 
   createdAt         DateTime  @default(now())             // gennext: skip.zod
   updatedAt         DateTime  @updatedAt                  // gennext: skip.zod  

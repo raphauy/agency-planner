@@ -19,9 +19,9 @@ export default async function FacebookPage({ params }: Props) {
   
     return (
         <div className="border mt-20 rounded-lg bg-white p-10 space-y-6">
-          <h1 className="text-xl font-bold">Facebook Page</h1>
-          <p>Agency: {agency.name}</p>
-          <p>Client: {client.name}</p>
+          <h1 className="text-xl font-bold">Facebook Page (Comming Soon...)</h1>
+          <p>Agencia: {agency.name}</p>
+          <p>Cliente: {client.name}</p>
       </div>
     )
 }
