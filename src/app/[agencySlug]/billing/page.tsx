@@ -3,9 +3,15 @@ import { getBillingTypesDAO } from "@/services/billingtype-services"
 import { DataTable } from "@/app/admin/billableitems/billableitem-table"
 import { columns } from "./billableitem-columns"
 
-export default async function UsersPage() {
+type Props = {
+  params: {
+    agencySlug: string
+  }
+}
+export default async function BillingPage({ params }: Props) {
+  const agencySlug= params.agencySlug
   
-  const data= await getBillableItemsDAO(50)
+  const data= await getBillableItemsDAO(agencySlug, 50)
   const billableTypes= await getBillingTypesDAO()
   const billableTypesStr= billableTypes.map((bt) => bt.name)
 
