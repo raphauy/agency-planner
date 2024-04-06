@@ -1,4 +1,3 @@
-import crypto from "crypto"
 import { prisma } from "@/lib/db"
 import { z } from "zod";
 
@@ -52,7 +51,7 @@ export async function deleteOTPConfirmation(id: string) {
  */
 
 export async function generateOTPCode(email: string) {
-    const token = crypto.randomInt(100_000, 1_000_000).toString();
+    const token = Math.floor(100000 + Math.random() * 900000).toString();
     const expires = new Date(new Date().getTime() + 5 * 60 * 1000);
   
     const existingToken = await getOTPCodeByEmail(email)

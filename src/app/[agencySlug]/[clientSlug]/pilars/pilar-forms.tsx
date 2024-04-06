@@ -59,7 +59,7 @@ export function PilarForm({ id, closeDialog }: Props) {
         })
       })
     }
-  }, [form, id])
+  }, [form, id, clientSlug])
 
   return (
     <div className="p-4 bg-white rounded-md">
