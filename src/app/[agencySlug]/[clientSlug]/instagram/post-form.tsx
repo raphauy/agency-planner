@@ -82,8 +82,6 @@ export function PostForm({ id, closeDialog }: Props) {
   }
 
   useEffect(() => {
-    console.log("changing...");
-    
     if (!copy) {
       setInput(client?.copyPrompt || "")
     }

@@ -31,19 +31,6 @@ export function AgencyForm({ id, closeDialog }: Props) {
   })
   const [loading, setLoading] = useState(false)
 
-  const [slug, setSlug] = useState("")
-
-  const watchName= form.watch("name")
-
-  useEffect(() => {
-    if (watchName) {
-      const slug= generateSlug(watchName)
-      setSlug(slug)
-      form.setValue("slug", slug)
-    }
-  }, [watchName, form])
-
-
   const onSubmit = async (data: AgencyFormValues) => {
 
     setLoading(true)
@@ -91,7 +78,20 @@ export function AgencyForm({ id, closeDialog }: Props) {
               </FormItem>
             )}
           />
-          <p>slug: {slug}</p>
+
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug</FormLabel>
+                <FormControl>
+                  <Input placeholder="Slug" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           
       
           <FormField
