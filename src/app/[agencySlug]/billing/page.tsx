@@ -12,6 +12,7 @@ export default async function BillingPage({ params }: Props) {
   const agencySlug= params.agencySlug
   
   const data= await getBillableItemsDAO(agencySlug, 50)
+  
   const billableTypes= await getBillingTypesDAO()
   const billableTypesStr= billableTypes.map((bt) => bt.name)
 
