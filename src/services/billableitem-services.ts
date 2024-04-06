@@ -37,8 +37,35 @@ export const billableItemSchema = z.object({
 
 export type BillableItemFormValues = z.infer<typeof billableItemSchema>
 
+export async function getBillableItemsDAO(take: number): Promise<BillableItemDAO[]> {
+  const found = await prisma.billableItem.findMany({
+    orderBy: {
+      id: 'asc'
+    },
+    include: {
+      agency: {
+        select: {
+          name: true
+        }
+      },
+      client: {
+        select: {
+          name: true
+        }
+      },
+      billingType: {
+        select: {
+          name: true
+        }
+      }
+    },
+    take
+  })
+  return found as BillableItemDAO[]
 
-export async function getBillableItemsDAO(agencySlug: string, take: number): Promise<BillableItemDAO[]> {
+}
+
+export async function getBillableItemsDAOByAgency(agencySlug: string, take: number): Promise<BillableItemDAO[]> {
   const found = await prisma.billableItem.findMany({
     orderBy: {
       id: 'asc'
