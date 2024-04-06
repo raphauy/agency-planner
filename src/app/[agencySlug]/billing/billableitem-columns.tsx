@@ -112,23 +112,6 @@ export const columns: ColumnDef<BillableItemDAO>[] = [
       return value.includes(row.original.billingType.name)
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const data= row.original
-
-      const deleteDescription= `Do you want to delete BillableItem ${data.id}?`
- 
-      return (
-        <div className="flex items-center justify-end gap-2">
-
-          <BillableItemDialog id={data.id} />
-          <DeleteBillableItemDialog description={deleteDescription} id={data.id} />
-        </div>
-
-      )
-    },
-  },
 ]
 
 
