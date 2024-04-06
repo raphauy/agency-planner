@@ -203,7 +203,7 @@ model Pilar {
   name              String                                  // genext: show.column
   description       String?                                 // genext: show.column
   color             String                                  // genext: show.column
-  client            Client    @relation(fields: [clientId], references: [id], onDelete: Restrict) // genext: skip.list
+  client            Client    @relation(fields: [clientId], references: [id], onDelete: Cascade) // genext: skip.list
   clientId          String
   publications      Publication[]                                                                 // genext: skip.list
 }

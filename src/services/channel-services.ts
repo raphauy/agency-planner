@@ -99,7 +99,10 @@ export async function getChannelsByClientSlug(clientSlug: string) {
     },
     include: {
       clients: true
-    }    
+    },
+    orderBy: {
+      id: 'asc'
+    }
   })
   return found as ChannelDAO[]
 }
