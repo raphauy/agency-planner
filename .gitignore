@@ -1,6 +1,6 @@
 .env
 bun.lockb
-
+pnpm-lock.yaml
 
 
 # dependencies
