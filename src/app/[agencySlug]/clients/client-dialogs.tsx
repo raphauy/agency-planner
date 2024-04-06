@@ -53,15 +53,22 @@ export function ClientDialog({ id, agencyId, igForm }: Props) {
 type DeleteProps= {
   id: string
   description: string
+  withText?: boolean
 }
 
-export function DeleteClientDialog({ id, description }: DeleteProps) {
+export function DeleteClientDialog({ id, description, withText }: DeleteProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Trash2 className="hover:cursor-pointer"/>
+        {
+          withText ? 
+          <Button variant="destructive">Eliminar Cliente</Button> 
+          :
+          <Trash2 size={30} className="hover:cursor-pointer" />
+        }
+        
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
