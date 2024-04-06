@@ -34,11 +34,6 @@ export default function MenuAgency() {
             text: "Dashboard"
         },
         {
-            href: `/${agencySlug}/clients`,
-            icon: BriefcaseBusiness,
-            text: "Clientes"
-        },
-        {
             href: `/${agencySlug}/users`,
             icon: User,
             text: "Equipo"

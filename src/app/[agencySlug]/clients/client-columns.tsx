@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ClientDAO } from "@/services/client-services"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, Pencil, Settings } from "lucide-react"
 import { format } from "date-fns"
 import { DeleteClientDialog, ClientDialog } from "./client-dialogs"
 
@@ -103,7 +103,12 @@ export const columns: ColumnDef<ClientDAO>[] = [
       return (
         <div className="flex items-center justify-end gap-2">
 
-          <ClientDialog id={data.id} />
+          {/* <ClientDialog id={data.id} /> */}
+          <Link href={`/${data.agency.slug}/${data.slug}/settings`} prefetch={false}>
+            <Button variant="ghost">
+              <Settings />
+            </Button>
+          </Link>
           <DeleteClientDialog description={deleteDescription} id={data.id} />
         </div>
 

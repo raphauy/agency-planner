@@ -61,9 +61,9 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           <X className="w-4 h-4 ml-2" />
         </Button>
       )}
-        <div className="flex-1 ">
+        {/* <div className="flex-1 ">
           <DataTableViewOptions table={table}/>
-        </div>
+        </div> */}
     </div>
   )
 }

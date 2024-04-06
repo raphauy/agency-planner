@@ -31,7 +31,7 @@ export function ClientDialog({ id, agencyId, igForm }: Props) {
     return null
   }
 
-  const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>{igForm ? "Crear cliente con Instagram" : "Crear Cliente"}</Button>
+  const addTrigger= <Button><PlusCircle size={20} className="mr-2"/>{igForm ? "Nuevo" : "Crear Cliente"}</Button>
   const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
   return (
