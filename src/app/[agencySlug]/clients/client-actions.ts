@@ -10,6 +10,7 @@ import { getIgProfile } from "@/services/instagram-services"
 import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
 import { BillableItemFormValues, createBillableItem } from "@/services/billableitem-services"
+import { getBillingTypeDAOByName } from "@/services/billingtype-services"
     
 
 export async function getClientDAOAction(id: string): Promise<ClientDAO | null> {
@@ -79,6 +80,10 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
         description: igProfile.biography,
     }
 
+    const storageBillingType= await getBillingTypeDAOByName('Storage')
+    if (!storageBillingType) {
+        throw new Error('Billing type "Storage" not found')
+    }
     const created= await createClient(data)
   
     if (image){
@@ -87,7 +92,7 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
         quantity: bytes as number,
         unitPrice: 0.01,
         url: image,
-        billingTypeId: 'clucl0xwu0000n1qeshoeot27',
+        billingTypeId: storageBillingType.id,
         agencyId,
         clientId: created.id,
         }

@@ -34,6 +34,16 @@ export async function getBillingTypeDAO(id: string) {
   })
   return found as BillingTypeDAO
 }
+
+export async function getBillingTypeDAOByName(name: string) {
+  const found = await prisma.billingType.findFirst({
+    where: {
+      name
+    },
+  })
+  return found as BillingTypeDAO
+
+}
     
 export async function createBillingType(data: BillingTypeFormValues) {
   // TODO: implement createBillingType
