@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/utils";
 
-interface Props {
+type Props = {
   children: React.ReactNode;
 }
 
