@@ -36,7 +36,6 @@
     "@tanstack/react-table": "^8.15.0",
     "@types/nodemailer": "^6.4.14",
     "@vercel/analytics": "^1.2.2",
-    "@vercel/speed-insights": "^1.0.10",
     "ai": "^3.0.15",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.0.3",

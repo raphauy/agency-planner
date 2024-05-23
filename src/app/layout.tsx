@@ -13,6 +13,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: Props) {
             
             <div className="px-3 sm:px-4 md:px-5 xl:px-3 flex flex-col items-center flex-1 w-full bg-slate-50 dark:bg-black">
               {children}
+              <Analytics />
             </div>
             <div className='self-end bg-slate-50 w-full dark:bg-black'>
               <LinealToggle isDevMode={isDevMode} />
