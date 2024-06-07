@@ -1,6 +1,7 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { UserRole } from "@prisma/client"
+import { getCurrentUser } from "@/lib/utils"
 
 export type UserDAO = {
 	id: string
@@ -172,6 +173,14 @@ export async function changeClientUserPermission(userId: string, clientId: strin
 
   if (!user) {
     throw new Error("User not found")
+  }
+
+  if (user.role === "AGENCY_OWNER") {
+    const currentUser= await getCurrentUser()
+    const currentUserId = currentUser?.id
+    if (userId !== currentUserId && currentUser?.role !== "ADMIN") {
+      throw new Error("Solo el Agency Owner puede cambiar sus propios permisos")
+    }
   }
 
   const hasClient = user.clients.some((client) => client.id === clientId)

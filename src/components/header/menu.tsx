@@ -20,10 +20,13 @@ export default function Menu() {
     const clientSlug= params.clientSlug
     const agencySlug= params.agencySlug
 
+    const channel= path.split("/")[3]
+    console.log("channel", channel)    
+
     let menu
     if (path.startsWith("/admin")) {
         menu= <MenuAdmin />
-    } else if (path.endsWith("instagram")) {
+    } else if (channel === "instagram") {
         menu= <MenuInstagram />
     } else if (clientSlug) {
         menu= <MenuClient />

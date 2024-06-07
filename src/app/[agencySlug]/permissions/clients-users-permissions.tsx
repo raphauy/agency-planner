@@ -36,7 +36,7 @@ export default function ClientsPermissions({ agencyId, userId, userClients }: Pr
         })
         .catch((error) => {
             console.error(error)
-            toast({ title: "Error", description: error.message })
+            toast({ title: "Error", description: error.message, variant: "destructive" })
         })
         .finally(() => {
             setLoader(false)

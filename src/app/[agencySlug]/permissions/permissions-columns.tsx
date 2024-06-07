@@ -16,7 +16,7 @@ export const columns: ColumnDef<PermissionsDAO>[] = [
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Name
+            Nombre
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},

@@ -6,6 +6,7 @@ import { columns } from "./channel-columns"
 import { DataTable } from "./channel-table"
 import { columns as permissionsColumns } from "./permissions-columns"
 import { DataTable as PermissionsTable } from "./permissions-table"
+import { useRoles } from "@/app/admin/users/use-roles"
 
 type Props = {
   params: {
@@ -14,7 +15,7 @@ type Props = {
 }
 export default async function PermissionsPage({ params }: Props) {
   const agencySlug= params.agencySlug
-  const agency= await getAgencyDAOBySlug(agencySlug)  
+  const agency= await getAgencyDAOBySlug(agencySlug)
   const dataUserPermissions= await getPermissionsOfAgency(agency.id)
   const channels= await getFullChannelsDAO()
 

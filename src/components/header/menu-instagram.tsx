@@ -3,7 +3,7 @@
 import { useClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Grid3X3, LayoutDashboard, Newspaper, Server, Settings, Undo2 } from "lucide-react"
+import { Calendar, Grid3X3, LayoutDashboard, Newspaper, Server, Settings, Undo2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -26,8 +26,8 @@ export default function MenuInstagram() {
     if (!clientSlug)
         return <div>Client not found</div>
 
-        
-    if (!path.endsWith("instagram"))
+    const channel= path.split("/")[3]
+    if (channel !== "instagram")
         return null
 
     const data= [
@@ -38,9 +38,15 @@ export default function MenuInstagram() {
             roles: alowedRoles
         },
         {
-            href: `/${agencySlug}/${clientSlug}/instagram`,
+            href: `/${agencySlug}/${clientSlug}/instagram/posts`,
             icon: Grid3X3,
             text: "Feed",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/instagram/calendario`,
+            icon: Calendar,
+            text: "Calendario",
             roles: alowedRoles
         },
     ]
