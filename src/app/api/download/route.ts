@@ -16,12 +16,13 @@ export async function GET(request: NextRequest) {
 
         const image = await fetch(url)
         const contentType = image.headers.get('content-type')
+        const type = contentType?.split('/')[1]
 
         // the url is a image
         return new Response(image.body, {
             status: 200,
             headers: {
-                'Content-Disposition': `attachment; filename="${title}"`,
+                'Content-Disposition': `attachment; filename="${title}.${type}"`,
                 'Content-Type': `${contentType}`,
             }
         })

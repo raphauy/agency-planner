@@ -7,6 +7,7 @@ const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
     const { nextUrl } = req
+
     const isLoggedIn = !!req.auth
     //console.log('isLoggedIn', isLoggedIn)
 
@@ -21,7 +22,7 @@ export default auth((req) => {
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   
     if (isApiAuthRoute) {
-      return
+        return
     }
 
     if (isAuthRoute) {

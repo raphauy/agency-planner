@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { isBefore } from "date-fns";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export interface Event {
   fechaImportante: string;
@@ -42,7 +43,7 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
       }
       {
         event.title && (
-          <div className="relative border rounded-md" style={{ backgroundColor: `${event.color}`}}> 
+          <div className="relative border rounded-md p-0.5" style={{ backgroundColor: `${event.color}`}}> 
             {/* {!pastDate && <ArrowBigRight className={cn("absolute opacity-80 bottom-0 right-0 rounded-md", statusColor)} size={20}/>} */}
             <Link href={event.href} >
               
@@ -61,13 +62,13 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
                 :
                 <>
                   <p className="flex items-center text-sm font-bold text-gray-700">{event.title}</p>
-                  <div className="grid md:grid-cols-2 gap-1">
-                    <div className="min-h-[100px] max-w-[155px]">
+                  <div className="flex gap-1">
+                    <div className="min-w-[40px] w-full lg:w-[50px] lg:min-w-[50px]">
                       <Image src={event.image} alt={event.title} width={300} height={300} className='overflow-hidden aspect-square object-cover rounded-md'/> 
                     </div>
 
-                    <div className="text-gray-700">
-                      <p className="text-xs whitespace-pre-wrap line-clamp-3 lg:line-clamp-4">{event.content}</p>
+                    <div className={cn("text-gray-700 hidden lg:block", )}>
+                      <p className="text-xs whitespace-pre-wrap line-clamp-3">{event.content}</p>
                     </div>
                   </div>
                 </>

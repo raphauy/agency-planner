@@ -66,7 +66,6 @@ export function PostForm({ id, closeDialog }: Props) {
   const [title, setTitle] = useState("")
 
   const { complete, completion,	input, isLoading, handleInputChange, setInput } = useCompletion({
-    api: "/api/completion",
 		onFinish: (prompt, completion) => {
       setCopy(completion.trim())
       setInput("")

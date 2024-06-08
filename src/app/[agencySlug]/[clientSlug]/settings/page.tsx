@@ -5,11 +5,9 @@ import { SlugForm } from "@/components/slug-form";
 import { TitleForm } from "@/components/title-form";
 import { getClientDAOBySlug } from "@/services/client-services";
 import { LayoutDashboard, SparklesIcon } from "lucide-react";
-import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
-import { Switch } from "@/components/ui/switch";
-import SwitchBox from "./switch-box";
 import { DeleteClientDialog } from "../../clients/client-dialogs";
-import { Separator } from "@/components/ui/separator";
+import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
+import SwitchBox from "./switch-box";
 
 type Props = {
     params: {
@@ -101,6 +99,7 @@ export default async function SettingsPage({ params }: Props) {
                     withText={true}
                 />
             </div>
+            <p className="mt-5">Client ID: {client.id}</p>
         </>
     )
 }
