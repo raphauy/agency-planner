@@ -56,7 +56,9 @@ export async function getPublicationsDAOByClientSlug(clientSlug: string) {
     orderBy: {
       publicationDate: 'desc'
     },
-
+    include: {
+      pilar: true
+    }
   })
   return found as PublicationDAO[]
 }

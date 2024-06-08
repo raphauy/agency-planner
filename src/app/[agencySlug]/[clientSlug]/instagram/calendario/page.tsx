@@ -46,14 +46,13 @@ export default async function CalendarPage({ params }: Props) {
   const events: Event[] = filteredPosts
     .map((post) => {
       const image= post.images?.length && post.images?.length > 0 ? post.images.split(",")[0] :  "/image-placeholder.png"
-      console.log(image)
       
       return {
         title: post.title,
         start: post.publicationDate,
         end: post.publicationDate,
         image,
-        color: '#FDEBD0',
+        color: post.pilar?.color || '#FFFFFF',
         fechaImportante: "",
         status: post.status,
         content: post.copy || "",
