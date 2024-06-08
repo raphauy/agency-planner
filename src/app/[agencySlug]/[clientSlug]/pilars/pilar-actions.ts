@@ -16,7 +16,7 @@ export async function createOrUpdatePilarAction(id: string | null, data: PilarFo
         updated= await createPilar(data)
     }     
 
-    revalidatePath("/[clientSlug]/pilars")
+    revalidatePath("/[agencySlug]/[clientSlug]/pilars", "page")
 
     return updated as PilarDAO
 }

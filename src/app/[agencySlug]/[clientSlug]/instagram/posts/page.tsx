@@ -47,7 +47,7 @@ export default async function InstagramPage({ params, searchParams }: Props) {
       <div className="w-full md:max-w-5xl max-w-[500px]">
 
         <div className="w-full flex justify-end my-4">
-          <Link href={`/${agencySlug}/${client.slug}/instagram?newPost=true`}>
+          <Link href={`/${agencySlug}/${client.slug}/instagram/posts?newPost=true`}>
             <Button>
               <PlusCircle size={22} className="mr-2" />
               Crear post

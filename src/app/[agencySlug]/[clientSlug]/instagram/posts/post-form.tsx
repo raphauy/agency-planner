@@ -66,11 +66,16 @@ export function PostForm({ id, closeDialog }: Props) {
   const [title, setTitle] = useState("")
 
   const { complete, completion,	input, isLoading, handleInputChange, setInput } = useCompletion({
+    api: "/api/completion",
 		onFinish: (prompt, completion) => {
       setCopy(completion.trim())
       setInput("")
     },
-		onError: (error) => toast({ title: "Error", description: "Algo salió mal!", variant: "destructive" }),
+		onError: (error) => {
+      console.log("Error:", error)
+      
+      toast({ title: "Error", description: "Algo salió mal!", variant: "destructive" })
+    },
 	});
 
   function addImage(image: string) {
@@ -159,7 +164,10 @@ export function PostForm({ id, closeDialog }: Props) {
     if (!title) {
       toast({ title: "Debes escribir un título para darle info a la IA", variant: "destructive" })
       return
-    }      
+    }
+
+    console.log("Título:", title, copy);
+    
 
     complete(input, { body: { title, copy } })    
   }

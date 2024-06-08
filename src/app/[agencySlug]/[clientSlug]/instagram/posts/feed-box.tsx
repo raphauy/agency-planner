@@ -48,7 +48,7 @@ export default function FeedBox({ post }: Props) {
 
             {images.length > 1 && <div className="absolute top-0 left-0 flex gap-1 text-white bg-black rounded-md bg-opacity-30"><Camera  size={23}/>{images.length}</div>}
             
-            <Link href={`/${agencySlug}/${clientSlug}/instagram?post=${post.id}`}>
+            <Link href={`/${agencySlug}/${clientSlug}/instagram/posts?post=${post.id}`}>
               <Image src={portada} alt={post.title} width={200} height={200} className='overflow-hidden aspect-square object-cover'/>
             </Link>
           </div>

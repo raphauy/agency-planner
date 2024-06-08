@@ -1,10 +1,6 @@
 import Link from "next/link";
 
-import { cn } from "@/lib/utils";
-import { CloudinaryImage } from '@cloudinary/url-gen';
-import { thumbnail } from '@cloudinary/url-gen/actions/resize';
 import { isBefore } from "date-fns";
-import { ArrowBigDown } from "lucide-react";
 import Image from "next/image";
 
 export interface Event {
@@ -17,6 +13,7 @@ export interface Event {
   color: string;
   href: string;
   status: string;
+  compact?: boolean;
 }
 
 interface CustomEventProps {
@@ -24,10 +21,6 @@ interface CustomEventProps {
 }
 
 const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
-
-  const cldImage = new CloudinaryImage(event.image.split("/").slice(-2).join("/"), {cloudName: 'dtm41dmrz'}).resize(thumbnail().width(50))
-
-  const tail= event.content.length > 39 ? "..." : ""
 
   const fechasImportantes: string[]= event.fechaImportante.split(",")
 
@@ -49,20 +42,36 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
       }
       {
         event.title && (
-          <div className="relative px-1 border rounded-md" style={{ backgroundColor: `${event.color}`}}>
-            {!pastDate && <ArrowBigDown className={cn("absolute opacity-80 bottom-0 right-0 rounded-md", statusColor)} size={20}/>}
+          <div className="relative border rounded-md" style={{ backgroundColor: `${event.color}`}}> 
+            {/* {!pastDate && <ArrowBigRight className={cn("absolute opacity-80 bottom-0 right-0 rounded-md", statusColor)} size={20}/>} */}
             <Link href={event.href} >
-              <p className="flex items-center text-sm font-bold text-gray-700">{event.title}</p>
-              <div className="flex">
+              
+              {
+                event.compact ?
+                <div className="flex gap-1">
 
-                <div>
-                  <Image src={event.image} alt={event.title} width={50} height={50} />
+                  <div className="w-[40px] min-w-[40px]">
+                    <Image src={event.image} alt={event.title} width={300} height={300} className='overflow-hidden aspect-square object-cover rounded-md'/> 
+                  </div>
+                  
+                  <div className="text-sm flex items-center font-bold text-gray-700 line-clamp-2 whitespace-pre-wrap ">
+                    {event.title}
+                  </div>
                 </div>
-                
-                <div className="flex flex-col w-20 ml-1 text-gray-700">
-                  <p className="text-xs whitespace-pre-wrap">{event.content.substring(0, 39)+tail}</p>
-                </div>
-              </div>
+                :
+                <>
+                  <p className="flex items-center text-sm font-bold text-gray-700">{event.title}</p>
+                  <div className="grid md:grid-cols-2 gap-1">
+                    <div className="min-h-[100px] max-w-[155px]">
+                      <Image src={event.image} alt={event.title} width={300} height={300} className='overflow-hidden aspect-square object-cover rounded-md'/> 
+                    </div>
+
+                    <div className="text-gray-700">
+                      <p className="text-xs whitespace-pre-wrap line-clamp-3 lg:line-clamp-4">{event.content}</p>
+                    </div>
+                  </div>
+                </>
+              }
             </Link>  
           </div>  
         )

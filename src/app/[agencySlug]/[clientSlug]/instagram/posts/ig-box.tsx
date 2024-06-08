@@ -38,7 +38,7 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
               </div>
               <p className="pl-2 text-sm font-semibold">{clientHandle}</p>
             </div>
-            <Link href={`/${agencySlug}/${post.client.slug}/instagram?post=${post.id}&edit=true`}>
+            <Link href={`/${agencySlug}/${post.client.slug}/instagram/posts?post=${post.id}&edit=true`}>
               <Button variant="ghost"><Pencil /></Button>
             </Link>
           </div>

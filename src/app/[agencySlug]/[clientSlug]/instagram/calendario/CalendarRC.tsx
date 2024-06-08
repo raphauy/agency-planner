@@ -11,7 +11,7 @@ moment.locale('es');
 const localizer = momentLocalizer(moment);
 
 
-interface MyCalendarProps {
+type MyCalendarProps= {
   events: Event[];
 }
 

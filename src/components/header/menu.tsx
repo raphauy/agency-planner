@@ -21,7 +21,6 @@ export default function Menu() {
     const agencySlug= params.agencySlug
 
     const channel= path.split("/")[3]
-    console.log("channel", channel)    
 
     let menu
     if (path.startsWith("/admin")) {
