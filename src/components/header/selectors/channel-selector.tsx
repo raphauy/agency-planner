@@ -104,8 +104,8 @@ export default function ChannelSelector() {
                         onSelect={(currentValue) => {
                           if (currentValue !== name) {
                             // path is /agencySlug/clientSlug/...
-                            let restOfPath = path.split("/").slice(4).join("/")
-                            router.push(`/${agencySlug}/${clientSlug}/${item.slug}/${restOfPath}`)
+                            //let restOfPath = path.split("/").slice(4).join("/")
+                            router.push(`/${agencySlug}/${clientSlug}/${item.slug}`)
                           }
                           setOpen(false)
                         }}
