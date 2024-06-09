@@ -31,7 +31,17 @@ export default function FeedBox({ post }: Props) {
   if (clicked)
     return <div className='flex items-center justify-center w-full h-full'><Loader className='animate-spin' /></div>
   
-  const portada= post.images ? post.images.split(",")[0] : "/image-placeholder.png"
+  let portada= "/image-placeholder.png"
+  if (post.images) {
+    const images= post.images.split(",")
+    for (let i = 0; i < images.length; i++) {
+      if (images[i].includes(".jpg") || images[i].includes(".png") || images[i].includes(".jpeg")) {
+        portada= images[i]
+        break
+      }
+    }
+  }
+  //const portada= post.images ? post.images.split(",")[0] : "/image-placeholder.png"
   const images= post.images ? post.images.split(",") : ["/image-placeholder.png"]
 
   const statusColor= post.status === "APROBADO" ? "text-green-500" : post.status === "REVISADO" ? "text-orange-500" : post.status === "PROGRAMADO" ? "text-sky-500" : post.status === "PUBLICADO" ? "text-yellow-500" : "text-gray-500"
