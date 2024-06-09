@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Trash2, Upload } from "lucide-react"
 import { CldUploadButton } from 'next-cloudinary'
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const CLOUDINARY_PRESET= process.env.NEXT_PUBLIC_CLOUDINARY_PRESET
 
@@ -45,7 +45,7 @@ export default function IgCarousel({ initialImages, addImage, removeImage }: Pro
       setShowPlaceholder(false)
       setImages([])
     }
-}
+  }
 
   return (
     <div className="w-full flex flex-col items-center mt-4">
@@ -53,22 +53,34 @@ export default function IgCarousel({ initialImages, addImage, removeImage }: Pro
         <Carousel className="w-full mb-2">
           <CarouselContent>
             { 
-              images.map((image) => (
-              <CarouselItem key={image} className="flex items-center relative">
-                <Image src={image} alt="carousel image" width={600} height={600} 
-                  className="object-cover w-full rounded-lg"
-                />
-                {
-                  removeImage &&
-                    <div className="absolute bottom-3 right-3">
-                      <Trash2 
-                        className="w-6 h-6 p-1 bg-gray-200 cursor-pointer border border-gray-500 rounded-md hover:bg-gray-300" 
-                        onClick={() => handleRemoveImage(image)
-                      } />
-                    </div>
-                }
-              </CarouselItem>
-            ))}
+              images.map((image, index) => {
+                const isImage= image.includes(".jpg") || image.includes(".png") || image.includes(".jpeg")
+                const isVideo= image.includes(".mp4") || image.includes(".mov") || image.includes(".webm")
+                if (!isImage && !isVideo) return null
+
+                return(
+                  <CarouselItem key={image} className="flex items-center relative">
+                    {
+                      isImage &&
+                        <Image src={image} alt="carousel image" width={600} height={600} 
+                          className="object-cover w-full rounded-lg"
+                        />
+                    }
+                    {
+                      isVideo &&
+                      <video src={image.replace(".mov", ".mp4")} className="object-cover w-full rounded-lg" controls />
+                    }                    {
+                      removeImage &&
+                        <div className="absolute bottom-3 right-3">
+                          <Trash2 
+                            className="w-6 h-6 p-1 bg-gray-200 cursor-pointer border border-gray-500 rounded-md hover:bg-gray-300" 
+                            onClick={() => handleRemoveImage(image)
+                          } />
+                        </div>
+                    }
+                  </CarouselItem>
+                )}
+            )}
           </CarouselContent>
           {
             images.length > 1 &&

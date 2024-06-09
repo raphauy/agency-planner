@@ -16,7 +16,7 @@ export async function createOrUpdatePostAction(id: string | null, data: Publicat
         updated= await createPublication(data)
     }     
 
-    revalidatePath("/[clientSlug]/publications")
+    revalidatePath("/[clientSlug]", "page")
 
     return updated as PublicationDAO
 }
@@ -24,7 +24,7 @@ export async function createOrUpdatePostAction(id: string | null, data: Publicat
 export async function deletePostAction(id: string): Promise<PublicationDAO | null> {    
     const deleted= await deletePublication(id)
 
-    revalidatePath("/[clientSlug]/publications")
+    revalidatePath("/[clientSlug]", "page")
 
     return deleted as PublicationDAO
 }

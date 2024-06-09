@@ -84,10 +84,17 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
 
           const title= slugifiedTitle+(index===0 ? "" : "_"+(index+1))
 
+          const isImage= url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")
+
           return (
             <Link  key={index} href={`/api/download?title=${title}&url=${url}`}>
               <button className='flex items-center gap-1 p-1 border rounded'>
-                <Image src={url} width={100} height={100} alt={title} />
+                {
+                  isImage ?
+                  <Image src={url} width={100} height={100} alt={title} />
+                  :
+                  <p>video</p>
+                }                
                 <Download size={30} className='text-gray-600'/>
               </button>
             </Link>
