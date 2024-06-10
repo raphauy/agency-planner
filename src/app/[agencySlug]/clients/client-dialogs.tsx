@@ -57,6 +57,13 @@ type DeleteProps= {
 
 export function DeleteClientDialog({ id, description, withText }: DeleteProps) {
   const [open, setOpen] = useState(false)
+  
+  const adminRoles= useMenuAdminRoles()
+  const currentRole= useSession().data?.user.role
+
+  if (!currentRole || !adminRoles.includes(currentRole)) {
+    return null
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

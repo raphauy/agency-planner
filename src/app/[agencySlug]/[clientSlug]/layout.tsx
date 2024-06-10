@@ -22,7 +22,7 @@ export default async function AdminLayout({ children, params }: Props) {
     
     const clientSlug= params.clientSlug
     const clients= await getClientsOfCurrentUser()
-    const clientsHaveActualSlug= clients.some((client) => client.slug===params.clientSlug)
+    const clientsHaveActualSlug= clients.some((client) => client.slug===clientSlug)
     if (!clientsHaveActualSlug) {
       return redirect("/auth/404")
     }
