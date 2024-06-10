@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { PilarForm, DeletePilarForm } from "./pilar-forms"
 import { getPilarDAOAction } from "./pilar-actions"
+import { useSession } from "next-auth/react";
+import { UserRole } from "@prisma/client";
+import { useMenuAdminRoles } from "@/app/admin/users/use-roles";
 
 type Props= {
   id?: string
@@ -16,6 +19,10 @@ const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
 export function PilarDialog({ id }: Props) {
   const [open, setOpen] = useState(false);
+
+  const allowedRoles: UserRole[]= useMenuAdminRoles()
+  const currentRole= useSession().data?.user.role
+  if (currentRole && !allowedRoles.includes(currentRole)) return null
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -40,6 +47,10 @@ type DeleteProps= {
 
 export function DeletePilarDialog({ id, description }: DeleteProps) {
   const [open, setOpen] = useState(false)
+
+  const allowedRoles: UserRole[]= useMenuAdminRoles()
+  const currentRole= useSession().data?.user.role
+  if (currentRole && !allowedRoles.includes(currentRole)) return null
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

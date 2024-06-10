@@ -8,6 +8,8 @@ import { LayoutDashboard, SparklesIcon } from "lucide-react";
 import { DeleteClientDialog } from "../../clients/client-dialogs";
 import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
 import SwitchBox from "./switch-box";
+import { UserRole } from "@prisma/client";
+import { getCurrentRole } from "@/lib/utils";
 
 type Props = {
     params: {
@@ -20,6 +22,11 @@ export default async function SettingsPage({ params }: Props) {
     const clientSlug = params.clientSlug
     const client= await getClientDAOBySlug(clientSlug)
     if (!client) return <div>Client not found</div>
+    
+    const currentRole= await getCurrentRole()
+    if (currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER)
+        return <div>No puedes acceder a esta página</div>
+
     return (
         <>
             <div className="p-6 bg-white dark:bg-black mt-4 border rounded-lg w-full">

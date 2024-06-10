@@ -36,6 +36,8 @@ model User {
   ownedAgencies   Agency[]         @relation("AgencyOwner")  
   clients         Client[]
   comments        Comment[]
+
+  invitations     Invitation[]
 }
 
 model Account {
@@ -92,6 +94,8 @@ model Agency {
 
   createdAt DateTime @default(now())           // gennext: skip.zod
   updatedAt DateTime @updatedAt                // gennext: skip.zod
+
+  invitations   Invitation[]
 }
 
 model Client {
@@ -118,6 +122,8 @@ model Client {
     publications      Publication[]
     pilars            Pilar[]
     channels          Channel[]
+
+    invitations       Invitation[]
 }
 
 model Functionality {
@@ -231,4 +237,27 @@ model Channel {
   updatedAt     DateTime @updatedAt             // gennext: skip.zod
 
   clients       Client[]                        // gennext: skip.list
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Invitation {
+  id            String    @id @default(cuid())
+  status        InvitationStatus @default(PENDING) // gennext: show.column
+
+  createdAt     DateTime @default(now())        // gennext: skip.zod  
+  updatedAt     DateTime @updatedAt             // gennext: skip.zod
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)    // genext: skip.list
+  userId        String
+
+  client        Client?    @relation(fields: [clientId], references: [id], onDelete: Cascade) // genext: skip.list
+  clientId      String?
+
+  agency        Agency?    @relation(fields: [agencyId], references: [id], onDelete: Cascade) // genext: skip.list
+  agencyId      String?
 }

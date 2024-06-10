@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
+import { UserRole } from "@prisma/client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -38,4 +39,26 @@ export function generateSlug(name: string): string {
     .replace(/[^\w\-]+/g, '') // Eliminar todos los caracteres que no sean palabras o guiones
     .replace(/\-\-+/g, '-') // Reemplazar múltiples guiones con uno solo
     .trim(); // Eliminar espacios al inicio y al final
+}
+
+
+export function getLabel(role: UserRole) {
+  switch (role) {
+    case "ADMIN":
+      return "Admin"
+    case "AGENCY_OWNER":
+      return "Agencia"
+    case "AGENCY_ADMIN":
+      return "Agencia"
+    case "AGENCY_CREATOR":
+      return "Agencia"
+    case "CLIENT_ADMIN":
+      return "Cliente"
+    case "CLIENT_USER":
+      return "Cliente"
+    case "GUEST":
+      return "Invitado"
+    default:
+      return "Desconocido"
+  }
 }

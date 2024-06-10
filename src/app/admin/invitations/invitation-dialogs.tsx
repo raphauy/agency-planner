@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 import { ArrowLeftRight, ChevronsLeft, ChevronsRight, Loader, Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { PublicationForm, DeletePublicationForm } from "./publication-forms"
-import { getPublicationDAOAction } from "./publication-actions"
-import { UserRole } from "@prisma/client";
-import { useMenuAdminRoles } from "@/app/admin/users/use-roles";
-import { useSession } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
+import { InvitationForm, DeleteInvitationForm } from "./invitation-forms"
+import { getInvitationDAOAction } from "./invitation-actions"
 
 type Props= {
   id?: string
 }
 
-const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create Publication</Button>
+const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create Invitation</Button>
 const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
-export function PublicationDialog({ id }: Props) {
+export function InvitationDialog({ id }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -27,10 +25,10 @@ export function PublicationDialog({ id }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Update' : 'Create'} Publication
+          <DialogTitle>{id ? 'Update' : 'Create'} Invitation
           </DialogTitle>
         </DialogHeader>
-        <PublicationForm closeDialog={() => setOpen(false)} id={id} />
+        <InvitationForm closeDialog={() => setOpen(false)} id={id} />
       </DialogContent>
     </Dialog>
   )
@@ -41,12 +39,8 @@ type DeleteProps= {
   description: string
 }
 
-export function DeletePublicationDialog({ id, description }: DeleteProps) {
+export function DeleteInvitationDialog({ id, description }: DeleteProps) {
   const [open, setOpen] = useState(false)
-
-  const allowedRoles: UserRole[]= useMenuAdminRoles()
-  const currentRole= useSession().data?.user.role
-  if (currentRole && !allowedRoles.includes(currentRole)) return null
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -55,11 +49,21 @@ export function DeletePublicationDialog({ id, description }: DeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Eliminar publicación</DialogTitle>
+          <DialogTitle>Delete Invitation</DialogTitle>
           <DialogDescription className="py-8">{description}</DialogDescription>
         </DialogHeader>
-        <DeletePublicationForm closeDialog={() => setOpen(false)} id={id} />
+        <DeleteInvitationForm closeDialog={() => setOpen(false)} id={id} />
       </DialogContent>
     </Dialog>
   )
 }
+
+interface CollectionProps{
+  id: string
+  title: string
+}
+
+
+
+
+  

@@ -52,18 +52,18 @@ export default function AgencySelector({ selectors= [] }: Props) {
       return selectors.filter((line) => line.name.toLowerCase().includes(lowerCaseSearchValue))
   }, [selectors, searchValue])
 
-  if (user?.role.startsWith("AGENCY")) {
+  if (user?.role.startsWith("AGENCY") || user?.role.startsWith("CLIENT")) {
 
     const agency= selectors.find(selector => selector.slug === user.agencySlug)
 
     return (
-      <Link href={`/${agencySlug}`} className="ml-2 flex items-center">
+      <div className="ml-2 flex items-center">
         <SlashIcon className="w-5 h-5 opacity-50" />
-        <Button variant="ghost" className="flex gap-2">
+        <div className="flex gap-2 px-2">
           { agency?.image && <Image src={agency?.image} alt={name} width={20} height={20} className="rounded-full" />}
           <p className="text-base">{user.agencyName}</p>
-        </Button>
-      </Link>
+        </div>
+      </div>
     )
   }
     

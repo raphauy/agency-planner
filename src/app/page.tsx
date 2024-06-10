@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentUser } from "@/lib/utils";
+import { getClientsOfCurrentUser } from "@/services/client-services";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -17,10 +18,19 @@ export default async function Home() {
   if (role === "ADMIN")
     redirect("/admin")
 
-  const agencySlug= user && user.agencySlug
-
-  if (role?.startsWith("AGENCY"))
+  if (role?.startsWith("AGENCY")){
+    const agencySlug= user && user.agencySlug
     redirect(`/${agencySlug}`)
+  }
+    
+
+  if (role?.startsWith("CLIENT")){
+    const agencySlug= user && user.agencySlug
+    const clients= await getClientsOfCurrentUser()
+    const clientSlug= clients && clients[0]?.slug
+    redirect(`/${agencySlug}/${clientSlug}`)
+  }
+    
 
   return (
     <main className="flex flex-col gap-4 pt-10">

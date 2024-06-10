@@ -76,6 +76,7 @@ export const {
       token.name = existingUser.name
       token.email = existingUser.email
       token.role = existingUser.role
+
       token.agencyId = existingUser.agencyId
       token.agencySlug= existingUser.agency?.slug
       token.agencyName= existingUser.agency?.name

@@ -1,19 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowLeftRight, ChevronsLeft, ChevronsRight, Loader, Pencil, PlusCircle, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ClientForm, DeleteClientForm } from "./client-forms"
-import { getClientDAOAction } from "./client-actions"
+import { useEffect, useState } from "react";
+import { getClientDAOAction } from "./client-actions";
+import { ClientForm, DeleteClientForm } from "./client-forms";
 
-import { getComplentaryUsersAction, setUsersAction } from "./client-actions"
-import { UserDAO } from "@/services/user-services"  
-import { toast } from "@/components/ui/use-toast"
-import { IgClientForm } from "./ig-handle-form";
+import { useMenuAdminRoles } from "@/app/admin/users/use-roles";
+import { toast } from "@/components/ui/use-toast";
+import { UserDAO } from "@/services/user-services";
 import { useSession } from "next-auth/react";
-import { UserRole } from "@prisma/client";
-import { useAdminRoles } from "@/app/admin/users/use-roles";
+import { getComplentaryUsersAction, setUsersAction } from "./client-actions";
+import { IgClientForm } from "./ig-handle-form";
   
 type Props= {
   id?: string
@@ -24,7 +23,7 @@ type Props= {
 
 export function ClientDialog({ id, agencyId, igForm }: Props) {
   const [open, setOpen] = useState(false)
-  const adminRoles= useAdminRoles()
+  const adminRoles= useMenuAdminRoles()
   const currentRole= useSession().data?.user.role
 
   if (!currentRole || !adminRoles.includes(currentRole)) {

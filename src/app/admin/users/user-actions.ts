@@ -1,7 +1,7 @@
 "use server"
   
 import { revalidatePath } from "next/cache"
-import { UserDAO, UserFormValues, createUser, updateUser, getFullUserDAO, deleteUser, getUsersOfAgency } from "@/services/user-services"
+import { UserDAO, UserFormValues, createUser, updateUser, getFullUserDAO, deleteUser, getUsersOfAgency, inviteUser } from "@/services/user-services"
 
 
 export async function getUserDAOAction(id: string): Promise<UserDAO | null> {
@@ -37,3 +37,10 @@ export async function deleteUserAction(id: string): Promise<UserDAO | null> {
     return deleted as UserDAO
 }
 
+export async function inviteUserAction(data: UserFormValues, clientId: string) {
+    const res= await inviteUser(data, clientId)
+
+    revalidatePath("[agencySlug]/[clientSlug]", "page")
+
+    return res
+}

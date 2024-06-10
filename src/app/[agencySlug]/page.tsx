@@ -16,8 +16,15 @@ export default async function AgencyPage({ params }: Props) {
   if (!agency) {
     redirect("/auth/404")
   }
-  
+
+  const agencySlug= agency.slug
   const currentRole= await getCurrentRole()
+  if (currentRole?.startsWith("CLIENT")){
+    const clients= await getClientsOfCurrentUser()
+    const clientSlug= clients && clients[0]?.slug
+    redirect(`/${agencySlug}/${clientSlug}`)
+  }
+
   const clients= currentRole === "ADMIN" ? await getClientsDAOByAgencyId(agency.id) : await getClientsOfCurrentUser()
 
   return (

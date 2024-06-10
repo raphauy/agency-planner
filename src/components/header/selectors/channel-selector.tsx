@@ -12,7 +12,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import React, { useEffect, useMemo, useState } from "react"
 import { ChannelSelectorData } from "./selectors"
 
-const alowedSlugs= ["pilars", "publications", "comments", "settings"]
+const alowedSlugs= ["team", "pilars", "publications", "comments", "settings"]
 
 export default function ChannelSelector() {
 

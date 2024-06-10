@@ -1,6 +1,6 @@
 "use client"
 
-import { useClientRoles } from "@/app/admin/users/use-roles"
+import { useMenuClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Calendar, Grid3X3, LayoutDashboard, Newspaper, Server, Settings, Undo2 } from "lucide-react"
@@ -13,7 +13,7 @@ export default function MenuInstagram() {
     
     const user= useSession().data?.user
     const userRole= user?.role
-    const alowedRoles= useClientRoles()
+    const alowedRoles= useMenuClientRoles()
 
     const path= usePathname()
     const params= useParams()

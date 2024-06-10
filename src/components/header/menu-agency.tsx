@@ -1,10 +1,9 @@
 "use client"
 
-import { useAdminRoles } from "@/app/admin/users/use-roles"
+import { useMenuAdminRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { UserRole } from "@prisma/client"
-import { BriefcaseBusiness, LayoutDashboard, LockKeyhole, Receipt, User } from "lucide-react"
+import { LayoutDashboard, LockKeyhole, Receipt, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -14,7 +13,7 @@ export default function MenuAgency() {
     
     const user= useSession().data?.user
     const userRole= user?.role
-    const alowedRoles= useAdminRoles()
+    const alowedRoles= useMenuAdminRoles()
 
     const clientSlug= useParams().clientSlug
     
@@ -31,12 +30,14 @@ export default function MenuAgency() {
         {
             href: `/${agencySlug}`,
             icon: LayoutDashboard,
-            text: "Dashboard"
+            text: "Dashboard",
+            roles: alowedRoles
         },
         {
             href: `/${agencySlug}/users`,
             icon: User,
-            text: "Equipo"
+            text: "Equipo",
+            roles: alowedRoles
         },
         {
             href: `/${agencySlug}/permissions`,
@@ -47,7 +48,8 @@ export default function MenuAgency() {
         {
             href: `/${agencySlug}/billing`,
             icon: Receipt,
-            text: "Billing"
+            text: "Billing",
+            roles: alowedRoles
         },
     ]
         

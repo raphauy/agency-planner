@@ -6,7 +6,7 @@ import { getClientsOfCurrentUser } from "@/services/client-services";
 interface Props {
   children: React.ReactNode
   params: {
-    agencySlug: string
+    clientSlug: string
   }
 }
 
@@ -16,18 +16,18 @@ export default async function AdminLayout({ children, params }: Props) {
   if (!currentUser) {
     return redirect("/login")
   }
-  const agencySlug= params.agencySlug
 
   const currentRole= await getCurrentRole()
-  if (currentRole?.startsWith("AGENCY") || currentRole?.startsWith("CLIENT")) {
+  if (currentRole?.startsWith("CLIENT")) {
     
-    if (currentUser?.agencySlug!==agencySlug) {
-      return redirect("/auth/unauthorized?message=You are not authorized to access this page ss")
+    const clientSlug= params.clientSlug
+    const clients= await getClientsOfCurrentUser()
+    const clientsHaveActualSlug= clients.some((client) => client.slug===params.clientSlug)
+    if (!clientsHaveActualSlug) {
+      return redirect("/auth/404")
     }
-
-  } else if (!currentRole?.startsWith("ADMIN")) {
-    return redirect("/auth/unauthorized?message=You are not authorized to access this page dd")
   }
+
 
   return (
     <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1350px]">

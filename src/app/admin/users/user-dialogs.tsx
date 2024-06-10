@@ -6,7 +6,7 @@ import { UserRole } from "@prisma/client";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { DeleteUserForm, UserForm } from "./user-forms";
+import { DeleteUserForm, InviteForm, UserForm } from "./user-forms";
 
 type Props= {
   id?: string
@@ -69,9 +69,31 @@ export function DeleteUserDialog({ id, description }: DeleteProps) {
   )
 }
 
-interface CollectionProps{
-  id: string
-  title: string
+type InviteProps= {
+  agencyId: string
+  clientId: string
+}
+export function InviteDialog({ clientId, agencyId }: InviteProps) {
+  const [open, setOpen] = useState(false);
+
+  const role= useSession().data?.user.role
+  if (role === UserRole.GUEST) {
+    return null
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+      <Button><PlusCircle size={22} className="mr-2"/>Invitar a alguien al equipo</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Invitar Usuario</DialogTitle>
+        </DialogHeader>
+        <InviteForm closeDialog={() => setOpen(false)} clientId={clientId} agencyId={agencyId} />
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 

@@ -1,9 +1,9 @@
 "use client"
 
-import { useClientRoles } from "@/app/admin/users/use-roles"
+import { useMenuClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Newspaper, Server, Settings } from "lucide-react"
+import { LayoutDashboard, Newspaper, Server, Settings, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -13,7 +13,7 @@ export default function MenuClient() {
     
     const user= useSession().data?.user
     const userRole= user?.role
-    const alowedRoles= useClientRoles()
+    const alowedRoles= useMenuClientRoles()
 
     const path= usePathname()
     const params= useParams()
@@ -34,6 +34,12 @@ export default function MenuClient() {
             roles: alowedRoles
         },
         {
+            href: `/${agencySlug}/${clientSlug}/team`,
+            icon: User,
+            text: "Equipo",
+            roles: alowedRoles
+        },
+        {
             href: `/${agencySlug}/${clientSlug}/pilars`,
             icon: Server,
             text: "Pilares",
@@ -49,7 +55,7 @@ export default function MenuClient() {
             href: `/${agencySlug}/${clientSlug}/settings`,
             icon: Settings,
             text: "Configuración",
-            roles: alowedRoles
+            roles: alowedRoles.filter(role => role !== "CLIENT_ADMIN" && role !== "CLIENT_USER")
         },
     ]
 

@@ -215,3 +215,107 @@ export async function changeClientUserPermission(userId: string, clientId: strin
 
   return true
 }
+
+export async function getUsersOfClient(clientId: string) {
+  const found = await prisma.user.findMany({
+    where: {
+      clients: {
+        some: {
+          id: clientId
+        }
+      }
+    },
+    orderBy: {
+      id: 'asc'
+    },
+    include: {
+      agency: true
+    }
+  })
+
+  const res= found.map((user) => {
+    return {
+      ...user,
+      agencyName: user.agency?.name
+    }
+  })
+
+  return res as UserDAO[]
+}
+
+export async function inviteUser(data: UserFormValues, clientId: string) {
+  // check if user already exists, if not create it
+  let user= await prisma.user.findUnique({
+    where: {
+      email: data.email
+    }
+  })
+
+  if (!user) {
+    user= await createUser(data)    
+    if (!user) {
+      throw new Error("Error al crear el usuario")
+    }  
+  } else {
+    if (user.role !== "CLIENT_ADMIN" && user.role !== "CLIENT_USER") {
+      throw new Error("El usuario a invitar debe tener el rol de cliente")
+    }
+  }
+
+
+  const client= await prisma.client.findUnique({
+    where: {
+      id: clientId
+    },
+    include: {
+      users: true
+    }
+  })
+
+  if (!client) {
+    throw new Error("El cliente no existe")    
+  }
+
+  // check if user is already in the client
+  const hasUser= client.users.some((u) => u.id === user.id)
+
+  if (!hasUser) {
+    await prisma.client.update({
+      where: {
+        id: clientId
+      },
+      data: {
+        users: {
+          connect: {
+            id: user.id
+          }
+        }
+      }
+    })
+  }
+
+  await prisma.invitation.create({
+    data: {
+      clientId,
+      userId: user.id,
+      status: "PENDING"
+    }
+  })
+
+  return true
+}
+
+export async function getUsersOfClientWithPendingInvitations(clientId: string) {
+  const users= await prisma.user.findMany({
+    where: {
+      invitations: {
+        some: {
+          clientId,
+          status: "PENDING"
+        }
+      }
+    },
+  })
+
+  return users as UserDAO[]
+}

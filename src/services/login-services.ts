@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { InvitationStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const LoginSchema = z.object({
@@ -112,6 +113,16 @@ export async function setUserAsVerified(userId: string) {
         }
     })
 
+    await prisma.invitation.updateMany({
+        where: {
+            status: InvitationStatus.PENDING,
+            userId
+        },
+        data: {
+            status: InvitationStatus.ACCEPTED
+        }
+    })
+
     return user
 }
 
@@ -137,7 +148,8 @@ export const getUserByEmail = async (email: string) => {
                 id 
             },
             include: {
-                agency: true
+                agency: true,
+                clients: true
             }
         })
 

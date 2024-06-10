@@ -40,7 +40,7 @@ export default function Menu() {
     return (
         <div className="flex justify-between">
             {menu}
-            {user && <p className="mr-4">{user?.name} - {user?.role}</p>}
+            {user && <p className="mr-4">{user?.name} {user?.role.startsWith("CLIENT") ? "" : " - " + user?.role}</p>}
         </div>
     )
 }
