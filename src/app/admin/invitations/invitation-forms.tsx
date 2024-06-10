@@ -41,7 +41,9 @@ export function InvitationForm({ id, closeDialog }: Props) {
     if (id) {
       getInvitationDAOAction(id).then((data) => {
         if (data) {
-          form.reset(data)
+          data.agencyId && form.setValue("agencyId", data.agencyId)
+          data.clientId && form.setValue("clientId", data.clientId)
+          form.setValue("userId", data.userId)
         }
         Object.keys(form.getValues()).forEach((key: any) => {
           if (form.getValues(key) === null) {
