@@ -1,7 +1,7 @@
 import { Body, Container, Head, Heading, Html, Img, Link, Section, Text, Button, Column, Hr, Preview, Row, Tailwind } from "@react-email/components";
 import * as React from "react";
 
-type VercelInviteUserEmailProps= {
+type InviteUserEmailProps= {
   username?: string;
   agencyName?: string;
   agencyImage?: string;
@@ -12,7 +12,7 @@ type VercelInviteUserEmailProps= {
   inviteLink?: string;
 }
 
-const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_URL ? `https://${process.env.NEXT_PUBLIC_URL}` : "http://localhost:3000"
 
 export const InviteUserEmail = ({
   username,
@@ -23,7 +23,7 @@ export const InviteUserEmail = ({
   teamName,
   teamImage,
   inviteLink,
-}: VercelInviteUserEmailProps) => {
+}: InviteUserEmailProps) => {
   const previewText = `Únete a ${teamName} en Agency Planner`;
 
   return (
@@ -38,7 +38,7 @@ export const InviteUserEmail = ({
                 src={`${baseUrl}/favicon.ico`}
                 width="40"
                 height="37"
-                alt="Vercel"
+                alt="Agency Planner"
                 className="my-0 mx-auto"
               />
             </Section>
@@ -124,6 +124,6 @@ InviteUserEmail.PreviewProps = {
   teamName: "Tinta",
   teamImage: `${baseUrl}/tinta-icon.png`,
   inviteLink: "https://agency-planner.com/auth/login?email=rapha.uy@rapha.uy",
-} as VercelInviteUserEmailProps;
+} as InviteUserEmailProps;
 
 export default InviteUserEmail;
