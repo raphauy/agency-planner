@@ -54,11 +54,13 @@ export async function loginAction(values: z.infer<typeof LoginSchema>, callbackU
       await createOTPConfirmation(existingUser.id)
     } else {
       const oTPCode = await generateOTPCode(existingUser.email)
-      // await sendCodeEmail(
-      //   oTPCode.email,
-      //   oTPCode.code,
-      // )
-      await sendCodeEmail(existingUser.agencyId, oTPCode.email, oTPCode.code)
+      const isProduction= process.env.NODE_ENV === "production"
+      if (isProduction) {
+        await sendCodeEmail(existingUser.agencyId, oTPCode.email, oTPCode.code)
+      } else {
+        console.log("email", oTPCode.email)        
+        console.log("code", oTPCode.code)
+      }
 
       return { code: true, success: "Te enviamos un código de acceso!" };
     }

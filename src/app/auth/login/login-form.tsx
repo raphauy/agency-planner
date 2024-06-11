@@ -3,17 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { LoginSchema } from "@/services/login-services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { FormError } from "./_components/form-error";
 import { FormSuccess } from "./_components/form-success";
-import { LoginSchema } from "@/services/login-services";
 import { loginAction } from "./actions";
+import { cn } from "@/lib/utils";
 
 
 type Props = {
@@ -32,7 +33,8 @@ export function LoginForm({ requestedEmail }: Props) {
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
   const [resendSeconds, setResendSeconds] = useState(-1)
-  
+  const [shouldResend, setShouldResend] = useState(false);
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -54,6 +56,7 @@ export function LoginForm({ requestedEmail }: Props) {
           if (data?.error) {
             form.reset();
             setError(data.error)
+            setResendSeconds(-1)
             form.setValue("email", values.email)
           }
 
@@ -86,21 +89,27 @@ export function LoginForm({ requestedEmail }: Props) {
       clearTimeout(second)
     }
   }, [showOTP, resendSeconds])
-  
+
+  useEffect(() => {
+    if (shouldResend && !showOTP) {
+      form.handleSubmit(onSubmit)()
+      setShouldResend(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showOTP, shouldResend])
+
   function handleResend() {
     setShowOTP(false)
-    setResendSeconds(-1)
     setSuccess("")
     setError("")
-    // force form submission
-    form.handleSubmit(onSubmit)()
+    setShouldResend(true)
   }
 
   return (
     <Form {...form}>
       <form 
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 p-10 rounded-2xl bg-white dark:bg-black dark:shadow-gray-100 dark:shadow-xl border shadow-2xl"
+        className="space-y-6 w-[450px] p-10 rounded-2xl bg-white dark:bg-black dark:shadow-gray-100 dark:shadow-xl border shadow-2xl"
       >
         <div className="mb-7 w-full text-muted-foreground">
           <div className="flex items-center justify-center gap-2 mb-2"><p className="font-bold text-4xl text-center">Login</p><p className="text-2xl">🔐</p></div>
@@ -128,7 +137,7 @@ export function LoginForm({ requestedEmail }: Props) {
                     </InputOTP>
                   </FormControl>
                   <FormDescription>
-                    Ingresa el código enviado a tu email
+                    Ingresa el código enviado a {form.getValues("email")}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -158,16 +167,20 @@ export function LoginForm({ requestedEmail }: Props) {
               />
           )}
         </div>
-        <FormError message={error || urlError} />
-        <FormSuccess message={success} />
-        {showOTP && resendSeconds > 0 && (
-          <div className="text-center">Reintentar en {resendSeconds}</div>
-        )}
-        {showOTP && resendSeconds < 0 && (
-          <Button variant="link" type="button" onClick={handleResend} className="w-full">
-            Reintentar
-          </Button>
-        )}
+        <div className={cn("h-12 min-h-12", !showOTP && "hidden")}>
+          <FormError message={error || urlError} />
+          <FormSuccess message={success} />
+        </div>
+        <div className="h-12 min-h-12">
+          {showOTP && resendSeconds > 0 && (
+            <div className="text-center">Reintentar en {resendSeconds}</div>
+          )}
+          {showOTP && resendSeconds < 0 && (
+            <Button variant="link" type="button" onClick={handleResend} className="w-full">
+              Reenviar código
+            </Button>
+          )}
+        </div>
         <Button disabled={isPending} type="submit" className="w-full">
           {showOTP ? "Confirmar" : isPending ? <Loader className="w-6 h-6 animate-spin" /> : "Enviar código"}
         </Button>
