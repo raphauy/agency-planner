@@ -249,8 +249,8 @@ export function InviteForm({ clientId, agencyId, closeDialog }: InviteProps) {
           />
       
         <div className="flex justify-end">
-            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
-            <Button type="submit" className="ml-2">
+            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-40">Cancelar</Button>
+            <Button type="submit" className="ml-2 w-40">
               {loading ? 
                 <Loader className="h-4 w-4 animate-spin" /> 
                 : 

@@ -2,6 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { UserRole } from "@prisma/client"
 import { getCurrentUser } from "@/lib/utils"
+import { sendAgencyInvitationEmail, sendClientInvitationEmail } from "./email-services"
 
 export type UserDAO = {
 	id: string
@@ -294,13 +295,23 @@ export async function inviteUser(data: UserFormValues, clientId: string) {
     })
   }
 
-  await prisma.invitation.create({
+  const created= await prisma.invitation.create({
     data: {
       clientId,
       userId: user.id,
       status: "PENDING"
     }
   })
+
+  if (created.clientId) {
+    console.log('sending client invitation email')    
+    await sendClientInvitationEmail(created.userId, created.clientId)
+  }
+  if (created.agencyId) {
+    console.log('sending agency invitation email')
+    await sendAgencyInvitationEmail(created.userId, created.agencyId)
+  }
+
 
   return true
 }

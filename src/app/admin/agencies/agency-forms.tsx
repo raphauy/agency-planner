@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { generateSlug } from "@/lib/utils"
 import { AgencyFormValues, agencySchema } from '@/services/agency-services'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader } from "lucide-react"
@@ -26,6 +25,9 @@ export function AgencyForm({ id, closeDialog }: Props) {
       image: "",
       igHandle: "",
       description: "",
+      emailFrom: "",
+      contactEmail: "",
+      domain: "",
     },
     mode: "onChange",
   })
@@ -132,6 +134,48 @@ export function AgencyForm({ id, closeDialog }: Props) {
                 <FormLabel>IgHandle</FormLabel>
                 <FormControl>
                   <Input placeholder="Agency's igHandle" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="emailFrom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email From</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email From" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="contactEmail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contact Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Contact Email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="domain"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Domain</FormLabel>
+                <FormControl>
+                  <Input placeholder="Domain" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

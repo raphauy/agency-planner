@@ -68,6 +68,8 @@ export async function createInvitation(data: InvitationFormValues) {
   const created = await prisma.invitation.create({
     data
   })
+  if (!created) return null
+
   return created
 }
 

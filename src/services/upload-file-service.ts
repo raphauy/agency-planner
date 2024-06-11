@@ -38,32 +38,32 @@ export async function uploadFileWithUrl(url: string) {
 
 }
 
-export async function uploadFile(filePath: string) {
-  try {
-    // Leer el archivo del sistema de archivos
-    const fileContent = fs.createReadStream(filePath);
+// export async function uploadFile(filePath: string) {
+//   try {
+//     // Leer el archivo del sistema de archivos
+//     const fileContent = fs.createReadStream(filePath);
     
-    // Subir el archivo a Cloudinary
-    const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'auto', upload_preset: process.env.CLOUDINARY_PRESET }, (error, result) => {
-        if (error) reject(error);
-        else if (!result) reject(new Error('No result returned from Cloudinary'));
-        else resolve(result);      });
+//     // Subir el archivo a Cloudinary
+//     const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
+//       const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'auto', upload_preset: process.env.CLOUDINARY_PRESET }, (error, result) => {
+//         if (error) reject(error);
+//         else if (!result) reject(new Error('No result returned from Cloudinary'));
+//         else resolve(result);      });
 
-      fileContent.pipe(uploadStream);
-    });
+//       fileContent.pipe(uploadStream);
+//     });
 
-    console.log('Archivo subido con éxito:', result);
-    const res: UploadResult= {
-      url: result.secure_url,
-      bytes: result.bytes
-    }
-    return res 
-  } catch (error) {
-    console.error('Error subiendo el archivo:', error);
-    return null
-  }
-}
+//     console.log('Archivo subido con éxito:', result);
+//     const res: UploadResult= {
+//       url: result.secure_url,
+//       bytes: result.bytes
+//     }
+//     return res 
+//   } catch (error) {
+//     console.error('Error subiendo el archivo:', error);
+//     return null
+//   }
+// }
 
 type CloudinaryResponse= {
   public_id: string;

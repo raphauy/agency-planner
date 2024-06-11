@@ -9,6 +9,9 @@ export type AgencyDAO = {
 	image: string | undefined
 	igHandle: string | undefined
   description: string | undefined
+	emailFrom: string | undefined
+	contactEmail: string | undefined
+  domain: string | undefined
 	ownerId: string | undefined
   owner: UserDAO | undefined
 	createdAt: Date
@@ -21,6 +24,9 @@ export const agencySchema = z.object({
 	image: z.string().optional(),
 	igHandle: z.string().optional(),
   description: z.string().optional(),
+  emailFrom: z.string().optional(),
+	contactEmail: z.string().optional(),
+  domain: z.string().optional(),
 })
 
 export type AgencyFormValues = z.infer<typeof agencySchema>

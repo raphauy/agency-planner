@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { FormError } from "./_components/form-error";
@@ -16,23 +16,29 @@ import { LoginSchema } from "@/services/login-services";
 import { loginAction } from "./actions";
 
 
-export function LoginForm() {
+type Props = {
+  requestedEmail?: string
+}
+
+export function LoginForm({ requestedEmail }: Props) {
 
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
     ? "Email already in use with different provider!"
-    : "";
+    : ""
 
-  const [showOTP, setShowOTP] = useState(false);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
-  const [isPending, startTransition] = useTransition();
-  const [otpText, setOtpText] = useState("");
+  const [showOTP, setShowOTP] = useState(false)
+  const [error, setError] = useState<string | undefined>("")
+  const [success, setSuccess] = useState<string | undefined>("")
+  const [isPending, startTransition] = useTransition()
+  const [resendSeconds, setResendSeconds] = useState(-1)
+  
+  const router= useRouter()
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
+      email: requestedEmail || "",      
     },
   });
 
@@ -61,11 +67,34 @@ export function LoginForm() {
           if (data?.code) {
             setShowOTP(true)
             form.setValue("email", values.email)
+            setResendSeconds(20)
           }
         })
         .catch(() => setError("Something went wrong"));
     });
   };
+
+  useEffect(() => {
+    if (!showOTP || resendSeconds < 0)
+      return
+    console.log("counting...")
+    
+
+    const second = setTimeout(() => {
+      setResendSeconds(resendSeconds - 1)
+    }, 1000)
+
+    return () => {
+      clearTimeout(second)
+    }
+  }, [showOTP, resendSeconds])
+  
+  function handleResend() {
+    setShowOTP(false)
+    setResendSeconds(-1)
+    setSuccess("")
+    setError("")
+  }
 
   return (
     <Form {...form}>
@@ -106,7 +135,6 @@ export function LoginForm() {
               )}
             />            )}
           {!showOTP && (
-            <>
               <FormField
                 control={form.control}
                 name="email"
@@ -128,11 +156,18 @@ export function LoginForm() {
                   </FormItem>
                 )}
               />
-          </>
-        )}
+          )}
         </div>
         <FormError message={error || urlError} />
         <FormSuccess message={success} />
+        {showOTP && resendSeconds > 0 && (
+          <div className="text-center">Reintentar en {resendSeconds}</div>
+        )}
+        {showOTP && resendSeconds < 0 && (
+          <Button variant="link" type="button" onClick={handleResend} className="w-full">
+            Reintentar
+          </Button>
+        )}
         <Button disabled={isPending} type="submit" className="w-full">
           {showOTP ? "Confirmar" : isPending ? <Loader className="w-6 h-6 animate-spin" /> : "Enviar código"}
         </Button>

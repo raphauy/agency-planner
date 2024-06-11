@@ -85,6 +85,11 @@ model Agency {
   description   String?                    // gennext: show.column
   igHandle      String?                    // gennext: show.column
 
+  emailFrom     String?                    // gennext: show.column
+  contactEmail  String?                    // gennext: show.column
+
+  domain        String?                    // gennext: show.column
+
   users         User[] @relation("AgencyUsers")  // gennext: skip.list
   clients       Client[]                        // gennext: skip.list
   owner         User?  @relation("AgencyOwner", fields: [ownerId], references: [id])  // gennext: skip.list

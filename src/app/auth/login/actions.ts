@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn } from "@/lib/auth";
-import { sendCodeEmail } from "@/lib/mail";
+import { sendCodeEmail } from "@/services/email-services";
 import { LoginSchema, createOTPConfirmation, deleteOTPConfirmation, generateOTPCode, getOTPCodeByEmail, getOTPConfirmationByUserId, getUserByEmail, setUserAsVerified } from "@/services/login-services";
 import { AuthError } from "next-auth";
 import * as z from "zod";
@@ -54,10 +54,11 @@ export async function loginAction(values: z.infer<typeof LoginSchema>, callbackU
       await createOTPConfirmation(existingUser.id)
     } else {
       const oTPCode = await generateOTPCode(existingUser.email)
-      await sendCodeEmail(
-        oTPCode.email,
-        oTPCode.code,
-      );
+      // await sendCodeEmail(
+      //   oTPCode.email,
+      //   oTPCode.code,
+      // )
+      await sendCodeEmail(existingUser.agencyId, oTPCode.email, oTPCode.code)
 
       return { code: true, success: "Te enviamos un código de acceso!" };
     }
