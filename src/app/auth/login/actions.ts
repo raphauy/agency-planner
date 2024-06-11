@@ -20,7 +20,7 @@ export async function loginAction(values: z.infer<typeof LoginSchema>, callbackU
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email) {
-    return { error: "Email does not exist!" }
+    return { error: "No existe un usuario con este email!" };
   }
 
   if (existingUser.email) {

@@ -33,8 +33,6 @@ export function LoginForm({ requestedEmail }: Props) {
   const [isPending, startTransition] = useTransition()
   const [resendSeconds, setResendSeconds] = useState(-1)
   
-  const router= useRouter()
-
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -67,7 +65,7 @@ export function LoginForm({ requestedEmail }: Props) {
           if (data?.code) {
             setShowOTP(true)
             form.setValue("email", values.email)
-            setResendSeconds(20)
+            setResendSeconds(60)
           }
         })
         .catch(() => setError("Something went wrong"));
@@ -94,6 +92,8 @@ export function LoginForm({ requestedEmail }: Props) {
     setResendSeconds(-1)
     setSuccess("")
     setError("")
+    // force form submission
+    form.handleSubmit(onSubmit)()
   }
 
   return (

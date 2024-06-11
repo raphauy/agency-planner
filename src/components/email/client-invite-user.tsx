@@ -12,7 +12,7 @@ type InviteUserEmailProps= {
   inviteLink?: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_URL ? `https://${process.env.NEXT_PUBLIC_URL}` : "http://localhost:3000"
+const baseUrl = process.env.NEXT_PUBLIC_URL ? `${process.env.NEXT_PUBLIC_URL}` : "http://localhost:3000"
 
 export const InviteUserEmail = ({
   username,
@@ -74,7 +74,7 @@ export const InviteUserEmail = ({
                     src={`${baseUrl}/arrow-right.png`}
                     width="12"
                     height="9"
-                    alt="invitación"
+                    alt="->"
                   />                  
                 </Column>
                 <Column align="left">
