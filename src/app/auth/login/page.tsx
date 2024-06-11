@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }: Props) {
 
 
   const user= await getCurrentUser()
-  //if (user) redirect("/")
+  if (user) redirect("/")
 
   return (
     <LoginForm requestedEmail={requestEmail} />
