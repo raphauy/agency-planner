@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "@/components/ui/use-toast"
 import { useRoles } from "./use-roles"
-import { createOrUpdateUserAction, deleteUserAction, getUserDAOAction, inviteUserAction } from "./user-actions"
+import { createOrUpdateUserAction, deleteUserAction, getUserDAOAction, inviteAgencyUserAction, inviteClientUserAction } from "./user-actions"
 import { useSession } from "next-auth/react"
 
 //export const roles: UserRole[] = Object.values(UserRole)
@@ -42,7 +42,19 @@ export function UserForm({ id, agencyId, closeDialog }: Props) {
     setLoading(true)
     try {
       data.agencyId = agencyId
-      await createOrUpdateUserAction(id ? id : null, data)
+      if (id) {
+        await createOrUpdateUserAction(id, data)
+      } else {
+        if (data.role === "ADMIN") {
+          await createOrUpdateUserAction(null, data)
+        } else if (agencyId) {
+          // Agency user
+          await inviteAgencyUserAction(data, agencyId)
+        } else {
+          console.log("No ADMIN nor agencyId")          
+        }
+
+      }
       toast({ title: id ? "User updated" : "User created" })
       closeDialog()
     } catch (error: any) {
@@ -205,7 +217,7 @@ export function InviteForm({ clientId, agencyId, closeDialog }: InviteProps) {
     setLoading(true)
     try {
       data.agencyId = agencyId
-      await inviteUserAction(data, clientId)
+      await inviteClientUserAction(data, clientId)
       toast({ title: "Invitación enviada" })
       closeDialog()
     } catch (error: any) {

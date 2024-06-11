@@ -23,7 +23,7 @@ export default function Menu() {
     const channel= path.split("/")[3]
 
     let menu
-    if (path.startsWith("/admin")) {
+    if (path.startsWith("/admin") && user?.role === "ADMIN") {
         menu= <MenuAdmin />
     } else if (channel === "instagram") {
         menu= <MenuInstagram />

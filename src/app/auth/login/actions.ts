@@ -4,6 +4,8 @@ import { signIn } from "@/lib/auth";
 import { sendCodeEmail } from "@/services/email-services";
 import { LoginSchema, createOTPConfirmation, deleteOTPConfirmation, generateOTPCode, getOTPCodeByEmail, getOTPConfirmationByUserId, getUserByEmail, setUserAsVerified } from "@/services/login-services";
 import { AuthError } from "next-auth";
+import { getSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import * as z from "zod";
 
 
@@ -71,8 +73,15 @@ export async function loginAction(values: z.infer<typeof LoginSchema>, callbackU
     
     const ok= await signIn("credentials", {
       email,
-      code
+      code,
+      redirect: false
     })
+
+    if (ok && !ok.error) {
+      console.log("user logged in")      
+    } else {
+      return { error: ok?.error || "Algo salió mal!" };
+    }
 
   } catch (error) {
     if (error instanceof AuthError) {

@@ -96,15 +96,16 @@ export function DataTable<TData, TValue>({
     columnsOff && columnsOff.forEach(colName => {
       table.getColumn(colName)?.toggleVisibility(false)      
     });
+    table.setPageSize(40)
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [])
 
   return (
     <div className="w-full space-y-4 dark:text-white bg-white dark:bg-gray-800">
-      {/* <DataTableToolbar table={table}/> */}
+    {/* <DataTableToolbar table={table}/> */}
       <div className="border rounded-md">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-100 dark:bg-gray-700">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

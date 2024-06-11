@@ -1,30 +1,28 @@
 import { Body, Container, Head, Heading, Html, Img, Link, Section, Text, Button, Column, Hr, Preview, Row, Tailwind } from "@react-email/components";
 import * as React from "react";
 
-type InviteClientEmailProps= {
-  username?: string;
-  agencyName?: string;
+type InviteAgencyEmailProps= {
+  userName: string;
+  userEmail: string;
+  agencyName: string;
   agencyImage?: string;
-  invitedByUsername?: string;
-  invitedByEmail?: string;
-  teamName?: string;
-  teamImage?: string;
-  inviteLink?: string;
+  invitedByName: string;
+  invitedByEmail: string;
+  inviteLink: string;
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_URL ? `${process.env.NEXT_PUBLIC_URL}` : "http://localhost:3000"
 
-export const InviteClientEmail = ({
-  username,
+export const InviteAgencyEmail = ({
+  userName,
+  userEmail,
   agencyName,
   agencyImage,
-  invitedByUsername,
+  invitedByName,
   invitedByEmail,
-  teamName,
-  teamImage,
   inviteLink,
-}: InviteClientEmailProps) => {
-  const previewText = `Únete a ${teamName} en Agency Planner`;
+}: InviteAgencyEmailProps) => {
+  const previewText = `Únete a ${agencyName} en Agency Planner`;
 
   return (
     <Html>
@@ -43,41 +41,25 @@ export const InviteClientEmail = ({
               />
             </Section>
             <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
-              Únete al equipo de <strong>{teamName}</strong> y <strong>{agencyName}</strong> en <strong>Agency Planner</strong>
+              Únete al equipo de <strong>{agencyName}</strong> en <strong>Agency Planner</strong>
             </Heading>
             <Text className="text-black text-[14px] leading-[24px]">
-              Hola {username},
+              Hola {userName},
             </Text>
             <Text className="text-black text-[14px] leading-[24px]">
-              <strong>{invitedByUsername}</strong> (
+              <strong>{invitedByName}</strong> (
               <Link
                 href={`mailto:${invitedByEmail}`}
                 className="text-blue-600 no-underline"
               >
                 {invitedByEmail}
               </Link>
-              ) te ha invitado al equipo de <strong>{teamName}</strong> y <strong>{agencyName}</strong>
+              ) te ha invitado al equipo de <strong>{agencyName}</strong>
               {" "}en{" "} <strong>Agency Planner</strong>.
             </Text>
             <Section>
               <Row>
-                <Column align="right">
-                  <Img
-                    className="rounded-full"
-                    src={teamImage}
-                    width="64"
-                    height="64"
-                  />
-                </Column>
                 <Column align="center">
-                  <Img
-                    src={`${baseUrl}/arrow-right.png`}
-                    width="12"
-                    height="9"
-                    alt="->"
-                  />                  
-                </Column>
-                <Column align="left">
                   <Img
                     className="rounded-full"
                     src={agencyImage}
@@ -104,7 +86,7 @@ export const InviteClientEmail = ({
             <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
             <Text className="text-[#666666] text-[12px] leading-[24px]">
               Esta invitación fue enviada a {" "}
-              <span className="text-black">{username}</span>. Si no estabas esperando 
+              <span className="text-black">{userName}</span> ({userEmail}). Si no estabas esperando 
               esta invitación, puedes ignorarla.
             </Text>
           </Container>
@@ -114,16 +96,14 @@ export const InviteClientEmail = ({
   );
 };
 
-InviteClientEmail.PreviewProps = {
-  username: "alanturing",
+InviteAgencyEmail.PreviewProps = {
+  userName: "Pía Carrau",
+  userEmail: "pia.carrau@cerrochapeu.com",
   agencyName: "Tinta",
   agencyImage: `${baseUrl}/tinta-icon.png`,
-  userImage: `${baseUrl}/user-placeholder.jpg`,
-  invitedByUsername: "Alan",
-  invitedByEmail: "alan.turing@example.com",
-  teamName: "Tinta",
-  teamImage: `${baseUrl}/tinta-icon.png`,
+  invitedByName: "Eliana",
+  invitedByEmail: "eliana@tinta.wine",
   inviteLink: "https://agency-planner.com/auth/login?email=rapha.uy@rapha.uy",
-} as InviteClientEmailProps;
+} as InviteAgencyEmailProps;
 
-export default InviteClientEmail;
+export default InviteAgencyEmail;

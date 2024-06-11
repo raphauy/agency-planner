@@ -244,7 +244,7 @@ export async function getUsersOfClient(clientId: string) {
   return res as UserDAO[]
 }
 
-export async function inviteUser(data: UserFormValues, clientId: string) {
+export async function inviteClientUser(data: UserFormValues, clientId: string) {
   // check if user already exists, if not create it
   let user= await prisma.user.findUnique({
     where: {
@@ -259,7 +259,7 @@ export async function inviteUser(data: UserFormValues, clientId: string) {
     }  
   } else {
     if (user.role !== "CLIENT_ADMIN" && user.role !== "CLIENT_USER") {
-      throw new Error("El usuario a invitar debe tener el rol de cliente")
+      throw new Error("Ya existe un usuario con ese email y no tiene rol de cliente")
     }
   }
 
@@ -307,11 +307,6 @@ export async function inviteUser(data: UserFormValues, clientId: string) {
     console.log('sending client invitation email')    
     await sendClientInvitationEmail(created.userId, created.clientId)
   }
-  if (created.agencyId) {
-    console.log('sending agency invitation email')
-    await sendAgencyInvitationEmail(created.userId, created.agencyId)
-  }
-
 
   return true
 }
@@ -329,4 +324,85 @@ export async function getUsersOfClientWithPendingInvitations(clientId: string) {
   })
 
   return users as UserDAO[]
+}
+
+export async function getUsersOfAgencyWithPendingInvitations(agencyId: string) {
+  const users= await prisma.user.findMany({
+    where: {
+      invitations: {
+        some: {
+          agencyId,
+          status: "PENDING"
+        }
+      }
+    },
+  })
+
+  return users as UserDAO[]
+}
+
+export async function inviteAgencyUser(data: UserFormValues, agencyId: string) {
+  // check if user already exists, if not create it
+  let user= await prisma.user.findUnique({
+    where: {
+      email: data.email
+    }
+  })
+
+  if (!user) {
+    user= await createUser(data)    
+    if (!user) {
+      throw new Error("Error al crear el usuario")
+    }  
+  } else {
+    if (user.role !== "AGENCY_OWNER" && user.role !== "AGENCY_ADMIN" && user.role !== "AGENCY_CREATOR") {
+      throw new Error("Ya existe un usuario con ese email y no tiene rol de agencia")
+    }
+  }
+
+  const agency= await prisma.agency.findUnique({
+    where: {
+      id: agencyId
+    },
+    include: {
+      users: true
+    }
+  })
+
+  if (!agency) {
+    throw new Error("El agencia no existe")    
+  }
+
+  // check if user is already in the agency
+  const hasUser= agency.users.some((u) => u.id === user.id)
+
+  if (!hasUser) {
+    await prisma.agency.update({
+      where: {
+        id: agencyId
+      },
+      data: {
+        users: {
+          connect: {
+            id: user.id
+          }
+        }
+      }
+    })
+  }
+
+  const created= await prisma.invitation.create({
+    data: {
+      agencyId,
+      userId: user.id,
+      status: "PENDING"
+    }
+  })
+
+  if (created.agencyId) {
+    console.log('sending agency invitation email')    
+    await sendAgencyInvitationEmail(created.userId, created.agencyId)
+  }
+
+  return true
 }

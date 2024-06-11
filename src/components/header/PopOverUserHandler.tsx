@@ -19,9 +19,11 @@ export default function PopOverUserHandler({ user }: Props) {
   
   async function onLogout(){
     
-    await signOut({ redirect: false })
-    router.refresh()
-    router.push("/auth/login")
+    // await signOut({ redirect: false })
+    // router.refresh()
+    // router.push("/auth/login")
+    await signOut()
+
   }
       
   return (

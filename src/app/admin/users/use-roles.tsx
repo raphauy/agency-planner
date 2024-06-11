@@ -33,7 +33,7 @@ export function useAgencySlug() {
 }
 
 export function useMenuAdminRoles(): UserRole[] {
-  return [UserRole.ADMIN, UserRole.AGENCY_OWNER, UserRole.AGENCY_ADMIN]
+  return [UserRole.ADMIN, UserRole.AGENCY_OWNER, UserRole.AGENCY_ADMIN, UserRole.AGENCY_CREATOR]
 }
 
 export function useMenuClientRoles(): UserRole[] {

@@ -13,7 +13,7 @@ type Props= {
   agencyId?: string
 }
 
-const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create User</Button>
+const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Invitar a un colaborador de la agencia</Button>
 const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
 export function UserDialog({ id, agencyId }: Props) {
@@ -31,7 +31,7 @@ export function UserDialog({ id, agencyId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Actualizar' : 'Crear'} Usuario
+          <DialogTitle>{id ? 'Actualizar' : 'Invitar'} Usuario
           </DialogTitle>
         </DialogHeader>
         <UserForm closeDialog={() => setOpen(false)} id={id} agencyId={agencyId} />

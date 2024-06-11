@@ -3,28 +3,40 @@
 import { useMenuAdminRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { UserRole } from "@prisma/client"
 import { LayoutDashboard, LockKeyhole, Receipt, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-
+import { useState, useEffect } from "react"
 
 export default function MenuAgency() {
-    
-    const user= useSession().data?.user
-    const userRole= user?.role
-    const alowedRoles= useMenuAdminRoles()
 
+    const [userRole, setUserRole]= useState<UserRole>()
+
+    const alowedRoles= useMenuAdminRoles()
     const clientSlug= useParams().clientSlug
     
+    const session= useSession()
     const path= usePathname()
+
+    useEffect(() => {    
+        const user= session?.data?.user
+        if (!user)
+            return
+        
+        setUserRole(user.role)
+    }, [session])
+    
+
     const params= useParams()
     const agencySlug= params.agencySlug
     if (!agencySlug)
         return <div>Agency not found</div>
 
     if (clientSlug)
-        return <div></div>
+        return <div>borrar</div>
+    
 
     const data= [
         {
@@ -43,15 +55,19 @@ export default function MenuAgency() {
             href: `/${agencySlug}/permissions`,
             icon: LockKeyhole,
             text: "Permisos",
-            roles: alowedRoles
+            roles: alowedRoles.filter((role) => role !== "AGENCY_CREATOR")
         },
         {
             href: `/${agencySlug}/billing`,
             icon: Receipt,
             text: "Billing",
-            roles: alowedRoles
+            roles: alowedRoles.filter((role) => role !== "AGENCY_CREATOR")
         },
     ]
+
+
+    if (!userRole)
+        return null
         
     return (
         <nav>

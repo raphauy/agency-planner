@@ -7,7 +7,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { LoginSchema } from "@/services/login-services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -15,6 +15,7 @@ import { FormError } from "./_components/form-error";
 import { FormSuccess } from "./_components/form-success";
 import { loginAction } from "./actions";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 
 type Props = {
@@ -69,8 +70,14 @@ export function LoginForm({ requestedEmail }: Props) {
             form.setValue("email", values.email)
             setResendSeconds(60)
           }
+
+          if (!data?.success && !data?.error && !data?.code) {
+            console.log("user logged in")
+            window.location.reload()
+          }
+          
         })
-        .catch(() => setError("Something went wrong"));
+        .catch(() => setError("Algo salió mal en la autenticación!"));
     });
   };
 

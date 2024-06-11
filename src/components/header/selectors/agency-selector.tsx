@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { SlashIcon } from "@radix-ui/react-icons"
 import { Check, ChevronsRight, ChevronsUpDown, LayoutDashboard } from "lucide-react"
-import { useSession } from "next-auth/react"
+import { getSession, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
@@ -20,7 +20,7 @@ type Props= {
 }
 
 export default function AgencySelector({ selectors= [] }: Props) {
-  const user= useSession().data?.user
+  const user= useSession()?.data?.user
 
   const [open, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState("")
@@ -46,13 +46,17 @@ export default function AgencySelector({ selectors= [] }: Props) {
   }, [agencySlug, selectors])
 
   const filteredValues = useMemo(() => {
-      if (!searchValue) return selectors
+    if (!searchValue) return selectors
 
-      const lowerCaseSearchValue = searchValue.toLowerCase();
-      return selectors.filter((line) => line.name.toLowerCase().includes(lowerCaseSearchValue))
+    const lowerCaseSearchValue = searchValue.toLowerCase();
+    return selectors.filter((line) => line.name.toLowerCase().includes(lowerCaseSearchValue))
   }, [selectors, searchValue])
 
-  if (user?.role.startsWith("AGENCY") || user?.role.startsWith("CLIENT")) {
+  if (!user) {
+    return <div></div>
+  }
+
+  if (user && (user.role.startsWith("AGENCY") || user.role.startsWith("CLIENT"))) {
 
     const agency= selectors.find(selector => selector.slug === user.agencySlug)
 
@@ -61,7 +65,7 @@ export default function AgencySelector({ selectors= [] }: Props) {
         <SlashIcon className="w-5 h-5 opacity-50" />
         <div className="flex gap-2 px-2">
           { agency?.image && <Image src={agency?.image} alt={name} width={20} height={20} className="rounded-full" />}
-          <p className="text-base">{user.agencyName}</p>
+          <p className="text-base">{agency?.name}</p>
         </div>
       </div>
     )
