@@ -56,7 +56,6 @@ export function LoginForm({ requestedEmail }: Props) {
           if (data?.error) {
             form.reset();
             setError(data.error)
-            setResendSeconds(-1)
             form.setValue("email", values.email)
           }
 
