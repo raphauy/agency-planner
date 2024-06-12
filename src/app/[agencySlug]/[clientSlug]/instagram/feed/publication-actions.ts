@@ -1,7 +1,8 @@
 "use server"
   
 import { revalidatePath } from "next/cache"
-import { PublicationDAO, PublicationFormValues, createPublication, updatePublication, getFullPublicationDAO, deletePublication } from "@/services/publication-services"
+import { PublicationDAO, PublicationFormValues, createPublication, updatePublication, getFullPublicationDAO, deletePublication, updatePublicationStatus } from "@/services/publication-services"
+import { PublicationStatus } from "@prisma/client"
 
 
 export async function getPostDAOAction(id: string): Promise<PublicationDAO | null> {
@@ -16,7 +17,7 @@ export async function createOrUpdatePostAction(id: string | null, data: Publicat
         updated= await createPublication(data)
     }     
 
-    revalidatePath("/[clientSlug]", "page")
+    revalidatePath("/[agencySlug]/[clientSlug]", "page")
 
     return updated as PublicationDAO
 }
@@ -24,8 +25,15 @@ export async function createOrUpdatePostAction(id: string | null, data: Publicat
 export async function deletePostAction(id: string): Promise<PublicationDAO | null> {    
     const deleted= await deletePublication(id)
 
-    revalidatePath("/[clientSlug]", "page")
+    revalidatePath("/[agencySlug]/[clientSlug]", "page")
 
     return deleted as PublicationDAO
 }
 
+export async function updatePublicationStatusAction(id: string, status: PublicationStatus): Promise<boolean>{  
+    const updated= await updatePublicationStatus(id, status)
+    
+    revalidatePath("/[agencySlug]/[clientSlug]", "page")
+
+    return updated
+}

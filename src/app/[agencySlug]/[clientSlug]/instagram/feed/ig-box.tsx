@@ -1,5 +1,5 @@
 import { PublicationDAO } from "@/services/publication-services"
-import { Camera, CircleAlert, Download, GalleryHorizontal, Heart, LucideIcon, MessageCircle, Pencil, Send, Video } from "lucide-react"
+import { Camera, CircleAlert, Download, GalleryHorizontal, GalleryHorizontalEnd, Heart, LucideIcon, MessageCircle, Pencil, Send, Video } from "lucide-react"
 import Image from "next/image"
 import CopyBox from "./copy-box"
 import IgCarousel from "./ig-carousel"
@@ -9,6 +9,10 @@ import Link from "next/link"
 import { es } from "date-fns/locale"
 import slugify from 'slugify'
 import { PublicationType } from "@prisma/client"
+import { Badge } from "@/components/ui/badge"
+import { AgencyPubStatusSelector } from "./agency-status-selector"
+import { getCurrentUser } from "@/lib/utils"
+import { ClientPubStatusSelector } from "./client-status-selector"
 
 type Props= {
     post: PublicationDAO
@@ -17,7 +21,7 @@ type Props= {
     agencySlug: string
   }
   
-export default function IgBox({ post, clientImage, clientHandle, agencySlug }: Props) {
+export default async function IgBox({ post, clientImage, clientHandle, agencySlug }: Props) {
 
     const images= post.images ? post.images.split(",") : []
 
@@ -25,6 +29,8 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
     clientHandle= clientHandle || "definir-ig-handle"
 
     const slugifiedTitle= post.images ? slugify(post.title, { replacement: "_", lower: true }) : ""
+
+    const user= await getCurrentUser()
 
     return (
       <div>
@@ -39,8 +45,8 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
               </div>
               <p className="pl-2 text-sm font-semibold">{clientHandle}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <p>{getLabel(post.type)}</p>
+            <div className="flex items-center">
+              <Badge>{getLabel(post.type)}</Badge>
               {/* <Link href={`/${agencySlug}/${post.client.slug}/instagram/feed?post=${post.id}&edit=true`}> */}
               <Link href={`?post=${post.id}&edit=true`}>
                 <Button variant="ghost"><Pencil /></Button>
@@ -81,7 +87,19 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
             <p className="font-bold ">Fecha:</p>
             <p>{post.publicationDate && format(post.publicationDate, "PPP", { locale: es })}</p>
           </div>
-          <p>{images.length > 1 ? <GalleryHorizontal /> : <Camera />}</p>
+          {post.type === "INSTAGRAM_POST" && images.length > 1 ? <GalleryHorizontal /> : null}
+          {post.type === "INSTAGRAM_POST" && images.length === 1 ? <Camera /> : null}
+          {post.type === "INSTAGRAM_REEL" ? <Video /> : null}
+          {post.type === "INSTAGRAM_STORY" ? <GalleryHorizontalEnd /> : null}
+        </div>
+
+        <div className="p-4 mt-4 bg-white dark:bg-black border rounded w-full flex justify-center">
+          {
+            user?.role === "CLIENT_ADMIN" || user?.role === "CLIENT_USER" ?
+            <ClientPubStatusSelector id={post.id} status={post.status} />
+            :
+            <AgencyPubStatusSelector id={post.id} status={post.status} />
+          }          
         </div>
 
         <div className='p-4 mt-4 bg-white border rounded min-w-[400px] max-w-[500px] grid-cols-2 xl:grid-cols-3 grid gap-4'>

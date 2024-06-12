@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
-import { UserRole } from "@prisma/client"
+import { PublicationStatus, UserRole } from "@prisma/client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -61,4 +61,21 @@ export function getLabel(role: UserRole) {
     default:
       return "Desconocido"
   }
+}
+
+export function getPostStatusColor(status: PublicationStatus, opacity?: string) {
+  switch (status) {
+    case PublicationStatus.BORRADOR:
+      return `rgba(156, 163, 175, ${opacity || 1})`; // gray
+    case PublicationStatus.REVISADO:
+      return `rgba(255, 140, 0, ${opacity || 1})`; // orange
+    case PublicationStatus.APROBADO:
+      return `rgba(0, 128, 0, ${opacity || 1})`; // green
+    case PublicationStatus.PROGRAMADO:
+      return `rgba(51, 153, 255, ${opacity || 1})`; // sky
+    case PublicationStatus.PUBLICADO:
+      return `rgba(255, 215, 0, ${opacity || 1})`;
+    default:
+      return `rgba(156, 163, 175, ${opacity || 1})`; // gray
+    }
 }

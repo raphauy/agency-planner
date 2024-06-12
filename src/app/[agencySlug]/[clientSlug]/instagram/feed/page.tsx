@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getClientDAOBySlug } from "@/services/client-services"
-import { getPublicationDAO, getPublicationsDAOByClientSlug } from "@/services/publication-services"
+import { PublicationDAO, getPublicationDAO, getPublicationsDAOByClientSlug } from "@/services/publication-services"
 import { Camera, GalleryHorizontalEnd, PlusCircle, PlusIcon, Video } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -9,7 +9,7 @@ import Feed from "./feed"
 import IgBox from "./ig-box"
 import { PostForm } from "./post-form"
 import { getCurrentRole } from "@/lib/utils"
-import { PublicationType, UserRole } from "@prisma/client"
+import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
 
 type Props = {
     params: {
@@ -33,7 +33,11 @@ export default async function FeedPage({ params, searchParams }: Props) {
     }
 
     const allPosts= await getPublicationsDAOByClientSlug(clientSlug)
-    const posts= allPosts.filter((post) => post.type !== PublicationType.INSTAGRAM_STORY)
+    const currentRole= await getCurrentRole()
+    if (!currentRole) redirect("/auth/404")
+    
+    const filteredByRole= filterPublicationsByRole(allPosts, currentRole)
+    const posts= filteredByRole.filter((post) => post.type !== PublicationType.INSTAGRAM_STORY)
   
     let postId= searchParams.post
     if (!postId && postId !== "new-post" && posts.length > 0) {
@@ -48,7 +52,6 @@ export default async function FeedPage({ params, searchParams }: Props) {
     console.log("type:", type)
     
 
-    const currentRole= await getCurrentRole()
     const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     return (
@@ -99,3 +102,17 @@ export default async function FeedPage({ params, searchParams }: Props) {
     )
 }
     
+
+function filterPublicationsByRole(publications: PublicationDAO[], currentRole: UserRole) {
+  return publications.filter((publication) => {
+    if (currentRole === "CLIENT_ADMIN" || currentRole === "CLIENT_USER") {
+      if (publication.status !== PublicationStatus.BORRADOR) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  })
+}

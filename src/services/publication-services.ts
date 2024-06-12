@@ -185,4 +185,19 @@ export async function getFullPublicationDAO(id: string) {
   
   return found as PublicationDAO
 }
-    
+
+export async function updatePublicationStatus(id: string, status: PublicationStatus){  
+  console.log('updatePubStatus', id, status)
+  
+  const updated= await prisma.publication.update({
+      where: {
+          id
+      },
+      data: {
+          status
+      }
+  })
+  if (!updated) return false
+
+  return true
+}

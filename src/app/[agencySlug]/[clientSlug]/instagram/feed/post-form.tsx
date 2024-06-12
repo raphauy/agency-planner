@@ -30,6 +30,7 @@ import { deletePublicationAction } from "../../publications/publication-actions"
 import IgCarousel from "./ig-carousel"
 import { createOrUpdatePostAction, getPostDAOAction } from "./publication-actions"
 import { getLabel } from "./ig-box"
+import { Badge } from "@/components/ui/badge"
 
 type Props= {
   id?: string
@@ -194,8 +195,8 @@ export function PostForm({ id, type }: Props) {
               </div>
               <p className="pl-2 text-sm font-semibold">{client?.igHandle}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <p>{getLabel(form.getValues("type"))}</p>
+            <div className="flex items-center">
+              <Badge>{getLabel(form.getValues("type"))}</Badge>
               {id && <DeletePublicationDialog id={id} />}
             </div>
           </div>

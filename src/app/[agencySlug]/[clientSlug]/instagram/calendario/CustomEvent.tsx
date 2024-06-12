@@ -27,9 +27,9 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
 
   const fechasImportantes: string[]= event.fechaImportante.split(",")
 
-  const statusColor= event.status === "Aprobado" ? "text-green-500" : event.status === "Revisado" ? "text-orange-500" : event.status === "Programado" ? "text-sky-500" : event.status === "Publicado" ? "text-yellow-500" : "text-gray-500"
-  // pastDate is true if the event is in the past, use date-fns to compare dates
+  const statusColor= event.status === "APROBADO" ? "bg-green-500" : event.status === "REVISADO" ? "bg-orange-500" : event.status === "PROGRAMADO" ? "bg-sky-500" : event.status === "PUBLICADO" ? "bg-yellow-500" : "bg-gray-500"
   const pastDate= isBefore(event.start, new Date())
+  const show= !pastDate && event.status !== "APROBADO"
 
   return (
     <>
@@ -47,6 +47,7 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
         event.title && (
           <div className="relative border rounded-md p-0.5" style={{ backgroundColor: `${event.color}`}}> 
             {/* {!pastDate && <ArrowBigRight className={cn("absolute opacity-80 bottom-0 right-0 rounded-md", statusColor)} size={20}/>} */}
+            {show && <div className={cn("absolute bottom-0 border border-white right-0 rounded-full w-5 h-5", statusColor)}/>}
             <Link href={event.href} >
               
               {

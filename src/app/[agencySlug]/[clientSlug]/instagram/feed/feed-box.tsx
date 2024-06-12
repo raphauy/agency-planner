@@ -40,8 +40,8 @@ export default function FeedBox({ post }: Props) {
   //const portada= post.images ? post.images.split(",")[0] : "/image-placeholder.png"
   const mediaResources= post.images ? post.images.split(",") : ["/image-placeholder.png"]
 
-  const statusColor= post.status === "APROBADO" ? "text-green-500" : post.status === "REVISADO" ? "text-orange-500" : post.status === "PROGRAMADO" ? "text-sky-500" : post.status === "PUBLICADO" ? "text-yellow-500" : "text-gray-500"
-  const pastDate= post.createdAt && post.createdAt < new Date()
+  const statusColor= post.status === "APROBADO" ? "bg-green-500" : post.status === "REVISADO" ? "bg-orange-500" : post.status === "PROGRAMADO" ? "bg-sky-500" : post.status === "PUBLICADO" ? "bg-yellow-500" : "bg-gray-500"
+  const pastDate= post.publicationDate && post.publicationDate < new Date()
   const show= !pastDate && post.status !== "APROBADO"
 
   const images= mediaResources.filter((image) => image.includes(".jpg") || image.includes(".png") || image.includes(".jpeg"))
@@ -53,7 +53,7 @@ export default function FeedBox({ post }: Props) {
           <div onClick={handleClick} className="relative h-full overflow-hidden transition bg-white border border-gray-300 cursor-pointer hover:scale-110">
             {!post.publicationDate && <Calendar className="absolute top-0 right-0 text-white bg-black rounded-md bg-opacity-30" size={23}/>}
 
-            {show && <Circle className={cn("absolute bottom-0 right-0 text-orange-500 rounded-md", statusColor)} size={20}/>}
+            {show && <div className={cn("absolute bottom-0 border border-white right-0 rounded-full w-5 h-5", statusColor)}/>}
 
             <div className="absolute top-0 left-0 flex gap-1 text-white bg-black rounded-md bg-opacity-30">
               {images.length > 1 && <div className='flex gap-1'><Camera  size={23}/>{images.length}</div>}
