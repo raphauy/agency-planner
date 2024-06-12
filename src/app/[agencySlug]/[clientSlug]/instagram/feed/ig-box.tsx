@@ -1,5 +1,5 @@
 import { PublicationDAO } from "@/services/publication-services"
-import { Camera, Download, GalleryHorizontal, Heart, MessageCircle, Pencil, Send } from "lucide-react"
+import { Camera, CircleAlert, Download, GalleryHorizontal, Heart, LucideIcon, MessageCircle, Pencil, Send, Video } from "lucide-react"
 import Image from "next/image"
 import CopyBox from "./copy-box"
 import IgCarousel from "./ig-carousel"
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { es } from "date-fns/locale"
 import slugify from 'slugify'
+import { PublicationType } from "@prisma/client"
 
 type Props= {
     post: PublicationDAO
@@ -38,9 +39,13 @@ export default function IgBox({ post, clientImage, clientHandle, agencySlug }: P
               </div>
               <p className="pl-2 text-sm font-semibold">{clientHandle}</p>
             </div>
-            <Link href={`/${agencySlug}/${post.client.slug}/instagram/posts?post=${post.id}&edit=true`}>
-              <Button variant="ghost"><Pencil /></Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <p>{getLabel(post.type)}</p>
+              {/* <Link href={`/${agencySlug}/${post.client.slug}/instagram/feed?post=${post.id}&edit=true`}> */}
+              <Link href={`?post=${post.id}&edit=true`}>
+                <Button variant="ghost"><Pencil /></Button>
+              </Link>
+            </div>
           </div>
     
           {/* Carousel */}
@@ -115,4 +120,17 @@ function prepareCopyText(post: PublicationDAO) {
     text= text + "\n\n" + post.hashtags
 
   return text  
+}
+
+export function getLabel(type: PublicationType) {
+  switch (type) {
+    case PublicationType.INSTAGRAM_POST:
+      return "POST"
+    case PublicationType.INSTAGRAM_REEL:
+      return "REEL"
+    case PublicationType.INSTAGRAM_STORY:
+      return "HISTORIA"
+    default:
+      return ""
+  }
 }

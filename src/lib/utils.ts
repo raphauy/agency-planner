@@ -47,11 +47,11 @@ export function getLabel(role: UserRole) {
     case "ADMIN":
       return "Admin"
     case "AGENCY_OWNER":
-      return "Agencia"
+      return "Agencia (DA)"
     case "AGENCY_ADMIN":
-      return "Agencia"
+      return "Agencia (AA)"
     case "AGENCY_CREATOR":
-      return "Agencia"
+      return "Agencia (CC)"
     case "CLIENT_ADMIN":
       return "Cliente"
     case "CLIENT_USER":

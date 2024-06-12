@@ -31,7 +31,7 @@ export const publicationSchema = z.object({
   publicationDate: z.date().optional().nullable(),
 	link: z.string().optional(),
 	clientId: z.string({required_error: "clientId is required."}),
-	pilarId: z.string().optional(),
+	pilarId: z.string({required_error: "Tienes que elegir un pilar de contenido"})
 })
 
 export type PublicationFormValues = z.infer<typeof publicationSchema>
@@ -52,6 +52,65 @@ export async function getPublicationsDAOByClientSlug(clientSlug: string) {
       client: {
         slug: clientSlug
       }
+    },
+    orderBy: {
+      publicationDate: 'desc'
+    },
+    include: {
+      pilar: true
+    }
+  })
+  return found as PublicationDAO[]
+}
+
+export async function getPublicationsDAOByClientWithFilter(clientSlug: string, filter: string) {
+  // filter can have values: P, R and S form Post, Reels and Stories
+  const types: PublicationType[] = mapTypes(filter)
+
+  const found = await prisma.publication.findMany({
+    where: {
+      client: {
+        slug: clientSlug
+      },
+      type: {
+        in: types
+      }
+    },
+    orderBy: {
+      publicationDate: 'desc'
+    },
+    include: {
+      pilar: true
+    }
+  })
+  return found as PublicationDAO[]
+}
+
+function mapTypes(filter: string) {
+  const types: PublicationType[] = []
+
+  if (!filter) 
+    return types
+
+  if (filter.toUpperCase().includes("P")) 
+    types.push(PublicationType.INSTAGRAM_POST)
+
+  if (filter.toUpperCase().includes("R")) 
+    types.push(PublicationType.INSTAGRAM_REEL)
+
+  if (filter.toUpperCase().includes("S")) 
+    types.push(PublicationType.INSTAGRAM_STORY)
+  
+  return types
+}
+
+export async function getPublicationsDAOByClientAndType(clientId: string, type: PublicationType) {
+  const found = await prisma.publication.findMany({
+    where: {
+      client: {
+        id: clientId
+      },
+      type
     },
     orderBy: {
       publicationDate: 'desc'

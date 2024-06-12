@@ -1,51 +1,33 @@
-import CalendarRC from "./CalendarRC";
-import CalendarBox from "./calendar-box";
-import { Event } from './CustomEvent';
-import { getPublicationsDAOByClientSlug } from "@/services/publication-services";
+import { getPublicationsDAOByClientWithFilter } from "@/services/publication-services";
 import { isSameDay } from "date-fns";
-
-const myEventsList: Event[] = [
-  {
-    title: 'Reunión de Proyecto',
-    start: new Date(2024, 5, 10, 10, 0), // 10 de junio de 2024, 10:00 AM
-    end: new Date(2024, 5, 10, 11, 0), // 10 de junio de 2024, 11:00 AM
-    href: 'https://www.google.com',
-    image: 'https://res.cloudinary.com/dtm41dmrz/image/upload/c_fill,w_800/v1/tinta-posts/r8ptqegbwok31nqnasa6.jpg?_a=DAJAUVWIZAA0',
-    color: '#FDEBD0',
-    fechaImportante: "hola",
-    status: "PENDING",
-    content: "contenido",
-  },
-  {
-    title: 'Presentación de Resultados',
-    start: new Date(2024, 5, 15, 14, 0), // 15 de junio de 2024, 2:00 PM
-    end: new Date(2024, 5, 15, 15, 0), // 15 de junio de 2024, 3:00 PM
-    image: 'https://res.cloudinary.com/dtm41dmrz/image/upload/c_fill,w_800/v1/tinta-posts/r8ptqegbwok31nqnasa6.jpg?_a=DAJAUVWIZAA0',
-    href: `#` ,
-    color: '#FDEBD0',
-    fechaImportante: "",
-    status: "PENDING",
-    content: "contenido",
-  },
-]
+import { Event } from './CustomEvent';
+import CalendarBox from "./calendar-box";
+import PublicationTypeFilter from "./pub-type-filter";
 
 type Props= {
   params: {
     agencySlug: string;
     clientSlug: string;
   }
+  searchParams: {
+    filter: string;
+  }
 }
-export default async function CalendarPage({ params }: Props) {
+export default async function CalendarPage({ params, searchParams }: Props) {
+
+  const filter= searchParams.filter
 
   const agencySlug= params.agencySlug
   const clientSlug= params.clientSlug
 
-  const posts= await getPublicationsDAOByClientSlug(clientSlug)
+  const posts= await getPublicationsDAOByClientWithFilter(clientSlug, filter)
 
   const filteredPosts= posts.filter((post): post is { publicationDate: Date } & typeof post => post.publicationDate !== null)
   const events: Event[] = filteredPosts
     .map((post) => {
-      const image= post.images?.length && post.images?.length > 0 ? post.images.split(",")[0] :  "/image-placeholder.png"
+      const images= post.images?.split(",").filter((image) => image.includes(".jpg") || image.includes(".png") || image.includes(".jpeg"))
+      const image= images?.length && images?.length > 0 ? images[0] :  "/image-placeholder.png"
+      const videos= post.images?.split(",").filter((video) => video.includes(".mp4") || video.includes(".mov") || video.includes(".webm"))
       
       return {
         title: post.title,
@@ -56,15 +38,22 @@ export default async function CalendarPage({ params }: Props) {
         fechaImportante: "",
         status: post.status,
         content: post.copy || "",
-        href: `/${agencySlug}/${clientSlug}/instagram/posts?post=${post.id}`,
+        href: `/${agencySlug}/${clientSlug}/instagram/feed?post=${post.id}`,
         compact: filteredPosts.filter((p) => isSameDay(p.publicationDate, post.publicationDate)).length > 1,
+        type: post.type,
       }
     })
 
   return (
-    <div className="w-full mt-2 flex flex-col h-full p-3 bg-gray-200 border border-gray-300 rounded-xl min-w-[600px]">
-      {/* <CalendarRC events={myEventsList}></CalendarRC> */}
-      <CalendarBox events={events} />
+    <div className="h-full mb-16 w-full">
+
+      <div className="w-full flex justify-center mt-1 mb-3 p-3 border rounded-xl min-w-[600px] bg-white dark:bg-gray-800">
+        <PublicationTypeFilter />
+      </div>
+
+      <div className="w-full flex flex-col h-full p-2 bg-gray-200 border border-gray-300 rounded-xl min-w-[600px]"> 
+        <CalendarBox events={events} />
+      </div>
     </div>
   )
 }

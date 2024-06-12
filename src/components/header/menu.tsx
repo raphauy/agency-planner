@@ -9,6 +9,7 @@ import MenuAgency from "./menu-agency"
 import MenuClient from "./menu-client"
 import MenuInstagram from "./menu-instagram"
 import { cn } from "@/lib/utils"
+import { UserRole } from "@prisma/client"
 
 export default function Menu() {
 
@@ -40,7 +41,22 @@ export default function Menu() {
     return (
         <div className="flex justify-between">
             {menu}
-            {user && <p className="mr-4">{user?.name} {user?.role.startsWith("CLIENT") ? "" : " - " + user?.role}</p>}
+            {user && <p className="mr-4">{user?.name} {user?.role.startsWith("CLIENT") ? "" : " - " + getLabel(user?.role)}</p>}
         </div>
     )
+}
+
+function getLabel(role: UserRole) {
+    switch (role) {
+        case 'ADMIN':
+            return 'Super Admin'
+        case 'AGENCY_OWNER':
+            return 'DA'
+        case 'AGENCY_ADMIN':
+            return 'Admin'
+        case 'AGENCY_CREATOR':
+            return 'Creador'
+        default:
+            return 'Invitado'
+    }
 }

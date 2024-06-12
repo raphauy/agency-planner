@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 export default function InstagramPage() {
 
-    redirect("instagram/posts")
+    redirect("instagram/feed")
 
     return (
         <div>InstagramPage</div>

@@ -1,14 +1,13 @@
 "use client"
 
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import format from 'date-fns/format'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
 import getDay from 'date-fns/getDay'
 import es from 'date-fns/locale/es'
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { ArrowBigDown } from 'lucide-react'
-import CustomEvent, { Event } from './CustomEvent';
+import parse from 'date-fns/parse'
+import startOfWeek from 'date-fns/startOfWeek'
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import CustomEvent, { Event } from './CustomEvent'
 
 const locales = {
   'es': es,

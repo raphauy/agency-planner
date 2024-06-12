@@ -15,7 +15,7 @@ import { ClientDAO } from "@/services/client-services"
 import { PilarDAO } from "@/services/pilar-services"
 import { PublicationFormValues, publicationSchema } from '@/services/publication-services'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PublicationStatus } from "@prisma/client"
+import { PublicationStatus, PublicationType } from "@prisma/client"
 import { useCompletion } from "ai/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -29,13 +29,14 @@ import { getClientDAOBySlugAction } from "../../../clients/client-actions"
 import { deletePublicationAction } from "../../publications/publication-actions"
 import IgCarousel from "./ig-carousel"
 import { createOrUpdatePostAction, getPostDAOAction } from "./publication-actions"
+import { getLabel } from "./ig-box"
 
 type Props= {
   id?: string
-  closeDialog?: () => void
+  type?: PublicationType
 }
 
-export function PostForm({ id, closeDialog }: Props) {
+export function PostForm({ id, type }: Props) {
   const router= useRouter()
 
   const form = useForm<PublicationFormValues>({
@@ -47,7 +48,7 @@ export function PostForm({ id, closeDialog }: Props) {
       copy: "",
       hashtags: "",
       status: PublicationStatus.BORRADOR,
-      type: "INSTAGRAM_POST",
+      type,
       publicationDate: undefined,
     },
     mode: "onChange",
@@ -86,6 +87,14 @@ export function PostForm({ id, closeDialog }: Props) {
   }
 
   useEffect(() => {
+    if (!type) return
+
+    form.setValue("type", type)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
+  
+
+  useEffect(() => {
     if (!copy) {
       setInput(client?.copyPrompt || "")
     }
@@ -102,6 +111,10 @@ export function PostForm({ id, closeDialog }: Props) {
         setClient(client)
         client.image && setClientImage(client.image)
         setPilars(client.pilars)
+        const firstPilar= client.pilars?.[0]
+        if (firstPilar) {
+          form.setValue("pilarId", firstPilar.id)
+        }
       }
     })
     .catch((error) => {
@@ -133,24 +146,20 @@ export function PostForm({ id, closeDialog }: Props) {
     }
     setLoading(true)
     try {
-      await createOrUpdatePostAction(id ? id : null, data)
-      toast({ title: id ? "Post actualizado" : "Post creado" })
-      if (closeDialog)
-        closeDialog()
-      else router.push(`/${agencySlug}/${clientSlug}/instagram?post=${id}`)
+      const updated= await createOrUpdatePostAction(id ? id : null, data)
+      if (updated) {
+        toast({ title: id ? "Publicación actualizada" : "Publicación creada" })
+
+        const page= updated.type === "INSTAGRAM_POST" ? "posts" : updated.type === "INSTAGRAM_REEL" ? "reels" : updated.type === "INSTAGRAM_STORY" ? "historias" : "feed"
+        router.push(`/${agencySlug}/${clientSlug}/instagram/${page}?post=${updated.id}`)
+      } else {
+        toast({ title: "Error", description: "Hubo un error al guardar la publicación", variant: "destructive" })
+      }
 
     } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" })
+      toast({ title: "Error", description: "Hubo un error al guardar la publicación", variant: "destructive" })
     } finally {
       setLoading(false)
-    }
-  }
-
-  function handleCancel() {
-    if (closeDialog) {
-      closeDialog()
-    } else {
-      router.back()
     }
   }
 
@@ -185,7 +194,10 @@ export function PostForm({ id, closeDialog }: Props) {
               </div>
               <p className="pl-2 text-sm font-semibold">{client?.igHandle}</p>
             </div>
-            {id && <DeletePublicationDialog id={id} />}
+            <div className="flex items-center gap-2">
+              <p>{getLabel(form.getValues("type"))}</p>
+              {id && <DeletePublicationDialog id={id} />}
+            </div>
           </div>
 
 
@@ -194,7 +206,12 @@ export function PostForm({ id, closeDialog }: Props) {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          
+
+          {
+            form.getValues("type") === PublicationType.INSTAGRAM_REEL &&
+            <p className="font-bold mb-3">* La primera imagen que subas será la portada del Reel.</p>
+          }
+
           <FormField
             control={form.control}
             name="pilarId"
@@ -239,63 +256,68 @@ export function PostForm({ id, closeDialog }: Props) {
             )}
           />
 
-          <div className="flex flex-col items-center md:justify-center min-w-full py-4 grow" >
-            <FormLabel className="text-left w-full mb-4">Copy:</FormLabel>
-            <TextareaAutosize
-              value={isLoading && completion.length > 0 ? completion.trim() : copy }
-              onChange={(e) => {
-                if (!isLoading) setCopy(e.target.value);
-              }}
-              className="rounded-lg h-52 w-full min-w-full max-w-7xl min-h-52 md:min-w-96 drop-shadow-sm bg-gray-100 border border-gray-200 px-2 pt-2 pb-6 md:resize-y dark:bg-gray-900 dark:border-gray-800 focus:outline-none focus:border-blue-300 dark:focus:border-blue-700 transition-colors max-h-[52rem]"
-              placeholder="escribe aquí o utiliza la magia de abajo..."
-              aria-label="Text"
-              cacheMeasurements
-            />
+          {
+            type !== "INSTAGRAM_STORY" &&
+              <>
+              <div className="flex flex-col items-center md:justify-center min-w-full py-4 grow" >
+                <FormLabel className="text-left w-full mb-4">Copy:</FormLabel>
+                <TextareaAutosize
+                  value={isLoading && completion.length > 0 ? completion.trim() : copy }
+                  onChange={(e) => {
+                    if (!isLoading) setCopy(e.target.value);
+                  }}
+                  className="rounded-lg h-52 w-full min-w-full max-w-7xl min-h-52 md:min-w-96 drop-shadow-sm bg-gray-100 border border-gray-200 px-2 pt-2 pb-6 md:resize-y dark:bg-gray-900 dark:border-gray-800 focus:outline-none focus:border-blue-300 dark:focus:border-blue-700 transition-colors max-h-[52rem]"
+                  placeholder="escribe aquí o utiliza la magia de abajo..."
+                  aria-label="Text"
+                  cacheMeasurements
+                />
 
-            <div className="rounded-full w-10/12 justify-between drop-shadow-sm bg-white border border-gray-200 -mt-5 dark:bg-gray-900 dark:border-gray-800 flex focus-within:border-blue-300 dark:focus-within:border-blue-700 transition-colors">
-              <input
-                disabled={isLoading}
-                className="bg-white dark:bg-gray-900 w-full rounded-full py-1 px-3 focus:outline-none"
-                placeholder={cn(copy === "" ? "Escribe el copy..." : "Reescribe en tono más profesional")}
-                onChange={handleInputChange}
-                value={input}
-                aria-label="Prompt"
-                required
-                onKeyDown={
-                  (e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      handleComplete()
+                <div className="rounded-full w-10/12 justify-between drop-shadow-sm bg-white border border-gray-200 -mt-5 dark:bg-gray-900 dark:border-gray-800 flex focus-within:border-blue-300 dark:focus-within:border-blue-700 transition-colors">
+                  <input
+                    disabled={isLoading}
+                    className="bg-white dark:bg-gray-900 w-full rounded-full py-1 px-3 focus:outline-none"
+                    placeholder={cn(copy === "" ? "Escribe el copy..." : "Reescribe en tono más profesional")}
+                    onChange={handleInputChange}
+                    value={input}
+                    aria-label="Prompt"
+                    required
+                    onKeyDown={
+                      (e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          handleComplete()
+                        }
+                      }
                     }
-                  }
-                }
+                  />
+
+                  <button
+                    aria-label="Button"
+                    type="button"
+                    className="rounded-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 transition-colors text-white size-8 md:size-10 flex items-center justify-center"
+                    onClick={handleComplete}
+                  >
+                    {isLoading ? <Loader className="animate-spin w-10" /> : <SparklesIcon className="w-10" />}
+                  </button>
+                </div>
+
+              </div>
+
+              <FormField
+                control={form.control}
+                name="hashtags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hashtags:</FormLabel>
+                    <FormControl>
+                      <Textarea rows={6} placeholder="hashtags..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-
-              <button
-                aria-label="Button"
-                type="button"
-                className="rounded-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 transition-colors text-white size-8 md:size-10 flex items-center justify-center"
-                onClick={handleComplete}
-              >
-                {isLoading ? <Loader className="animate-spin w-10" /> : <SparklesIcon className="w-10" />}
-              </button>
-            </div>
-
-          </div>
-
-          <FormField
-            control={form.control}
-            name="hashtags"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hashtags:</FormLabel>
-                <FormControl>
-                  <Textarea rows={6} placeholder="hashtags..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            </>
+            }
 
           <FormField
             control={form.control}
@@ -374,7 +396,7 @@ export function PostForm({ id, closeDialog }: Props) {
           />
 
         <div className="flex justify-end">
-            <Button onClick={handleCancel} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+            <Button onClick={() => router.back()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
             <Button type="button" className="w-32 ml-2" onClick={form.handleSubmit(onSubmit)}>
               {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Guardar</p>}
             </Button>
@@ -386,9 +408,12 @@ export function PostForm({ id, closeDialog }: Props) {
 }
 
 
+type DeleteFormProps= {
+  id: string
+  closeDialog: () => void
+}
 
-
-export function DeletePublicationForm({ id, closeDialog }: Props) {
+export function DeletePublicationForm({ id, closeDialog }: DeleteFormProps) {
   const [loading, setLoading] = useState(false)
 
   const router= useRouter()
@@ -398,18 +423,23 @@ export function DeletePublicationForm({ id, closeDialog }: Props) {
   async function handleDelete() {
     if (!id) return
     setLoading(true)
-    deletePublicationAction(id)
-    .then(() => {
-      toast({title: "Publication eliminada" })
-      router.push(`/${agencySlug}/${clientSlug}/instagram`)
-    })
-    .catch((error) => {
-      toast({title: "Error", description: error.message, variant: "destructive"})
-    })
-    .finally(() => {
+    
+    try {
+      const deleted= await deletePublicationAction(id)
+      if (deleted) {
+        toast({ title: "Publicación eliminada" })
+        const type= deleted.type
+        const page= type === "INSTAGRAM_POST" ? "posts" : type === "INSTAGRAM_REEL" ? "reels" : type === "INSTAGRAM_STORY" ? "historias" : "feed"
+        router.push(`/${agencySlug}/${clientSlug}/instagram/${page}?post=${deleted.id}`)
+      } else {
+        toast({ title: "Error", description: "Hubo un error al eliminar la publicación", variant: "destructive" })
+      }
+
+    } catch (error: any) {
+      toast({ title: "Error", description: "Hubo un error al eliminar la publicación", variant: "destructive" })
+    } finally {
       setLoading(false)
-      closeDialog && closeDialog()
-    })
+    }
   }
   
   return (
@@ -438,7 +468,7 @@ export function DeletePublicationDialog({ id }: DeleteProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Eliminar publicación</DialogTitle>
-          <DialogDescription className="py-8">Seguro que deseas eliminar este post?</DialogDescription>
+          <DialogDescription className="py-8">Seguro que deseas eliminar esta publicación?</DialogDescription>
         </DialogHeader>
         <DeletePublicationForm closeDialog={() => setOpen(false)} id={id} />
       </DialogContent>

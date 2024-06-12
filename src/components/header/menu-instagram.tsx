@@ -3,7 +3,7 @@
 import { useMenuClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Calendar, Grid3X3, LayoutDashboard, Newspaper, Server, Settings, Undo2 } from "lucide-react"
+import { Calendar, Camera, GalleryHorizontalEnd, Grid3X3, LayoutDashboard, Newspaper, Server, Settings, Undo2, Video } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -38,9 +38,27 @@ export default function MenuInstagram() {
             roles: alowedRoles
         },
         {
-            href: `/${agencySlug}/${clientSlug}/instagram/posts`,
+            href: `/${agencySlug}/${clientSlug}/instagram/feed`,
             icon: Grid3X3,
             text: "Feed",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/instagram/posts`,
+            icon: Camera,
+            text: "Posts",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/instagram/reels`,
+            icon: Video,
+            text: "Reels",
+            roles: alowedRoles
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/instagram/historias`,
+            icon: GalleryHorizontalEnd,
+            text: "Historias",
             roles: alowedRoles
         },
         {

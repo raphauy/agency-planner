@@ -24,7 +24,7 @@ type Props = {
     }
 }
 
-export default async function PostsPage({ params, searchParams }: Props) {
+export default async function ReelsPage({ params, searchParams }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
     const client= await getClientDAOBySlug(clientSlug)
@@ -32,7 +32,7 @@ export default async function PostsPage({ params, searchParams }: Props) {
       redirect("/auth/404")
     }
 
-    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_POST)
+    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_REEL)
   
     let postId= searchParams.post
     if (!postId && postId !== "new-post" && posts.length > 0) {
@@ -55,10 +55,10 @@ export default async function PostsPage({ params, searchParams }: Props) {
 
         {!isClient ?
           <div className="w-full flex justify-end my-4 gap-2">
-              <Link href={`/${agencySlug}/${client.slug}/instagram/posts?newPost=true&type=INSTAGRAM_POST`}>
+              <Link href={`/${agencySlug}/${client.slug}/instagram/reels?newPost=true&type=INSTAGRAM_REEL`}>
                 <Button>
                   <PlusCircle size={22} className="mr-2" />
-                  Crear post
+                  Crear reel
                 </Button>
               </Link>
           </div>

@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button"
-import { getCurrentRole } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getClientDAOBySlug } from "@/services/client-services"
-import { getPublicationDAO, getPublicationsDAOByClientAndType } from "@/services/publication-services"
-import { PublicationType, UserRole } from "@prisma/client"
+import { getPublicationDAO, getPublicationsDAOByClientAndType, getPublicationsDAOByClientSlug } from "@/services/publication-services"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import Feed from "../feed/feed"
-import IgBox from "../feed/ig-box"
+import IgBox from "../feed/ig-box" 
 import { PostForm } from "../feed/post-form"
+import { getCurrentRole } from "@/lib/utils"
+import { PublicationType, UserRole } from "@prisma/client"
 
 type Props = {
     params: {
@@ -24,7 +24,7 @@ type Props = {
     }
 }
 
-export default async function PostsPage({ params, searchParams }: Props) {
+export default async function StoriesPage({ params, searchParams }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
     const client= await getClientDAOBySlug(clientSlug)
@@ -32,7 +32,7 @@ export default async function PostsPage({ params, searchParams }: Props) {
       redirect("/auth/404")
     }
 
-    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_POST)
+    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_STORY)
   
     let postId= searchParams.post
     if (!postId && postId !== "new-post" && posts.length > 0) {
@@ -55,10 +55,10 @@ export default async function PostsPage({ params, searchParams }: Props) {
 
         {!isClient ?
           <div className="w-full flex justify-end my-4 gap-2">
-              <Link href={`/${agencySlug}/${client.slug}/instagram/posts?newPost=true&type=INSTAGRAM_POST`}>
+              <Link href={`/${agencySlug}/${client.slug}/instagram/historias?newPost=true&type=INSTAGRAM_STORY`}>
                 <Button>
                   <PlusCircle size={22} className="mr-2" />
-                  Crear post
+                  Crear historia
                 </Button>
               </Link>
           </div>
@@ -68,7 +68,7 @@ export default async function PostsPage({ params, searchParams }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <Feed posts={posts} title="Reels" />
+          <Feed posts={posts} title="Historias" />
           
 
           {newPost &&<PostForm type={type} />}

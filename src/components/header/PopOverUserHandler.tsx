@@ -6,6 +6,7 @@ import { Clipboard, ExternalLink, LayoutDashboard, LockKeyhole, LogOut, User } f
 import Link from "next/link";
 import { ExtendedUser } from "@/next-auth";
 import { useRouter } from "next/navigation";
+import { UserRole } from "@prisma/client";
 
 
 type Props = {
@@ -35,6 +36,10 @@ export default function PopOverUserHandler({ user }: Props) {
           </li>
 
           <div className="border-b mx-4 my-2" />
+
+          <li className="flex items-center gap-2 px-2 pt-2 ml-1">
+            {getLabel(user.role)}
+          </li>
 
           {user.role === 'ADMIN' && <AdminMenu />}
 
@@ -68,4 +73,23 @@ function AdminMenu() {
       <div className="border-b mx-4 my-2" />
     </>
   );
+}
+
+function getLabel(role: UserRole) {
+  switch (role) {
+    case 'ADMIN':
+      return 'Admin'
+    case 'AGENCY_OWNER':
+      return 'Dueño de Agencia'
+    case 'AGENCY_ADMIN':
+      return 'Administrador de Agencia'
+    case 'AGENCY_CREATOR':
+      return 'Creador de contenido'
+    case 'CLIENT_ADMIN':
+      return 'Administrador de Cliente'
+    case 'CLIENT_USER':
+      return 'Rol: Cliente'
+    default:
+      return 'Invitado'
+  }
 }

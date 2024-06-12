@@ -1,20 +1,22 @@
-import Link from "next/link";
-
-import { isBefore } from "date-fns";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+import Link from "next/link"
+import { isBefore } from "date-fns"
+import Image from "next/image"
+import { cn } from "@/lib/utils"
+import { Camera, GalleryHorizontalEnd, Video } from "lucide-react"
+import { PublicationType } from "@prisma/client"
 
 export interface Event {
-  fechaImportante: string;
-  title: string;
-  content: string;
-  start: Date;
-  end: Date;
-  image: string;
-  color: string;
-  href: string;
-  status: string;
-  compact?: boolean;
+  fechaImportante: string
+  title: string
+  content: string
+  start: Date
+  end: Date
+  image: string
+  color: string
+  href: string
+  status: string
+  compact?: boolean
+  type: PublicationType
 }
 
 interface CustomEventProps {
@@ -61,7 +63,20 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
                 </div>
                 :
                 <>
-                  <p className="flex items-center text-sm font-bold text-gray-700">{event.title}</p>
+                  <div className="flex items-center text-gray-700 gap-0.5 font-bold">
+                    <div>
+                      {
+                        event.type === "INSTAGRAM_POST" && <Camera size={20} className="pb-0.5"/>
+                      }
+                      {
+                        event.type === "INSTAGRAM_REEL" && <Video size={20} />
+                      }
+                      {
+                        event.type === "INSTAGRAM_STORY" && <GalleryHorizontalEnd size={18} />
+                      }
+                    </div>
+                    <p>{event.title}</p>                    
+                  </div>
                   <div className="flex gap-1">
                     <div className="min-w-[40px] w-full lg:w-[50px] lg:min-w-[50px]">
                       <Image src={event.image} alt={event.title} width={300} height={300} className='overflow-hidden aspect-square object-cover rounded-md'/> 
