@@ -111,7 +111,7 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             const isImage= url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")
 
             return (
-              <Link  key={index} href={`/api/download?title=${title}&url=${url}`}>
+              <Link  key={index} href={`/api/download?title=${title}&url=${url}`} prefetch={false}>
                 <button className='flex items-center gap-1 p-1 border rounded'>
                   {
                     isImage ?
