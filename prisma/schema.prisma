@@ -222,12 +222,13 @@ model Pilar {
 model Comment {
   id                String    @id @default(cuid())
   text              String                                  // genext: show.column
+  edited            Boolean   @default(false)               // genext: show.column
 
   createdAt         DateTime  @default(now())               // gennext: skip.zod  
   updatedAt         DateTime  @updatedAt                    // gennext: skip.zod
 
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)    // genext: skip.list
-  userId            String
+  user              User?      @relation(fields: [userId], references: [id], onDelete: Cascade)    // genext: skip.list
+  userId            String?
   publication       Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade) // genext: skip.list
   publicationId     String
 }

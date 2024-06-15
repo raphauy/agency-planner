@@ -394,3 +394,17 @@ export async function setIncludeLastCopys(id: string, includeLastCopys: boolean)
   })
   return updated
 }
+
+export async function getClientOfPublication(publicationId: string) {
+  const found = await prisma.client.findFirst({
+    where: {
+      publications: {
+        some: {
+          id: publicationId
+        }
+      }
+    },
+  })
+  
+  return found as ClientDAO
+}

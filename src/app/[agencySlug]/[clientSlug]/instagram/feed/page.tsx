@@ -49,8 +49,6 @@ export default async function FeedPage({ params, searchParams }: Props) {
     const newPost= searchParams.newPost === "true"
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
-    console.log("type:", type)
-    
 
     const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 

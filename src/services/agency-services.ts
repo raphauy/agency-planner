@@ -123,3 +123,21 @@ export async function setOwner(agencyId: string, userId: string) {
   })
   return updated
 }
+
+export async function getAgencyOfPublication(publicationId: string) {
+  const found = await prisma.agency.findFirst({
+    where: {
+      clients: {
+        some: {
+          publications: {
+            some: {
+              id: publicationId
+            }
+          }
+        }
+      }
+    },
+  })
+  return found as AgencyDAO
+}
+

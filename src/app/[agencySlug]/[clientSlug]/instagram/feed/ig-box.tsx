@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { AgencyPubStatusSelector } from "./agency-status-selector"
 import { getCurrentUser } from "@/lib/utils"
 import { ClientPubStatusSelector } from "./client-status-selector"
+import { Comments } from "@/components/comments"
 
 type Props= {
     post: PublicationDAO
@@ -103,27 +104,30 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
         </div>
 
         <div className='p-4 mt-4 bg-white border rounded min-w-[400px] max-w-[500px] grid-cols-2 xl:grid-cols-3 grid gap-4'>
-        {images.map((url, index) => {
+          {images.map((url, index) => {
 
-          const title= slugifiedTitle+(index===0 ? "" : "_"+(index+1))
+            const title= slugifiedTitle+(index===0 ? "" : "_"+(index+1))
 
-          const isImage= url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")
+            const isImage= url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")
 
-          return (
-            <Link  key={index} href={`/api/download?title=${title}&url=${url}`}>
-              <button className='flex items-center gap-1 p-1 border rounded'>
-                {
-                  isImage ?
-                  <Image src={url} width={100} height={100} alt={title} />
-                  :
-                  <p>video</p>
-                }                
-                <Download size={30} className='text-gray-600'/>
-              </button>
-            </Link>
-          )
-        })}
-      </div>
+            return (
+              <Link  key={index} href={`/api/download?title=${title}&url=${url}`}>
+                <button className='flex items-center gap-1 p-1 border rounded'>
+                  {
+                    isImage ?
+                    <Image src={url} width={100} height={100} alt={title} />
+                    :
+                    <p>video</p>
+                  }                
+                  <Download size={30} className='text-gray-600'/>
+                </button>
+              </Link>
+            )})}
+          </div>
+
+          <div className='p-4 mt-4 bg-white border rounded gap-4'>
+            <Comments publication={post} />
+          </div>
 
       </div>
 

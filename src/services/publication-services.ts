@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db"
 import { PublicationStatus, PublicationType } from "@prisma/client"
 import { ClientDAO } from "./client-services"
 import { PilarDAO } from "./pilar-services"
+import { CommentDAO, CommentFormValues, createComment } from "./comment-services"
+import { getCurrentUser } from "@/lib/utils"
 
 export type PublicationDAO = {
 	id: string
@@ -129,7 +131,7 @@ export async function getPublicationDAO(id: string) {
     },
     include: {
       client: true,
-      pilar: true
+      pilar: true,
     }
   })
   return found as PublicationDAO
@@ -139,7 +141,30 @@ export async function createPublication(data: PublicationFormValues) {
   const created = await prisma.publication.create({
     data
   })
+  if (!created) return null
+  const currentUser = await getCurrentUser()
+  if (!currentUser) return false
+  const userName= currentUser.name || currentUser.email
+  const text = getText(created.type) + " por " + userName
+  const commentForm: CommentFormValues = {
+    text,
+    publicationId: created.id
+  }
+  await createComment(commentForm)
   return created
+}
+
+function getText(type: PublicationType) {
+  switch (type) {
+    case PublicationType.INSTAGRAM_POST:
+      return "Post creado"
+    case PublicationType.INSTAGRAM_REEL:
+      return "Reel creado"
+    case PublicationType.INSTAGRAM_STORY:
+      return "Historia creada"
+    default:
+      return "Publicación"
+  }
 }
 
 export async function updatePublication(id: string, data: PublicationFormValues) {
@@ -187,8 +212,11 @@ export async function getFullPublicationDAO(id: string) {
 }
 
 export async function updatePublicationStatus(id: string, status: PublicationStatus){  
-  console.log('updatePubStatus', id, status)
   
+  const publication = await getPublicationDAO(id)
+  if (!publication) return false
+  const oldStatus = publication.status
+
   const updated= await prisma.publication.update({
       where: {
           id
@@ -199,5 +227,30 @@ export async function updatePublicationStatus(id: string, status: PublicationSta
   })
   if (!updated) return false
 
+  const currentUser = await getCurrentUser()
+  if (!currentUser) return false
+  const userName= currentUser.name || currentUser.email
+
+  // create a system comment for the change of status
+  const text = userName + " " + getStatusChangeText(updated.type, oldStatus, status)
+  const commentForm: CommentFormValues = {
+    text,
+    publicationId: id
+  }
+  await createComment(commentForm)
+
   return true
+}
+
+function getStatusChangeText(type: PublicationType, oldStatus: PublicationStatus, newStatus: PublicationStatus) {
+  switch (type) {
+    case PublicationType.INSTAGRAM_POST:
+      return `pasó el post de ${oldStatus} a ${newStatus}`
+    case PublicationType.INSTAGRAM_REEL:
+      return `pasó el reel de ${oldStatus} a ${newStatus}`
+    case PublicationType.INSTAGRAM_STORY:
+      return `pasó la historia de ${oldStatus} a ${newStatus}`
+    default:
+      return `Publicación ${oldStatus} a ${newStatus}`
+  }
 }
