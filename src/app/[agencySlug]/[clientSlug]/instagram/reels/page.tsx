@@ -7,7 +7,7 @@ import { PublicationType, UserRole } from "@prisma/client"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import Feed from "../feed/feed"
+import Feed from "./feed"
 import IgBox from "../feed/ig-box"
 import { PostForm } from "../feed/post-form"
 

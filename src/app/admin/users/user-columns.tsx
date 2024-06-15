@@ -87,7 +87,7 @@ export const columns: ColumnDef<UserDAO>[] = [
     cell: ({ row }) => {
       const data= row.original
 
-      const deleteDescription= `Seguro que quieres eliminar el usuario ${data.name}`
+      const deleteDescription= `Seguro que quieres eliminar el usuario ${data.name}? Se eliminarán todos sus comentarios en publicaciones.`
 
       return (
         <div className="flex items-center justify-end gap-2">

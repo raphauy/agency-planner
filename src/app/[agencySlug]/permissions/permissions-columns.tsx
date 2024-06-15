@@ -25,7 +25,8 @@ export const columns: ColumnDef<PermissionsDAO>[] = [
       return (
         <div>
           <p className="font-bold text-base mb-2">{data.userName}</p>
-          <p className="ml-7 text-xs">({data.userRole})</p>
+          <p className="ml-7 text-xs">({data.userEmail})</p>
+          <p className="ml-7 text-xs">{data.userRole}</p>
         </div>
       )
     }
