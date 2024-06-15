@@ -5,11 +5,11 @@ import { getPublicationDAO, getPublicationsDAOByClientAndType, getPublicationsDA
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import Feed from "../feed/feed"
 import IgBox from "../feed/ig-box" 
 import { PostForm } from "../feed/post-form"
 import { getCurrentRole } from "@/lib/utils"
 import { PublicationType, UserRole } from "@prisma/client"
+import Feed from "../reels/feed"
 
 type Props = {
     params: {
@@ -66,8 +66,7 @@ export default async function StoriesPage({ params, searchParams }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <Feed posts={posts} title="Historias" />
-          
+          <Feed posts={posts} title="Historias" />          
 
           {newPost &&<PostForm type={type} />}
 
