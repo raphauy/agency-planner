@@ -53,13 +53,13 @@ export default async function ClientPage({ params }: Props) {
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 w-full">
       <Card className="p-4 w-full shadow-md text-muted-foreground">
 
         <div className="flex items-center">
           <div className="flex items-center gap-2">
             {client.image && <Image src={client.image} alt={client.name} width={40} height={40} className="rounded-full w-10 h-10" />}
-            <p className="dark:text-white flex-1 text-gray-900 font-bold">{client.name}</p>
+            <p className="dark:text-white flex-1 text-gray-900 font-bold whitespace-nowrap">{client.name}</p>
           </div>
           <div className="line-clamp-3 ml-10">
             {client.description}

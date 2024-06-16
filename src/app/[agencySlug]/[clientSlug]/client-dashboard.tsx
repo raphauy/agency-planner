@@ -5,6 +5,7 @@ import { InstagramStats } from "@/services/stats-service"
 import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { Camera, GalleryHorizontalEnd, Video } from "lucide-react"
+import Link from "next/link"
 import { SVGProps } from "react"
 
 export type GraphData = {
@@ -29,20 +30,22 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
   return (
     <div className="flex flex-1 flex-col gap-4 md:gap-8 mt-10">
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Posts</CardTitle>
-            <Camera className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalPosts}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Cantidad de Posts</p>
-            <div className="flex items-center gap-2 mt-4">
-              <span className="text-sm font-medium">{postsPercentage.toFixed(2)}%</span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
-            </div>
-          </CardContent>
-        </Card>
+        <Link href={`instagram/feed`}>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Posts</CardTitle>
+              <Camera className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalPosts}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Total de Posts</p>
+              <div className="flex items-center gap-2 mt-4">
+                <span className="text-sm font-medium">{postsPercentage.toFixed(2)}%</span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Reels</CardTitle>
@@ -50,7 +53,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReels}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Cantidad de Reels</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Total de Reels</p>
             <div className="flex items-center gap-2 mt-4">
               <span className="text-sm font-medium">{reelsPercentage.toFixed(2)}%</span>
               <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
@@ -64,7 +67,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalStories}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Cantidad de Historias</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Total de Historias</p>
             <div className="flex items-center gap-2 mt-4">
               <span className="text-sm font-medium">{storiesPercentage.toFixed(2)}%</span>
               <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
