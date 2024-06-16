@@ -49,7 +49,7 @@ export default function MenuClient() {
             href: `/${agencySlug}/${clientSlug}/publications`,
             icon: Newspaper,
             text: "Publicaciones",
-            roles: alowedRoles
+            roles: alowedRoles.filter(role => role !== "CLIENT_ADMIN" && role !== "CLIENT_USER")
         },
         {
             href: `/${agencySlug}/${clientSlug}/settings`,
