@@ -6,6 +6,7 @@ import { ResponsiveBar } from "@nivo/bar"
 import { ResponsiveLine } from "@nivo/line"
 import { Camera, GalleryHorizontalEnd, Video } from "lucide-react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 import { SVGProps } from "react"
 
 export type GraphData = {
@@ -22,6 +23,9 @@ type Props = {
 
 export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStories }: Props) {
   
+  const params= useParams()
+  const agencySlug= params.agencySlug
+  const clientSlug= params.clientSlug
   const totalPublications= stats.totalPosts + stats.totalReels + stats.totalStories
   const postsPercentage= stats.totalPosts / totalPublications * 100
   const reelsPercentage= stats.totalReels / totalPublications * 100
@@ -30,7 +34,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
   return (
     <div className="flex flex-1 flex-col gap-4 md:gap-8 mt-10">
       <div className="grid gap-4 md:grid-cols-3">
-        <Link href={`instagram/feed`}>
+        <Link href={`/${agencySlug}/${clientSlug}/instagram/posts`}>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Posts</CardTitle>
@@ -46,34 +50,38 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
             </CardContent>
           </Card>
         </Link>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Reels</CardTitle>
-            <Video className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalReels}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Total de Reels</p>
-            <div className="flex items-center gap-2 mt-4">
-              <span className="text-sm font-medium">{reelsPercentage.toFixed(2)}%</span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Historias</CardTitle>
-            <GalleryHorizontalEnd className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalStories}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Total de Historias</p>
-            <div className="flex items-center gap-2 mt-4">
-              <span className="text-sm font-medium">{storiesPercentage.toFixed(2)}%</span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
-            </div>
-          </CardContent>
-        </Card>
+        <Link href={`/${agencySlug}/${clientSlug}/instagram/reels`}>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Reels</CardTitle>
+              <Video className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalReels}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Total de Reels</p>
+              <div className="flex items-center gap-2 mt-4">
+                <span className="text-sm font-medium">{reelsPercentage.toFixed(2)}%</span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href={`/${agencySlug}/${clientSlug}/instagram/historias`}>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Historias</CardTitle>
+              <GalleryHorizontalEnd className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalStories}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Total de Historias</p>
+              <div className="flex items-center gap-2 mt-4">
+                <span className="text-sm font-medium">{storiesPercentage.toFixed(2)}%</span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
