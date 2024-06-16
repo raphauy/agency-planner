@@ -45,7 +45,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Posts</p>
               <div className="flex items-center gap-2 mt-4">
                 <span className="text-sm font-medium">{postsPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
               </div>
             </CardContent>
           </Card>
@@ -61,7 +61,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Reels</p>
               <div className="flex items-center gap-2 mt-4">
                 <span className="text-sm font-medium">{reelsPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
               </div>
             </CardContent>
           </Card>
@@ -77,7 +77,7 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Historias</p>
               <div className="flex items-center gap-2 mt-4">
                 <span className="text-sm font-medium">{storiesPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
               </div>
             </CardContent>
           </Card>

@@ -12,6 +12,7 @@ import Image from "next/image"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { SelectorData } from "./selectors"
+import Link from "next/link"
 
 
 export default function ClientSelector() {
@@ -64,10 +65,12 @@ export default function ClientSelector() {
     return (
       <div className="ml-2 flex items-center">
         <SlashIcon className="w-5 h-5 opacity-50" />
-        <div className="flex gap-2 px-2">
-          { client.image && <Image src={client.image} alt={name} width={20} height={20} className="rounded-full" />}
-          <p className="text-base">{client.name}</p>
-        </div>
+        <Link href={`/${agencySlug}/${clientSlug}`}>
+          <div className="flex gap-2 px-2">
+            { client.image && <Image src={client.image} alt={name} width={20} height={20} className="rounded-full" />}
+            <p className="text-base">{client.name}</p>
+          </div>
+        </Link>
       </div>
     )
   }
