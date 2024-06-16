@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { es } from "date-fns/locale"
 import slugify from 'slugify'
-import { PublicationType } from "@prisma/client"
+import { PublicationType, UserRole } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { AgencyPubStatusSelector } from "./agency-status-selector"
 import { getCurrentUser } from "@/lib/utils"
@@ -31,7 +31,8 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
 
     const slugifiedTitle= post.images ? slugify(post.title, { replacement: "_", lower: true }) : ""
 
-    const user= await getCurrentUser()
+    const currentRole= await getCurrentRole()
+    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     return (
       <div>
@@ -48,10 +49,12 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             </div>
             <div className="flex items-center">
               <Badge>{getLabel(post.type)}</Badge>
-              {/* <Link href={`/${agencySlug}/${post.client.slug}/instagram/feed?post=${post.id}&edit=true`}> */}
-              <Link href={`?post=${post.id}&edit=true`}>
-                <Button variant="ghost"><Pencil /></Button>
-              </Link>
+              {
+                !isClient &&
+                <Link href={`?post=${post.id}&edit=true`}>
+                  <Button variant="ghost"><Pencil /></Button>
+                </Link>
+              }
             </div>
           </div>
     
@@ -96,7 +99,7 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
 
         <div className="p-4 mt-4 bg-white dark:bg-black border rounded w-full flex justify-center">
           {
-            user?.role === "CLIENT_ADMIN" || user?.role === "CLIENT_USER" ?
+            isClient ?
             <ClientPubStatusSelector id={post.id} status={post.status} />
             :
             <AgencyPubStatusSelector id={post.id} status={post.status} />
