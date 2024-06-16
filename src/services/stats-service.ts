@@ -22,6 +22,11 @@ export async function getInstagramStats(clientId: string): Promise<InstagramStat
             where: {
               type: {
                 in: ["INSTAGRAM_POST", "INSTAGRAM_REEL", "INSTAGRAM_STORY"]
+              },
+              status: {
+                not: {
+                    in: ["BORRADOR"]
+                }
               }
             },
             select: {
@@ -62,6 +67,11 @@ export async function getMonthlyStats(clientId: string, lasMonths: number = 6): 
             where: {
               type: {
                 in: ["INSTAGRAM_POST", "INSTAGRAM_REEL", "INSTAGRAM_STORY"]
+              },
+              status: {
+                not: {
+                    in: ["BORRADOR"]
+                }
               }
             },
             select: {

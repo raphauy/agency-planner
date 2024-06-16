@@ -11,7 +11,7 @@ import slugify from 'slugify'
 import { PublicationType, UserRole } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { AgencyPubStatusSelector } from "./agency-status-selector"
-import { getCurrentUser } from "@/lib/utils"
+import { getCurrentRole, getCurrentUser } from "@/lib/utils"
 import { ClientPubStatusSelector } from "./client-status-selector"
 import { Comments } from "@/components/comments"
 
