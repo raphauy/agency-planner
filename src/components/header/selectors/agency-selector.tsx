@@ -64,8 +64,8 @@ export default function AgencySelector({ selectors= [] }: Props) {
       <div className="ml-2 flex items-center">
         <SlashIcon className="w-5 h-5 opacity-50" />
         <Link href={`/${agencySlug}`}>
-          <div className="flex gap-2 px-2">
-            { agency?.image && <Image src={agency?.image} alt={name} width={20} height={20} className="rounded-full" />}
+          <div className="flex gap-2 px-2 items-center">
+            { agency?.image && <Image src={agency?.image} alt={name} width={50} height={50} className="rounded-full w-7 h-7" />}
             <p className="text-base">{agency?.name}</p>
           </div>
         </Link>

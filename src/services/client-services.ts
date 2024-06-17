@@ -110,6 +110,9 @@ export async function createClient(data: ClientFormValues) {
 
   const created = await prisma.client.create({
     data,
+    include: {
+      agency: true,
+    }
   })
   // link the client to all AGENCY_ADMIN users of agency with agencyId and the AGENCY_OWNER user of the agency with agencyId
   const agencyId= data.agencyId

@@ -35,9 +35,10 @@ import { Badge } from "@/components/ui/badge"
 type Props= {
   id?: string
   type?: PublicationType
+  defaultHashtags: string
 }
 
-export function PostForm({ id, type }: Props) {
+export function PostForm({ id, type, defaultHashtags }: Props) {
   const router= useRouter()
 
   const form = useForm<PublicationFormValues>({
@@ -47,7 +48,7 @@ export function PostForm({ id, type }: Props) {
       pilarId: "",
       title: "",
       copy: "",
-      hashtags: "",
+      hashtags: defaultHashtags,
       status: PublicationStatus.BORRADOR,
       type,
       publicationDate: undefined,

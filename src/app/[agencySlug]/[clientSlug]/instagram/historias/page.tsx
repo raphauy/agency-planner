@@ -68,9 +68,9 @@ export default async function StoriesPage({ params, searchParams }: Props) {
 
           <Feed posts={posts} title="Historias" />          
 
-          {newPost &&<PostForm type={type} />}
+          {newPost &&<PostForm type={type} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
 
-          {post && !newPost && edit && <PostForm id={post.id} />}
+          {post && !newPost && edit && <PostForm id={post.id} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
 
           {post && !newPost && !edit && <IgBox post={post} clientImage={client.image} clientHandle={client.igHandle} agencySlug={agencySlug} />}
 

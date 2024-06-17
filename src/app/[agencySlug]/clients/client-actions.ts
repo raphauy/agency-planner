@@ -106,7 +106,8 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
     
     revalidatePath("/[agencySlug]", "page")
 
-    return created as ClientDAO
+    const agencySlug= created.agency.slug
+    redirect(`/${agencySlug}/${created.slug}/settings`)
 }
 
 export async function getClientSelectorsOfCurrentUserAction(agencySlug: string): Promise<SelectorData[]> {
