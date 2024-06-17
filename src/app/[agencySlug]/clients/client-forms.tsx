@@ -10,6 +10,7 @@ import { Loader } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { createOrUpdateClientAction, deleteClientAction, getClientDAOAction } from "./client-actions"
+import { useRouter } from "next/navigation"
 
 type Props= {
   id?: string
@@ -171,9 +172,9 @@ export function ClientForm({ id, closeDialog }: Props) {
           
 
         <div className="flex justify-end">
-            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
             <Button type="submit" className="w-32 ml-2">
-              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Save</p>}
+              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Guardar</p>}
             </Button>
           </div>
         </form>
@@ -206,7 +207,7 @@ export function DeleteClientForm({ id, closeDialog }: Props) {
       <Button onClick={() => closeDialog && closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
       <Button onClick={handleDelete} variant="destructive" className="w-32 ml-2 gap-1">
         { loading && <Loader className="h-4 w-4 animate-spin" /> }
-        Delete  
+        Eliminar
       </Button>
     </div>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader } from "lucide-react"
@@ -37,7 +37,7 @@ export function IgClientForm({ agencyId, closeDialog }: Props) {
     setLoading(true)
     try {
       await createClientWithIgHandleAction(agencyId, data.igHandle)
-      toast({ title: "Client created" })
+      toast({ title: "Cliente creado" })
       closeDialog()
     } catch (error: any) {
       toast({ title: "Error", description: error.message })
@@ -56,19 +56,22 @@ export function IgClientForm({ agencyId, closeDialog }: Props) {
             name="igHandle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>IgHandle:</FormLabel>
+                <FormLabel>Handle de Instagram:</FormLabel>
                 <FormControl>
                   <Input placeholder="raphauy" {...field} />
                 </FormControl>
+                <FormDescription>
+                  Utilizaremos el handle de Instagram para obtener nombre, descripción e imagen del cliente. Luego lo podrás editar en la configuración del cliente.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
       
           <div className="flex justify-end">
-            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
             <Button type="submit" className="w-32 ml-2">
-              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Save</p>}
+              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Crear</p>}
             </Button>
           </div>
         </form>

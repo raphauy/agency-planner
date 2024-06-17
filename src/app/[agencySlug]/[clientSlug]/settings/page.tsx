@@ -6,10 +6,11 @@ import { TitleForm } from "@/components/title-form";
 import { getClientDAOBySlug } from "@/services/client-services";
 import { LayoutDashboard, SparklesIcon } from "lucide-react";
 import { DeleteClientDialog } from "../../clients/client-dialogs";
-import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
+import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setDefaultHashtagsAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
 import SwitchBox from "./switch-box";
 import { UserRole } from "@prisma/client";
 import { getCurrentRole } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
     params: {
@@ -96,6 +97,15 @@ export default async function SettingsPage({ params }: Props) {
                             description="Incluir últimos copys en el prompt"
                             info= "Se incluirán en el prompt, los últimos copys del Pilar de Contenido seleccionado para que la IA tenga más contexto sobre los copys recientemente publicados."
                         />
+
+                        <Separator className="my-4" />
+
+                        <DescriptionForm
+                            label="Hashtags por defecto"
+                            initialValue={client.defaultHashtags || ""}
+                            id={client.id}
+                            update={setDefaultHashtagsAction}
+                        />                        
                     </div>
                 </div> 
             </div>

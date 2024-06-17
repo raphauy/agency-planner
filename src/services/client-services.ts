@@ -1,13 +1,10 @@
-import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { UserDAO } from "./user-services"
+import { getCurrentUser } from "@/lib/utils"
+import * as z from "zod"
 import { AgencyDAO } from "./agency-services"
-import { getUsersDAO } from "./user-services"
-import { getCurrentAgencyId, getCurrentAgencySlug, getCurrentUser } from "@/lib/utils"
-import { FunctionalityDAO } from "./functionality-services"
-import { BillableItemFormValues, createBillableItem } from "./billableitem-services"
-import { PilarDAO } from "./pilar-services"
 import { ChannelDAO } from "./channel-services"
+import { PilarDAO } from "./pilar-services"
+import { UserDAO, getUsersDAO } from "./user-services"
 
 export type ClientDAO = {
 	id: string
@@ -18,6 +15,7 @@ export type ClientDAO = {
 	igHandle: string | undefined
 	brandVoice: string | undefined
   copyPrompt: string | undefined
+  defaultHashtags: string | undefined
   includeBrandVoice: boolean
   includeLastCopys: boolean
 	createdAt: Date
@@ -36,6 +34,7 @@ export const clientSchema = z.object({
 	description: z.string().optional(),
 	igHandle: z.string().optional(),
 	brandVoice: z.string().optional(),
+  defaultHashtags: z.string().optional(),
 	agencyId: z.string({required_error: "agencyId is required."}),
 })
 
@@ -110,7 +109,7 @@ export async function createClient(data: ClientFormValues) {
   data.slug= slug
 
   const created = await prisma.client.create({
-    data
+    data,
   })
   // link the client to all AGENCY_ADMIN users of agency with agencyId and the AGENCY_OWNER user of the agency with agencyId
   const agencyId= data.agencyId
@@ -166,6 +165,9 @@ export async function deleteClient(id: string) {
     where: {
       id
     },
+    include: {
+      agency: true,
+    }
   })
   return deleted
 }
@@ -407,4 +409,16 @@ export async function getClientOfPublication(publicationId: string) {
   })
   
   return found as ClientDAO
+}
+
+export async function setDefaultHashtags(id: string, defaultHashtags: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id
+    },
+    data: {
+      defaultHashtags
+    }
+  })
+  return updated
 }

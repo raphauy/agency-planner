@@ -1,17 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { cn, getCurrentRole } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getChannelsByClientSlug } from "@/services/channel-services"
 import { getClientDAOBySlug } from "@/services/client-services"
-import { UserRole } from "@prisma/client"
+import { getInstagramStats, getMonthlyStats } from "@/services/stats-service"
 import * as LucideIcons from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import React from "react"
 import { ClientDashboard, GraphData } from "./client-dashboard"
-import { InstagramStats, MonthlyStats, getInstagramStats, getMonthlyStats } from "@/services/stats-service"
 
 type Props = {
     params: {
@@ -36,12 +35,10 @@ export default async function ClientPage({ params }: Props) {
   let monthlyStories: GraphData[] = []
   const monthlyStats= await getMonthlyStats(client.id)
   if (monthlyStats) {
-    console.log(monthlyStats)    
     monthlyPosts= monthlyStats.map((stat) => ({
       name: stat.month,
       count: stat.totalPosts
     }))
-    console.log(monthlyPosts)    
     monthlyReels= monthlyStats.map((stat) => ({
       name: stat.month,
       count: stat.totalReels

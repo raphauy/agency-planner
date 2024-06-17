@@ -19,8 +19,6 @@ type Props= {
 
 export function ImageForm({ id, initialImage, update }: Props) {
 
-  const [isEditing, setIsEditing] = useState(false)
-
   const [loading, setLoading] = useState(false)
   const [image, setImage] = useState(initialImage)
 
@@ -55,10 +53,10 @@ export function ImageForm({ id, initialImage, update }: Props) {
           <div>
           {
             showPlaceholder ?
-            <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
+            <Image src="/image-placeholder.png" alt="imagen del cliente" width={600} height={600} 
               className="object-cover w-full rounded-lg"/> 
             :
-            <Image src={image} alt="carousel image" width={600} height={600} 
+            <Image src={image} alt="imagen del cliente" width={600} height={600} 
               className="object-cover w-full rounded-lg"/>
           }
           </div>

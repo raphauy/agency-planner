@@ -1,6 +1,6 @@
 "use server"
 
-import { setBrandVoice, setCopyPrompt, setDescription, setImage, setIncludeBrandVoice, setIncludeLastCopys, setName, setSlug } from "@/services/client-services"
+import { setBrandVoice, setCopyPrompt, setDefaultHashtags, setDescription, setImage, setIncludeBrandVoice, setIncludeLastCopys, setName, setSlug } from "@/services/client-services"
 import { revalidatePath } from "next/cache"
 
 export async function setClientNameAction(id: string, name: string): Promise<boolean> {
@@ -74,6 +74,16 @@ export async function setIncludeBrandVoiceAction(id: string, includeBrandVoice: 
 
 export async function setIncludeLastCopysAction(id: string, includeLastCopys: boolean): Promise<boolean> {
     const updated= await setIncludeLastCopys(id, includeLastCopys)
+
+    if (!updated) return false
+
+    revalidatePath(`settings`)
+
+    return true
+}
+
+export async function setDefaultHashtagsAction(id: string, defaultHashtags: string): Promise<boolean> {
+    const updated= await setDefaultHashtags(id, defaultHashtags)
 
     if (!updated) return false
 

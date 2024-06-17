@@ -112,6 +112,7 @@ model Client {
     igHandle          String?                   // gennext: show.column
     brandVoice        String?
     copyPrompt        String? @default("Escribe el copy basado en el título...")
+    defaultHashtags   String? @default("")
     includeBrandVoice Boolean? @default(true)
     includeLastCopys  Boolean? @default(true)
 

@@ -7,7 +7,6 @@ import { ResponsiveLine } from "@nivo/line"
 import { Camera, GalleryHorizontalEnd, Video } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { SVGProps } from "react"
 
 export type GraphData = {
   name: string
@@ -43,10 +42,13 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalPosts}</div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Posts</p>
-              <div className="flex items-center gap-2 mt-4">
-                <span className="text-sm font-medium">{postsPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
-              </div>
+              {
+                stats.totalPosts > 0 && 
+                <div className="flex items-center gap-2 mt-4">
+                  <span className="text-sm font-medium">{postsPercentage.toFixed(0)}%</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
+                </div>
+              }
             </CardContent>
           </Card>
         </Link>
@@ -59,10 +61,13 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalReels}</div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Reels</p>
-              <div className="flex items-center gap-2 mt-4">
-                <span className="text-sm font-medium">{reelsPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
-              </div>
+              {
+                stats.totalPosts > 0 && 
+                <div className="flex items-center gap-2 mt-4">
+                  <span className="text-sm font-medium">{reelsPercentage.toFixed(0)}%</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
+                </div>
+              }
             </CardContent>
           </Card>
         </Link>
@@ -75,10 +80,13 @@ export function ClientDashboard({ stats, monthlyPosts, monthlyReels, monthlyStor
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalStories}</div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Total de Historias</p>
-              <div className="flex items-center gap-2 mt-4">
-                <span className="text-sm font-medium">{storiesPercentage.toFixed(0)}%</span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
-              </div>
+              {
+                stats.totalPosts > 0 && 
+                <div className="flex items-center gap-2 mt-4">
+                  <span className="text-sm font-medium">{storiesPercentage.toFixed(0)}%</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">del total de publicaciones</p>
+                </div>
+              }
             </CardContent>
           </Card>
         </Link>
@@ -162,27 +170,6 @@ function BarChart({ className, data }: ClassProps) {
         ariaLabel="A bar chart showing data"
       />
     </div>
-  )
-}
-
-
-function EyeIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
   )
 }
 

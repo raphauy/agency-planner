@@ -11,6 +11,7 @@ import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
 import { BillableItemFormValues, createBillableItem } from "@/services/billableitem-services"
 import { getBillingTypeDAOByName } from "@/services/billingtype-services"
+import { redirect } from "next/navigation"
     
 
 export async function getClientDAOAction(id: string): Promise<ClientDAO | null> {
@@ -34,10 +35,10 @@ export async function createOrUpdateClientAction(id: string | null, data: Client
 export async function deleteClientAction(id: string): Promise<ClientDAO | null> {    
     const deleted= await deleteClient(id)
 
-    const agencySlug= await getCurrentAgencySlug()
-    revalidatePath(`/${agencySlug}`)
+    revalidatePath("/[agencySlug]", "page")
 
-    return deleted as ClientDAO
+    const agencySlug= deleted.agency.slug
+    redirect(`/${agencySlug}`)
 }
     
 export async function getComplentaryUsersAction(id: string): Promise<UserDAO[]> {
@@ -78,6 +79,7 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
         image,
         igHandle,
         description: igProfile.biography,
+        defaultHashtags: "#" + slug + " #agregar" + " #otros" + " #hashtags" + " #aquí"
     }
 
     const storageBillingType= await getBillingTypeDAOByName('Storage')
@@ -102,9 +104,7 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
         console.log('no image to create billable item for client ' + created.name)
     }
     
-    
-    const agencySlug= await getCurrentAgencySlug()
-    revalidatePath(`/${agencySlug}`)
+    revalidatePath("/[agencySlug]", "page")
 
     return created as ClientDAO
 }

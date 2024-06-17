@@ -3,6 +3,7 @@
 import { useAgencySlug } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
+import { generateSlug } from "@/lib/utils"
 import { Loader, Pencil } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -44,11 +45,16 @@ export function SlugForm({ id, initialValue, update }: Props) {
     setLoading(false)
   }
 
-  function handleEnterKey(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault()
       onSubmit()
     }
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const slugged= generateSlug(e.target.value)
+    setSlug(slugged)
   }
 
 
@@ -59,15 +65,15 @@ export function SlugForm({ id, initialValue, update }: Props) {
         {
           isEditing ? (
 
-            <div className="flex items-center justify-between gap-1 font-medium">
+            <div className="gap-1 font-medium">
               <input
                 name="title"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 autoFocus
                 disabled={!isEditing}
                 value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                onKeyDown={handleEnterKey}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
                 onBlur={onSubmit}
               />
             </div>
