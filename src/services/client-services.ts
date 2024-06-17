@@ -57,7 +57,7 @@ export async function getClientsDAOByAgencyId(agencyId: string) {
       agencyId,
     },
     orderBy: {
-      id: 'asc'
+      name: 'asc'
     },
     include: {
       users: true,
@@ -273,6 +273,9 @@ export async function getClientsOfUser(userId: string) {
       agency: true,
       users: true,
       channels: true,
+    },
+    orderBy: {
+      name: 'asc'
     }
   })
 
