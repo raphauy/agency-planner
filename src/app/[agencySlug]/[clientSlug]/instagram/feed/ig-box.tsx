@@ -14,6 +14,7 @@ import { AgencyPubStatusSelector } from "./agency-status-selector"
 import { getCurrentRole, getCurrentUser } from "@/lib/utils"
 import { ClientPubStatusSelector } from "./client-status-selector"
 import { Comments } from "@/components/comments"
+import { fromZonedTime, toZonedTime, format as formatTz } from 'date-fns-tz';
 
 type Props= {
     post: PublicationDAO
@@ -33,6 +34,8 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
 
     const currentRole= await getCurrentRole()
     const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
+
+    const zonedDate = post.publicationDate ? toZonedTime(post.publicationDate, "America/Montevideo") : null
 
     return (
       <div>
@@ -89,7 +92,8 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             <p className="font-bold">Pilar:</p>      
             <p>{post.pilar?.name}</p>
             <p className="font-bold ">Fecha:</p>
-            <p>{post.publicationDate && format(post.publicationDate, "PPP", { locale: es })}</p>
+            <p>{zonedDate && formatTz(zonedDate, 'PPP', { locale: es })}</p>
+            
           </div>
           {post.type === "INSTAGRAM_POST" && images.length > 1 ? <GalleryHorizontal /> : null}
           {post.type === "INSTAGRAM_POST" && images.length === 1 ? <Camera /> : null}
