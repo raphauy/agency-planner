@@ -70,7 +70,7 @@ export default async function StoriesPage({ params, searchParams }: Props) {
 
           {newPost &&<PostForm type={type} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
 
-          {post && !newPost && edit && <PostForm id={post.id} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
+          {post && !newPost && edit && <PostForm id={post.id} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} type={type} />}
 
           {post && !newPost && !edit && <IgBox post={post} clientImage={client.image} clientHandle={client.igHandle} agencySlug={agencySlug} />}
 

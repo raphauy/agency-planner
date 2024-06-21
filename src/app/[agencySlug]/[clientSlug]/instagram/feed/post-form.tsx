@@ -38,7 +38,8 @@ type Props= {
   defaultHashtags: string
 }
 
-export function PostForm({ id, type, defaultHashtags }: Props) {
+export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
+  
   const router= useRouter()
 
   const form = useForm<PublicationFormValues>({
@@ -50,7 +51,7 @@ export function PostForm({ id, type, defaultHashtags }: Props) {
       copy: "",
       hashtags: defaultHashtags,
       status: PublicationStatus.BORRADOR,
-      type,
+      type: typeProp || PublicationType.INSTAGRAM_POST,
       publicationDate: undefined,
     },
     mode: "onChange",
@@ -67,6 +68,7 @@ export function PostForm({ id, type, defaultHashtags }: Props) {
   const [images, setImages] = useState<string[]>([])
   const [copy, setCopy] = useState("")
   const [title, setTitle] = useState("")
+  const [type, setType] = useState<PublicationType>(typeProp || PublicationType.INSTAGRAM_POST)
 
   const { complete, completion,	input, isLoading, handleInputChange, setInput } = useCompletion({
 		onFinish: (prompt, completion) => {
@@ -135,6 +137,7 @@ export function PostForm({ id, type, defaultHashtags }: Props) {
           data.images && setImages(data.images.split(","))
           data.publicationDate && form.setValue("publicationDate", data.publicationDate)
           data.client.image && setClientImage(data.client.image)
+          setType(data.type)
         }
       })
     }
