@@ -59,6 +59,15 @@ export async function getPublicationsDAOByClientSlug(clientSlug: string) {
       publicationDate: 'desc'
     },
     include: {
+      client: {
+        include: {
+          agency: {
+            select: {
+              slug: true
+            }
+          },          
+        },
+      },
       pilar: true
     }
   })
