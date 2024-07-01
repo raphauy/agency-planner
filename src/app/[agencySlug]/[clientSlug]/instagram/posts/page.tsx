@@ -66,7 +66,7 @@ export default async function PostsPage({ params, searchParams }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <Feed posts={posts} title="Reels" />
+          <Feed posts={posts} title="Posts" />
           
 
           {newPost &&<PostForm type={type} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
