@@ -8,9 +8,13 @@ import { deletePilarAction, createOrUpdatePilarAction, getPilarDAOAction } from 
 import { pilarSchema, PilarFormValues } from '@/services/pilar-services'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Loader } from "lucide-react"
 import { useParams } from "next/navigation"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
 
 type Props= {
   id?: string
@@ -36,7 +40,7 @@ export function PilarForm({ id, closeDialog }: Props) {
     setLoading(true)
     try {
       await createOrUpdatePilarAction(id ? id : null, data)
-      toast({ title: id ? "Pilar updated" : "Pilar created" })
+      toast({ title: id ? "Pilar actualizado" : "Pilar creado" })
       closeDialog()
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" })
@@ -51,6 +55,7 @@ export function PilarForm({ id, closeDialog }: Props) {
         if (data) {
           form.reset(data)
           form.setValue("clientSlug", clientSlug)
+          form.setValue("color", data.color)
         }
         Object.keys(form.getValues()).forEach((key: any) => {
           if (form.getValues(key) === null) {
@@ -71,9 +76,9 @@ export function PilarForm({ id, closeDialog }: Props) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pilar's name" {...field} />
+                  <Input placeholder="Nombre del Pilar" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -86,35 +91,92 @@ export function PilarForm({ id, closeDialog }: Props) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pilar's description" {...field} />
+                  <Textarea placeholder="Descripción del Pilar" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           
-      
           <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Color</FormLabel>
-                <FormControl>
-                  <Input placeholder="Pilar's color" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem className="space-y-1">
+              <FormLabel>Color</FormLabel>
+              <FormMessage />
+              <RadioGroup
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                className="flex gap-2 pt-2"
+              >
+                <FormItem>
+                  <FormLabel>
+                    <FormControl>
+                      <RadioGroupItem value="#bfe1ff" className="sr-only" />
+                    </FormControl>
+                    <div className={cn("flex gap-1 items-center rounded-md border-2 border-muted p-1 hover:border-accent cursor-pointer", field.value === "#bfe1ff" && "border-primary")}>
+                      <div className="w-6 h-6 rounded-full bg-[#bfe1ff]" /> Azul
+                    </div>
+                  </FormLabel>
+                </FormItem>
+                <FormItem>
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value="#d0f0c0" className="sr-only" />
+                    </FormControl>
+                    <div className={cn("flex gap-1 items-center rounded-md border-2 border-muted p-1 hover:border-accent cursor-pointer", field.value === "#d0f0c0" && "border-primary")}>
+                      <div className="w-6 h-6 rounded-full bg-[#d0f0c0]" /> Verde
+                    </div>
+                  </FormLabel>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value="#ffd0d0" className="sr-only" />
+                    </FormControl>
+                    <div className={cn("flex gap-1 items-center rounded-md border-2 border-muted p-1 hover:border-accent cursor-pointer", field.value === "#ffd0d0" && "border-primary")}>
+                      <div className="w-6 h-6 rounded-full bg-[#ffd0d0]" /> Rojo
+                    </div>
+                  </FormLabel>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value="#ffcc99" className="sr-only" />
+                    </FormControl>
+                    <div className={cn("flex gap-1 items-center rounded-md border-2 border-muted p-1 hover:border-accent cursor-pointer", field.value === "#ffcc99" && "border-primary")}>
+                      <div className="w-6 h-6 rounded-full bg-[#ffcc99]" /> Naranja
+                    </div>
+                  </FormLabel>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value="#e8d0ff" className="sr-only" />
+                    </FormControl>
+                    <div className={cn("flex gap-1 items-center rounded-md border-2 border-muted p-1 hover:border-accent cursor-pointer", field.value === "#e8d0ff" && "border-primary")}>
+                      <div className="w-6 h-6 rounded-full bg-[#e8d0ff]" /> Púrpura
+                    </div>
+                  </FormLabel>
+                </FormItem>
+
+              </RadioGroup>
+            </FormItem>
+          )}
+        />  
+      
           
       
         <div className="flex justify-end">
-            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
             <Button type="submit" className="w-32 ml-2">
-              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Save</p>}
+              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Guardar</p>}
             </Button>
           </div>
         </form>

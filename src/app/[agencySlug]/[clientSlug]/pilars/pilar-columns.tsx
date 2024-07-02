@@ -15,10 +15,19 @@ export const columns: ColumnDef<PilarDAO>[] = [
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Name
+            Nombre
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      return (
+        <div className="flex items-center gap-2">
+          <div className={`w-6 h-6 rounded-full bg-[${data.color}]`} />
+          <p className="ml-2">{data.name}</p>
+        </div>
+      )
+    }
   },
 
   {
@@ -27,19 +36,7 @@ export const columns: ColumnDef<PilarDAO>[] = [
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Description
-            <ArrowUpDown className="w-4 h-4 ml-1" />
-          </Button>
-    )},
-  },
-
-  {
-    accessorKey: "color",
-    header: ({ column }) => {
-        return (
-          <Button variant="ghost" className="pl-0 dark:text-white"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Color
+            Descripción
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
@@ -50,7 +47,7 @@ export const columns: ColumnDef<PilarDAO>[] = [
     cell: ({ row }) => {
       const data= row.original
 
-      const deleteDescription= `Do you want to delete Pilar ${data.id}?`
+      const deleteDescription= `Seguro que quieres eliminar el pilar ${data.name}`
 
       return (
         <div className="flex items-center justify-end gap-2">

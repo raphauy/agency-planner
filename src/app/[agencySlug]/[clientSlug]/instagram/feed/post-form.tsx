@@ -271,7 +271,7 @@ export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
                   onChange={(e) => {
                     if (!isLoading) setCopy(e.target.value);
                   }}
-                  className="rounded-lg h-52 w-full min-w-full max-w-7xl min-h-52 md:min-w-96 drop-shadow-sm bg-gray-100 border border-gray-200 px-2 pt-2 pb-6 md:resize-y dark:bg-gray-900 dark:border-gray-800 focus:outline-none focus:border-blue-300 dark:focus:border-blue-700 transition-colors max-h-[52rem]"
+                  className="rounded-lg h-52 w-full min-w-full max-w-7xl min-h-52 md:min-w-96 drop-shadow-sm bg-slate-50 border border-gray-200 px-2 pt-2 pb-6 md:resize-y dark:bg-gray-900 dark:border-gray-800 focus:outline-none focus:border-blue-300 dark:focus:border-blue-700 transition-colors max-h-[52rem] text-gray-800 dark:text-white"
                   placeholder="escribe aquí o utiliza la magia de abajo..."
                   aria-label="Text"
                   cacheMeasurements

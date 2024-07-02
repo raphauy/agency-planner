@@ -14,7 +14,7 @@ type Props= {
   id?: string
 }
 
-const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create Pilar</Button>
+const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Crear Pilar</Button>
 const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
 export function PilarDialog({ id }: Props) {
@@ -31,7 +31,7 @@ export function PilarDialog({ id }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Update' : 'Create'} Pilar
+          <DialogTitle>{id ? 'Actualizar' : 'Crear'} Pilar
           </DialogTitle>
         </DialogHeader>
         <PilarForm closeDialog={() => setOpen(false)} id={id} />
@@ -59,7 +59,7 @@ export function DeletePilarDialog({ id, description }: DeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Pilar</DialogTitle>
+          <DialogTitle>Elimar Pilar</DialogTitle>
           <DialogDescription className="py-8">{description}</DialogDescription>
         </DialogHeader>
         <DeletePilarForm closeDialog={() => setOpen(false)} id={id} />
@@ -67,13 +67,3 @@ export function DeletePilarDialog({ id, description }: DeleteProps) {
     </Dialog>
   )
 }
-
-interface CollectionProps{
-  id: string
-  title: string
-}
-
-
-
-
-  
