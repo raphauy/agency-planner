@@ -76,7 +76,7 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
                         event.type === "INSTAGRAM_STORY" && <GalleryHorizontalEnd size={18} />
                       }
                     </div>
-                    <p>{event.title}</p>                    
+                    <p className="text-sm">{event.title}</p>
                   </div>
                   <div className="flex gap-1">
                     <div className="min-w-[40px] w-full lg:w-[50px] lg:min-w-[50px]">
