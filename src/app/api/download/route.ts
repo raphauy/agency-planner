@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
 
         const image = await fetch(url)
         const contentType = image.headers.get('content-type')
-        const type = contentType?.split('/')[1]
+        let type = contentType?.split('/')[1]
+        if (type?.includes("quicktime")) {
+            type = "mov"
+        }
 
         // the url is a image
         return new Response(image.body, {
