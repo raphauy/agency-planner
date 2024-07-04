@@ -153,3 +153,37 @@ export async function sendAgencyInvitationEmail(userId: string, agencyId: string
 
 
 }
+
+export async function sendContactOnLandingEmail(email: string, message: string) {
+ 
+  let from= process.env.DEFAULT_EMAIL_FROM!
+  let reply_to= email
+
+  const html= `
+    <div>
+      <h3>Mensaje enviado desde la landing page de Agency Planner</h3>
+      <p>Email: ${email}</p>
+      <p>Mensaje: ${message}</p>
+    </div>
+  `
+  const to = ["rapha.uy@rapha.uy", "gabi@tinta.wine"]
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    reply_to,
+    subject: "Mensaje enviado desde la landing page de Agency Planner",
+    html,
+  });
+
+  if (error) {
+    console.log("Error sending test email")    
+    console.log("error.name:", error.name)    
+    console.log("error.message:", error.message)    
+    throw new Error("Error al procesar la solicitud")
+  } else {
+    console.log("email result: ", data)
+  }
+
+}

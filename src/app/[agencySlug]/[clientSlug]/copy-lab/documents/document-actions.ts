@@ -1,0 +1,41 @@
+"use server"
+  
+import { revalidatePath } from "next/cache"
+import { DocumentDAO, DocumentFormValues, createDocument, updateDocument, getFullDocumentDAO, deleteDocument, updateContent } from "@/services/document-services"
+import { JSONContent } from "novel"
+
+
+export async function getDocumentDAOAction(id: string): Promise<DocumentDAO | null> {
+    return getFullDocumentDAO(id)
+}
+
+export async function createOrUpdateDocumentAction(id: string | null, data: DocumentFormValues) {       
+    let updated= null
+    if (id) {
+        updated= await updateDocument(id, data)
+    } else {
+        updated= await createDocument(data)
+    }     
+
+    revalidatePath(`${updated.client.agency.slug}/${updated.client.slug}/copy-lab/documents`, 'page')
+
+    return updated
+}
+
+export async function deleteDocumentAction(id: string) {    
+    const deleted= await deleteDocument(id)
+
+    revalidatePath(`${deleted.client.agency.slug}/${deleted.client.slug}/copy-lab/documents`, 'page')
+
+    return deleted
+}
+
+export async function updateContentAction(id: string, textContent: string, jsonContent: string)  {
+    
+    const updated= await updateContent(id, textContent, jsonContent)
+
+    revalidatePath(`${updated.client.agency.slug}/${updated.client.slug}/copy-lab/documents`, 'page')
+  
+    return updated
+}
+  

@@ -18,19 +18,20 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
-    <div className="flex gap-1 dark:text-white items-center">
+    <div className="flex items-center gap-1 dark:text-white">
         
-          <Input className="max-w-xs" placeholder="name filter..."
+          <Input className="max-w-xs" placeholder="filtrar por nombre..."
               value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}                
           />
           
       
-          <Input className="max-w-xs" placeholder="description filter..."
+          <Input className="max-w-xs" placeholder="filtrar por descripción..."
               value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn("description")?.setFilterValue(event.target.value)}                
           />
-      
+          
+         
         {isFiltered && (
           <Button
             variant="ghost"

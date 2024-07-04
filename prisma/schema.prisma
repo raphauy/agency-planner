@@ -111,6 +111,7 @@ model Client {
     description       String?                   // gennext: show.column
     igHandle          String?                   // gennext: show.column
     brandVoice        String?
+    prompt            String? @default("Eres un experto copywriter que ayuda al usuario copys para publicaciones de redes sociales...")
     copyPrompt        String? @default("Escribe el copy basado en el título...")
     defaultHashtags   String? @default("")
     includeBrandVoice Boolean? @default(true)
@@ -128,8 +129,9 @@ model Client {
     publications      Publication[]
     pilars            Pilar[]
     channels          Channel[]
-
     invitations       Invitation[]
+    documents         Document[]
+    conversations     Conversation[]
 }
 
 model Functionality {
@@ -267,4 +269,47 @@ model Invitation {
 
   agency        Agency?    @relation(fields: [agencyId], references: [id], onDelete: Cascade) // genext: skip.list
   agencyId      String?
+}
+
+model Document {
+  id                     String   @id @default(cuid())
+  name                   String                               // gennext: show.column
+  description            String?                              // gennext: show.column
+  jsonContent            String?  @db.Text                    
+  textContent            String?  @db.Text                    // gennext: show.column
+  type                   String   @default("text")            // gennext: skip.zod
+  fileSize               Int?
+  wordsCount             Int?     @default(0)                 // gennext: show.column
+  status                 String   @default("pending")         // gennext: skip.zod
+
+  createdAt             DateTime  @default(now())             // gennext: skip.zod
+  updatedAt             DateTime  @updatedAt @default(now())  // gennext: skip.zod show.column
+
+  client                Client   @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
+  clientId              String
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  phone       String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages    Message[]
+
+  client      Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    String
+}
+
+model Message {
+  id                String      @id @default(cuid())
+  role              String
+  content           String      @db.Text
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  conversation      Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId    String
 }

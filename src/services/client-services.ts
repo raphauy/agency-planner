@@ -14,6 +14,7 @@ export type ClientDAO = {
 	description: string | undefined
 	igHandle: string | undefined
 	brandVoice: string | undefined
+  prompt: string | undefined
   copyPrompt: string | undefined
   defaultHashtags: string | undefined
   includeBrandVoice: boolean

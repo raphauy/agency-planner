@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
 import { PublicationStatus, UserRole } from "@prisma/client"
+import { format as formatTZ, toZonedTime } from "date-fns-tz";
+import { es } from "date-fns/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -78,4 +80,23 @@ export function getPostStatusColor(status: PublicationStatus, opacity?: string) 
     default:
       return `rgba(156, 163, 175, ${opacity || 1})`; // gray
     }
+}
+
+export function getFormat(date: Date): string {
+  const timeZone = "America/Montevideo";
+  
+  // Convert the date to the desired time zone
+  const zonedDate = toZonedTime(date, timeZone);
+  
+  const today = toZonedTime(new Date(), timeZone);
+
+  if (
+    zonedDate.getDate() === today.getDate() &&
+    zonedDate.getMonth() === today.getMonth() &&
+    zonedDate.getFullYear() === today.getFullYear()
+  ) {
+    return formatTZ(zonedDate, "HH:mm", { timeZone, locale: es });
+  } else {
+    return formatTZ(zonedDate, "yyyy/MM/dd", { timeZone, locale: es });
+  }
 }
