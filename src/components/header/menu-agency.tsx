@@ -48,7 +48,7 @@ export default function MenuAgency() {
         {
             href: `/${agencySlug}/users`,
             icon: User,
-            text: "Equipo",
+            text: "Equipo Agencia",
             roles: alowedRoles
         },
         {

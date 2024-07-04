@@ -36,7 +36,7 @@ export default function MenuClient() {
         {
             href: `/${agencySlug}/${clientSlug}/team`,
             icon: User,
-            text: "Equipo",
+            text: "Equipo Cliente",
             roles: alowedRoles
         },
         {
