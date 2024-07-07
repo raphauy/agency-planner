@@ -11,14 +11,17 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth
     //console.log('isLoggedIn', isLoggedIn)
 
-    // const publicDomain= process.env.NEXT_PUBLIC_URL?.split('//')[1]
-    // let hostname = req.headers
-    // let subdomain = hostname.get('host')?.split(`${publicDomain}`).filter(Boolean)[0]
+    const publicDomain= process.env.NEXT_PUBLIC_URL?.split('//')[1]
+    let hostname = req.headers
+    let subdomain = hostname.get('host')?.split(`${publicDomain}`).filter(Boolean)[0]
+    subdomain= subdomain?.split(".").slice(0, -1).join(".")
+    const isSubdomainHomepage= subdomain && nextUrl.pathname === "/"
+    if (isSubdomainHomepage) {
+        return NextResponse.rewrite(new URL(`/${subdomain}`, req.url))
+    }    
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-    // const isPublicRoute = publicRoutes.includes(nextUrl.pathname) && !subdomain
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
-    //console.log('nextUrl', nextUrl.pathname);    
     
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   

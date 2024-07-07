@@ -1,7 +1,7 @@
 import { getCurrentRole } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getClientsDAOByAgencyId, getClientsOfCurrentUser } from "@/services/client-services"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import ClientsTabs from "./clients-tabs"
 
 type Props= {
@@ -14,10 +14,10 @@ export default async function AgencyPage({ params }: Props) {
   const agency= await getAgencyDAOBySlug(params.agencySlug)
 
   if (!agency) {
-    redirect("/auth/404")
-  }
+    notFound()
+  }  
 
-  const agencySlug= agency.slug
+  const agencySlug= agency.slug  
   const currentRole= await getCurrentRole()
   if (currentRole?.startsWith("CLIENT")){
     const clients= await getClientsOfCurrentUser()
