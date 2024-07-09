@@ -28,7 +28,7 @@ type Props= {
 
 export default function CalendarBox({ events }: Props) {
   return (
-    <div className="w-full flex-grow bg-white h-[calc(100vh-300px)] p-3 border rounded-md">
+    <div className="w-full flex-grow bg-white h-[calc(100vh-180px)] p-3 border rounded-md">
       <Calendar
         localizer={localizer}
         events={events}

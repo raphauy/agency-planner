@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { ChatCompletionCreateParams, ChatCompletionMessageParam, ChatCompletionSystemMessageParam } from "openai/resources/index.mjs";
 import { Client } from "@prisma/client";
+import { getDocumentsDAOByClient } from "./document-services";
 
 
 // export async function completionInit(client: Client, functions: ChatCompletionCreateParams.Function[], messages: ChatCompletionMessageParam[], modelName?: string): Promise<CompletionInitResponse | null> {
@@ -71,9 +72,33 @@ import { Client } from "@prisma/client";
 // }
 
 
-export async function getContext(clientId: string, phone: string, userInput: string) {
-  let contextString= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes."
+export async function getContext(clientId: string, phone: string, userInput: string, brandVoice?: string) {
+  let contextString= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
 
+  contextString+= "Cuando el usuario solicita un copy, debes utilizar la tool 'entregarCopys'\n"
+  contextString+= "No hace falta explicar que vas a crear dos opciones, simplemente utiliza la función que ésta le mostrará al usuario el resultado.'\n"
+
+  const documents= await getDocumentsDAOByClient(clientId)
+  contextString+= "\n**** Documentos ****\n"
+  if (documents.length === 0) {
+    contextString+= "No hay documentos disponibles.\n"
+  } else {
+    contextString+= "Documentos que pueden ser relevantes para elaborar una respuesta:\n"
+  }
+  documents.map((doc) => {
+    contextString += `{
+documentId: "${doc.id}",
+documentName: "${doc.name}",
+documentDescription: "${doc.description}",
+},
+`
+  })
+  contextString+= "\n********************\n"
+
+  if (brandVoice) {
+    contextString+= `Voz de marca para tener en cuenta en los copys: \n`
+    contextString+= `${brandVoice}.\n`
+  }
   return contextString
 
 }

@@ -1,6 +1,7 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { JSONContent } from "novel"
+import { colorPalette } from "@/lib/utils"
 
 export type DocumentDAO = {
 	id: string
@@ -12,6 +13,7 @@ export type DocumentDAO = {
 	fileSize: number | undefined
 	wordsCount: number | undefined
 	status: string
+  color: string
 	createdAt: Date
 	updatedAt: Date
 	clientId: string
@@ -151,8 +153,13 @@ export async function getDocumentDAO(id: string) {
 }
     
 export async function createDocument(data: DocumentFormValues) {
+  const color= colorPalette[Math.floor(Math.random() * colorPalette.length)]
+
   const created = await prisma.document.create({
-    data,
+    data: {      
+      ...data,
+      color
+    },
     include: {
       client: {
         include: {

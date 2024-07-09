@@ -51,12 +51,12 @@ export default function MenuClient() {
             text: "Publicaciones",
             roles: alowedRoles.filter(role => role !== "CLIENT_ADMIN" && role !== "CLIENT_USER")
         },
-        // {
-        //     href: `/${agencySlug}/${clientSlug}/copy-lab`,
-        //     icon: FlaskConical,
-        //     text: "Copy Lab",
-        //     roles: alowedRoles.filter(role => role !== "CLIENT_ADMIN" && role !== "CLIENT_USER")
-        // },
+        {
+            href: `/${agencySlug}/${clientSlug}/copy-lab`,
+            icon: FlaskConical,
+            text: "Copy Lab",
+            roles: alowedRoles.filter(role => role !== "CLIENT_ADMIN" && role !== "CLIENT_USER")
+        },
         {
             href: `/${agencySlug}/${clientSlug}/settings`,
             icon: Settings,
@@ -80,7 +80,10 @@ export default function MenuClient() {
                     } 
                     if (item.text !== "Dashboard" && path.startsWith(item.href)) {
                         borderB= true
-                    }                    
+                    }
+
+                    if (item.text === "Copy Lab" && agencySlug !== "tinta") 
+                        return null
 
                     return (
                         <li key={index} className={cn("border-b-primary", borderB && "border-b-2")}>

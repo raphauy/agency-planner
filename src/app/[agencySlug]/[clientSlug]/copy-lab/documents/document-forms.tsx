@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Loader } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
+import { useRouter } from "next/navigation"
 
 type Props= {
   id?: string
@@ -32,6 +33,7 @@ export function DocumentForm({ id, clientId, closeDialog }: Props) {
       await createOrUpdateDocumentAction(id ? id : null, data)
       toast({ title: id ? "Document updated" : "Document created" })
       closeDialog()
+      window.location.reload()
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" })
     } finally {

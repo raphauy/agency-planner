@@ -3,6 +3,7 @@ import { DataTable } from "./document-table"
 import { columns } from "./document-columns"
 import { getDocumentsDAOByClient } from "@/services/document-services"
 import { getClientDAOBySlug } from "@/services/client-services"
+import DocumentsTabs from "./documents-tabs"
 
 type Props= {
   params: {
@@ -19,16 +20,10 @@ export default async function UsersPage({ params }: Props) {
   const data= await getDocumentsDAOByClient(client.id)
 
   return (
-    <div className="w-full">      
+    <div className="w-full ml-5">
 
-      <div className="flex justify-end mx-auto my-2">
-        <DocumentDialog clientId={client.id} />
-      </div>
+      <DocumentsTabs clientId={client.id} documents={data} />
 
-      <div className="container p-3 py-4 mx-auto border rounded-md text-muted-foreground dark:text-white bg-white dark:bg-black">
-        <DataTable columns={columns} data={data} subject="Documento"/>      
-      </div>
     </div>
   )
 }
-  

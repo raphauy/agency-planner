@@ -108,14 +108,22 @@ export async function getClientDAOBySlug(slug: string) {
 export async function createClient(data: ClientFormValues) {
   const slug= await getUniqueSlug(data)
   data.slug= slug
+  let prompt= `Eres un experto copywriter que ayuda al usuario con sus copys para publicaciones de las redes sociales de ${data.name}.\n\n`
+  prompt+= "- Utiliza saltos de línea para separar los párrafos de cada copy.\n"
+  prompt+= "- Un copy de Instagram debe tener un largo aproximado de 100 palabras.\n"
+  prompt+= "- Un copy de Instagram debe ser claro y conciso, y debe ser útil para los clientes.\n"
+
 
   const created = await prisma.client.create({
-    data,
+    data: {
+      ...data,
+      prompt
+    },
     include: {
       agency: true,
     }
   })
-  // link the client to all AGENCY_ADMIN users of agency with agencyId and the AGENCY_OWNER user of the agency with agencyId
+  
   const agencyId= data.agencyId
   const allUsers= await getUsersDAO()
   const agencyAdminUsers= allUsers.filter(c => c.role === 'AGENCY_ADMIN' && c.agencyId === agencyId)
@@ -428,4 +436,20 @@ export async function setDefaultHashtags(id: string, defaultHashtags: string) {
     }
   })
   return updated
+}
+
+export async function setPrompt(clientId: string, prompt: string) {
+  const client= await prisma.client.update({
+    where: {
+      id: clientId
+    },
+    data: {
+      prompt
+    },
+    include: {
+      agency: true
+    }
+  })
+
+  return client   
 }

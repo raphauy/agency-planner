@@ -1,26 +1,22 @@
-import { getClientDAOBySlug } from "@/services/client-services";
 import { getCurrentUser } from "@/lib/utils";
-import { getContext } from "@/services/function-call-services";
+import { getClientDAOBySlug } from "@/services/client-services";
 import { createConversation, getConversationDAO } from "@/services/conversation-services";
-import { createMessage } from "@/services/message-services";
-import { StreamingTextResponse, streamText } from "ai";
+import { getContext } from "@/services/function-call-services";
+import { MessageFormValues, createMessage } from "@/services/message-services";
+import { DocumentResult, tools } from "@/services/tools";
 import { openai } from '@ai-sdk/openai';
+import { convertToCoreMessages, streamText } from "ai";
 
 export const maxDuration = 299
 
 export async function POST(req: Request) {
 
-  const { messages: origMessages, conversationId, clientSlug } = await req.json()
-  const messages= origMessages.filter((message: any) => message.role !== "system")
-  // replace role function by system
-  for (let i = 0; i < messages.length; i++) {
-    if (messages[i].role === "function") {
-      messages[i].role = "system"
-    }
-  }
+  const { messages, conversationId, clientSlug } = await req.json()
 
   const currentUser= await getCurrentUser()
-  const phone= currentUser?.email || "web-chat"
+  if (!currentUser || !currentUser.email) return new Response("No se encontró un usuario logueado", { status: 404 })
+
+  const phone= currentUser.email
 
   let conversation= await getConversationDAO(conversationId)
   if (!conversation && conversationId === "new") {
@@ -28,10 +24,13 @@ export async function POST(req: Request) {
     
     const client= await getClientDAOBySlug(clientSlug)
     if (!client) return new Response("Client not found", { status: 404 })
-    
+
     const created= await createConversation({
-      clientId: client.id,
+      clientId: client.id,      
       phone: phone,
+      name: currentUser.name,
+      title: "Nueva conversación",
+      userId: currentUser.id,
     })
 
     conversation= await getConversationDAO(created.id)
@@ -48,24 +47,112 @@ export async function POST(req: Request) {
   }
 
 
-  // get rid of messages of type system
-  const input= messages[messages.length - 1].content
-  console.log("input: " + input)
+  const lastMessage= messages[messages.length - 1]
+  const input= lastMessage.content
+  if (lastMessage.role === "user" && input) {
+    console.log("input: " + input)
+    const messageForm: MessageFormValues= {
+      role: "user",
+      content: input,
+      tokens: 0,
+      conversationId: conversation.id,
+    }
+    await createMessage(messageForm)  
+  }
 
-  const contextString= await getContext(client.id, phone, input)
+  const brandVoice= client.includeBrandVoice ? client.brandVoice : undefined
+  const contextString= await getContext(client.id, phone, input, brandVoice)
 
   const systemMessage= client.prompt + "\n" + contextString
-  //messages.unshift(systemMessage)
-  //const created= await messageArrived(phone, systemMessage.content, client.id, "system", "")
-  const created= await createMessage({
-    role: "system",
-    content: systemMessage,
-    conversationId: conversation.id,
-  })
+  console.log("systemMessage", systemMessage)
+  
 
   console.log("messages.count: " + messages.length)
+  console.log("messages", JSON.stringify(messages, (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      return value;
+    }
+    return value;
+  }, 2));
+  
+  const result= await streamText({
+    model: openai("gpt-4o"),
+    system: systemMessage,
+    messages: convertToCoreMessages(messages),
+    tools,
+    onFinish: async ({text, toolCalls, toolResults, finishReason, usage,}) => {
+      console.log("onFinish")
+      console.log("text", text)
+      
+      if (text) {
+        const messageForm: MessageFormValues= {
+          role: "assistant",
+          content: text,
+          tokens: usage.completionTokens + (usage.promptTokens * 3),
+          conversationId: conversation.id,
+        }        
+        await createMessage(messageForm)
+      }
 
-  // const functions= await getFunctionsDefinitions(clientId)
+      console.log("finishReason", finishReason)
+      console.log("toolCalls", toolCalls)
+      console.log("usage", usage)
+      console.log("toolResults", toolResults)
+      
+      // if (finishReason === "tool-calls" && toolCalls) {
+      //   // Handle tool calls
+      //   for (const toolCall of toolCalls) {
+      //     if (toolCall.toolName === "entregarCopys") {
+      //       const messageForm: MessageFormValues= {
+      //         role: "function",
+      //         content: JSON.stringify(toolCall.args),
+      //         name: toolCall.toolName,
+      //         tokens: usage.completionTokens + (usage.promptTokens * 3),
+      //         conversationId: conversation.id,
+      //       }
+      //       await createMessage(messageForm)
+      //     }
+      //   }
+      // }
+      
+      if (!toolResults) return
+
+      // Handle tool results
+      for (const toolResult of toolResults) {
+        // if (toolResult.toolName === "obtenerDocumento") {
+        //   const document: DocumentResult= toolResult.result as DocumentResult
+        //   const messageForm: MessageFormValues= {
+        //     role: "function",
+        //     content: document.documentName,
+        //     name: toolResult.toolName,
+        //     tokens: usage.completionTokens + (usage.promptTokens * 3),
+        //     toolInvocations: JSON.stringify(toolResult),
+        //     conversationId: conversation.id,
+        //   }
+        //   await createMessage(messageForm)
+        // }
+        const messageForm: MessageFormValues= {
+          role: "assistant",
+          content: "",
+          name: toolResult.toolName,
+          tokens: usage.completionTokens + (usage.promptTokens * 3),
+          toolInvocations: JSON.stringify([toolResult]),
+          conversationId: conversation.id,
+        }
+        await createMessage(messageForm)
+
+      }
+
+      
+
+      return;
+    }
+  })
+
+
+
+  return result.toAIStreamResponse();
+
 
   // functions.forEach((functionDefinition) => {
   //   console.log("functionDefinition: " + functionDefinition.name);
@@ -155,12 +242,4 @@ export async function POST(req: Request) {
 //     },
 //   });
 
-  const result= await streamText({
-    model: openai("gpt-4o"),
-    system: systemMessage,
-    messages
-  })
-
-
-  return result.toAIStreamResponse();
 }

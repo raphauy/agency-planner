@@ -6,6 +6,9 @@ export type MessageDAO = {
 	id: string
 	role: string
 	content: string
+  name: string | undefined
+  toolInvocations: string | undefined
+  tokens: number
 	createdAt: Date
 	updatedAt: Date
 	conversation: ConversationDAO
@@ -15,6 +18,9 @@ export type MessageDAO = {
 export const messageSchema = z.object({
 	role: z.string().min(1, "role is required."),
 	content: z.string().min(1, "content is required."),
+  name: z.string().optional(),
+  tokens: z.number().min(1, "tokens is required."),
+  toolInvocations: z.string().optional(),
 	conversationId: z.string().min(1, "conversationId is required."),
 })
 

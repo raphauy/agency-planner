@@ -38,6 +38,7 @@ model User {
   comments        Comment[]
 
   invitations     Invitation[]
+  conversations   Conversation[]
 }
 
 model Account {
@@ -114,8 +115,8 @@ model Client {
     prompt            String? @default("Eres un experto copywriter que ayuda al usuario copys para publicaciones de redes sociales...")
     copyPrompt        String? @default("Escribe el copy basado en el título...")
     defaultHashtags   String? @default("")
-    includeBrandVoice Boolean? @default(true)
-    includeLastCopys  Boolean? @default(true)
+    includeBrandVoice Boolean? @default(false)
+    includeLastCopys  Boolean? @default(false)
 
     createdAt         DateTime  @default(now()) // gennext: skip.zod
     updatedAt         DateTime  @updatedAt      // gennext: skip.zod
@@ -281,6 +282,7 @@ model Document {
   fileSize               Int?
   wordsCount             Int?     @default(0)                 // gennext: show.column
   status                 String   @default("pending")         // gennext: skip.zod
+  color                  String   @default("#000000")         // gennext: skip.zod
 
   createdAt             DateTime  @default(now())             // gennext: skip.zod
   updatedAt             DateTime  @updatedAt @default(now())  // gennext: skip.zod show.column
@@ -291,21 +293,30 @@ model Document {
 
 model Conversation {
   id          String   @id @default(cuid())
-  phone       String
+  phone       String                                           // gennext: skip.zod show.column
+  name        String?  @default("")                            // gennext: skip.zod show.column
+  title       String                                           // gennext: show.column
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())                          // gennext: skip.zod
+  updatedAt   DateTime @updatedAt                              // gennext: skip.zod
 
   messages    Message[]
 
-  client      Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client      Client  @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
   clientId    String
+
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade) // gennext: skip.list
+  userId      String
 }
 
 model Message {
   id                String      @id @default(cuid())
   role              String
   content           String      @db.Text
+  name              String?     @default("")                    // gennext: skip.zod show.column
+  toolInvocations   String?     
+
+  tokens            Int         @default(0)
 
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt

@@ -3,24 +3,37 @@ import { prisma } from "@/lib/db"
 import { MessageDAO } from "./message-services"
 import { ClientDAO } from "./client-services"
 import { getMessagesDAO } from "./message-services"
+import { UserDAO } from "./user-services"
 
 export type ConversationDAO = {
 	id: string
 	phone: string
+  name: string
+  title: string
 	createdAt: Date
 	updatedAt: Date
 	messages: MessageDAO[]
 	client: ClientDAO
 	clientId: string
+  user: UserDAO
+  userId: string
 }
 
 export const conversationSchema = z.object({
 	phone: z.string().min(1, "phone is required."),
+  name: z.string().optional().nullable(),
+  title: z.string().min(1, "title is required."),
 	clientId: z.string().min(1, "clientId is required."),
+  userId: z.string().min(1, "userId is required."),
 })
 
 export type ConversationFormValues = z.infer<typeof conversationSchema>
 
+export const titleSchema = z.object({
+  title: z.string().min(1, "es necesario un título."),
+})
+
+export type TitleFormValues = z.infer<typeof titleSchema>
 
 export async function getConversationsDAO() {
   const found = await prisma.conversation.findMany({
@@ -46,7 +59,8 @@ export async function getConversationDAO(id: string) {
 }
     
 export async function createConversation(data: ConversationFormValues) {
-  // TODO: implement createConversation
+  console.log("createConversation", data)
+  
   const created = await prisma.conversation.create({
     data,
     include: {
@@ -143,6 +157,7 @@ export async function getFullConversationsDAO() {
     include: {
 			messages: true,
 			client: true,
+      user: true
 		}
   })
   return found as ConversationDAO[]
@@ -152,12 +167,63 @@ export async function getFullConversationDAO(id: string) {
   const found = await prisma.conversation.findUnique({
     where: {
       id
-    },
+    },    
     include: {
-			messages: true,
+			messages: {
+        orderBy: {
+          createdAt: 'asc'
+        }
+      },
 			client: true,
-		}
+      user: true,      
+		},    
   })
   return found as ConversationDAO
 }
-    
+
+export async function getFullConversationsByClientSlug(clientSlug: string) {
+  const found = await prisma.conversation.findMany({
+    where: {
+      client: {
+        slug: clientSlug
+      }
+    },
+    include: {
+			client: true,
+      user: true
+		},
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+  return found as ConversationDAO[]
+}
+
+export async function setTitle(id: string, title: string) {
+  const updated = await prisma.conversation.update({
+    where: {
+      id
+    },
+    data: {
+      title
+    }
+  })
+  return updated
+}
+
+export async function getTotalTokens(conversationId: string) {
+  const found = await prisma.conversation.findUnique({
+    where: {
+      id: conversationId
+    },
+    include: {
+      messages: true
+    }
+  })
+  if (!found) return 0
+
+  const messages= found.messages
+  const totalTokens= messages.reduce((acc, message) => acc + message.tokens, 0)
+
+  return totalTokens
+}

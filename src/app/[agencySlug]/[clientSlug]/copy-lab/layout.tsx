@@ -1,9 +1,10 @@
-import { redirect } from "next/navigation";
-import SideBar from "./side-bar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getCurrentUser } from "@/lib/utils";
 import { getClientDAOBySlug } from "@/services/client-services";
+import { redirect } from "next/navigation";
+import { CopySideBar } from "./copy-side-bar";
 import "./prosemirror.css";
+import { getFullConversationsByClientSlug } from "@/services/conversation-services";
 
 type Props= {
   children: React.ReactNode
@@ -28,12 +29,14 @@ export default async function SlugLayout({ children, params }: Props) {
   let client= await getClientDAOBySlug(clientSlug)
   if (!client) 
     return <div>Cliente no encontrado</div>
-  
+
+  const conversations= await getFullConversationsByClientSlug(clientSlug)
+
   return (
     <>
       <div className="flex flex-grow w-full">
-        <SideBar agencySlug={agencySlug} clientSlug={clientSlug} />
-        <div className="flex flex-col items-center flex-grow p-1">
+        <CopySideBar agencySlug={agencySlug} clientSlug={clientSlug} conversations={conversations} />
+        <div className="flex flex-col items-center flex-grow">
           <TooltipProvider>
             {children}
           </TooltipProvider>

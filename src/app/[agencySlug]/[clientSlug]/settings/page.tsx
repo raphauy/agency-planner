@@ -11,6 +11,8 @@ import SwitchBox from "./switch-box";
 import { UserRole } from "@prisma/client";
 import { getCurrentRole } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type Props = {
     params: {
@@ -66,39 +68,22 @@ export default async function SettingsPage({ params }: Props) {
                         <div className="flex items-center gap-x-2">
                         <IconBadge icon={SparklesIcon} />
                         <h2 className="text-xl">
-                            Inteligencia Artificial
+                            Prompt rápido para la creación de una publicación
                         </h2>
                         </div>
-                        <DescriptionForm
-                            label="Voz de marca"
-                            initialValue={client.brandVoice || ""}
-                            id={client.id}
-                            update={setBrandVoiceAction}
-                        />
                         <DescriptionForm
                             label="Prompt para el copy"
                             initialValue={client.copyPrompt || ""}
                             id={client.id}
                             update={setCopyPromptAction}
                         />
-
-                        <SwitchBox 
-                            clientId={client.id} 
-                            checked={client.includeBrandVoice} 
-                            switchUpdate={setIncludeBrandVoiceAction}
-                            description="Incluir voz de marca en el prompt"
-                            info= "Se incluirá la voz de marca en el prompt de los copys para que la IA tenga más contexto sobre el tono y estilo de la marca al redactar el copy."
-                        />
-
-                        <SwitchBox 
-                            clientId={client.id} 
-                            checked={client.includeLastCopys} 
-                            switchUpdate={setIncludeLastCopysAction}
-                            description="Incluir últimos copys en el prompt"
-                            info= "Se incluirán en el prompt, los últimos copys del Pilar de Contenido seleccionado para que la IA tenga más contexto sobre los copys recientemente publicados."
-                        />
-
-                        <Separator className="my-4" />
+                        <p>Este prompt se utilizará para la creación de una publicación.</p>
+                        <div className="flex items-center gap-x-2">
+                            <p>Para copys más elaborados puedes utilizar </p>
+                            <Link href="copy-lab">
+                                <Button variant="link" className="px-0">Copy Lab</Button>
+                            </Link>
+                        </div>
 
                         <DescriptionForm
                             label="Hashtags por defecto"

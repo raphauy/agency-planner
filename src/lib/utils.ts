@@ -4,6 +4,7 @@ import { auth } from "./auth"
 import { PublicationStatus, UserRole } from "@prisma/client"
 import { format as formatTZ, toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale";
+import { format, isThisWeek, isToday, isYesterday, parseISO } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -100,3 +101,40 @@ export function getFormat(date: Date): string {
     return formatTZ(zonedDate, "yyyy/MM/dd", { timeZone, locale: es });
   }
 }
+
+export function formatWhatsAppStyle(date: Date | string): string {
+  let parsedDate = typeof date === 'string' ? parseISO(date) : date;
+
+  if (isToday(parsedDate)) {
+    return format(parsedDate, 'HH:mm');
+  } else if (isYesterday(parsedDate)) {
+    return 'Ayer';
+  } else if (isThisWeek(parsedDate)) {
+    return format(parsedDate, 'eeee', { locale: es });
+  } else {
+    return format(parsedDate, 'dd/MM/yyyy');
+  }
+}
+
+export const colorPalette = [
+  'rgb(80, 80, 80)',
+  'rgb(75, 75, 75)',
+  'rgb(70, 70, 70)',
+  'rgb(65, 65, 65)',
+  'rgb(60, 60, 60)',
+  'rgb(55, 55, 55)',
+  'rgb(50, 50, 50)',
+  'rgb(45, 45, 45)',
+  'rgb(40, 40, 40)',
+  'rgb(35, 35, 35)',
+  'rgb(30, 30, 30)',
+  'rgb(25, 25, 25)',
+  'rgb(20, 20, 20)',
+  'rgb(18, 18, 18)',
+  'rgb(16, 16, 16)',
+  'rgb(14, 14, 14)',
+  'rgb(12, 12, 12)',
+  'rgb(10, 10, 10)',
+  'rgb(8, 8, 8)',
+  'rgb(5, 5, 5)',
+];

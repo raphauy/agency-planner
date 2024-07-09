@@ -29,7 +29,7 @@ export function DescriptionForm({ id, label, initialValue, update }: Props) {
     toggleEdit()
     update(id, description)
     .then(() => {
-      toast({title: "Descripción editada" })
+      toast({title: "Editado" })
     })
     .catch((error) => {
       toast({title: `Algo salió mal (${error.message})`, variant: "destructive"})
@@ -48,7 +48,7 @@ export function DescriptionForm({ id, label, initialValue, update }: Props) {
 
                 <div className="flex items-center justify-between gap-1 font-medium">
                   <textarea
-                    rows={5}
+                    rows={15}
                     cols={40}
                     name="description"
                     className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"

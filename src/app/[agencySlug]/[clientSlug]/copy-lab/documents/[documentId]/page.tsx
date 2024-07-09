@@ -48,15 +48,15 @@ const defaultContent = {
     content: [
       {
         type: "heading",
-        attrs: { level: 2 },
-        content: [{ type: "text", text: "Soy un título 2" }],
+        attrs: { level: 3 },
+        content: [{ type: "text", text: "Soy un título 3" }],
       },
       {
         type: "paragraph",
         content: [
             {
                 type: "text",
-                text: "Este es un editor al estilo de Notion con autocompletado impulsado por IA.",
+                text: "Puedes apretar la barra '/' para ver las opciones de edición que tienes.",
             },
         ],
       },
@@ -65,9 +65,58 @@ const defaultContent = {
         content: [
             {
                 type: "text",
-                text: "Prueba digitando la barra diagonal / al inicio de un párrafo para ver las opciones de autocompletado. También puedes escribir ++ para que la IA te complete una frase.",
+                text: "Este es un texto de ejemplo para un documento. Puedes eliminar todo y poner el contenido que quieras.",
             },
         ],
-      },   
+      },
+      {
+        type: "bulletList",
+        content: [
+            {
+                type: "listItem",
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Un copy de Instagram debe ser claro y conciso, y debe ser útil para los clientes.",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                type: "listItem",
+                checked: true,
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Un copy de Instagram debe tener un largo aproximado de 100 palabras.",
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                type: "listItem",
+                checked: true,
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Un copy de Instagram debe estar dirigido a los objetivos específicos del cliente.",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+      },
     ],
   };
