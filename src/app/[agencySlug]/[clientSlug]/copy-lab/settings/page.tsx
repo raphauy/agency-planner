@@ -27,7 +27,7 @@ export default async function SettingsPage({ params }: Props) {
 
     return (
         <>
-            <div className="p-6 bg-white dark:bg-black mt-4 border rounded-lg w-full">
+            <div className="p-6 bg-white dark:bg-black border rounded-tr-lg rounded-br-lg w-full border-l-0 h-full">
                 <div className="grid gap-6">
                     <div className="min-w-96">
                         <div className="flex items-center gap-x-2">
