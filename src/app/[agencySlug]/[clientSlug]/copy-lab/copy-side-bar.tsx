@@ -71,9 +71,9 @@ export function CopySideBar({ agencySlug, clientSlug, conversations }: Props) {
 
         </div>
       </ScrollArea>
-      <div className={cn("px-4 py-3 border-t", path.endsWith("settings") && "bg-muted/100")}>
+      <div className={cn("px-4 py-3  flex-grow flex flex-col justify-end", path.endsWith("settings") && "bg-muted/100")}>
         <Link href={`/${agencySlug}/${clientSlug}/copy-lab/settings`} prefetch={false}>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full border-t pt-4">
             <h3 className="text-lg font-medium flex items-center gap-2"><Settings className="w-5 h-5" />Configuración</h3>
             <ArrowRightToLine className="w-5 h-5 mr-2" />
           </div>
