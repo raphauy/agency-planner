@@ -104,7 +104,7 @@ export function ChatComponent({ clientSlug, conversation }: Props) {
           <Badge variant="secondary" className="border-gray-400">{messagesCount} mensajes</Badge>
           { copysCount > 0 && <Badge variant="secondary" className="border-gray-400">{copysCount} copys</Badge>}
           <Badge variant="secondary" className="border-gray-400">{credits.toFixed(1)} créditos</Badge>
-          {userEmail && userEmail === "rapha.uy@rapha.uy" && <Badge variant="secondary" className="border-gray-400">{cost.toFixed(3)} USD</Badge>}
+          {/* {userEmail && userEmail === "rapha.uy@rapha.uy" && <Badge variant="secondary" className="border-gray-400">{cost.toFixed(3)} USD</Badge>} */}
           <TitleDialog id={conversation.id} title={conversation.title} />
         </div>
         

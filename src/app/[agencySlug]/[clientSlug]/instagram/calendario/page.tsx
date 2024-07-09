@@ -3,6 +3,7 @@ import { isSameDay } from "date-fns";
 import { Event } from './CustomEvent';
 import CalendarBox from "./calendar-box";
 import PublicationTypeFilter from "./pub-type-filter";
+import { getCurrentUser } from "@/lib/utils";
 
 type Props= {
   params: {
@@ -20,7 +21,10 @@ export default async function CalendarPage({ params, searchParams }: Props) {
   const agencySlug= params.agencySlug
   const clientSlug= params.clientSlug
 
-  const posts= await getPublicationsDAOByClientWithFilter(clientSlug, filter)
+  const user= await getCurrentUser()
+  const isClient= user?.role === "CLIENT_ADMIN" || user?.role === "CLIENT_USER"
+
+  const posts= await getPublicationsDAOByClientWithFilter(clientSlug, filter, isClient)
 
   const filteredPosts= posts.filter((post): post is { publicationDate: Date } & typeof post => post.publicationDate !== null)
   const events: Event[] = filteredPosts

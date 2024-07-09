@@ -74,7 +74,10 @@ export async function getPublicationsDAOByClientSlug(clientSlug: string) {
   return found as PublicationDAO[]
 }
 
-export async function getPublicationsDAOByClientWithFilter(clientSlug: string, filter: string) {
+export async function getPublicationsDAOByClientWithFilter(clientSlug: string, filter: string, isClient: boolean) {
+
+  const statusArray= isClient ? [PublicationStatus.REVISADO, PublicationStatus.APROBADO, PublicationStatus.PROGRAMADO, PublicationStatus.PUBLICADO] : Object.values(PublicationStatus)
+
   // filter can have values: P, R and S form Post, Reels and Stories
   const types: PublicationType[] = mapTypes(filter)
 
@@ -85,7 +88,10 @@ export async function getPublicationsDAOByClientWithFilter(clientSlug: string, f
       },
       type: {
         in: types
-      }
+      },
+      status: {
+        in: statusArray
+      },
     },
     orderBy: {
       publicationDate: 'desc'
@@ -115,13 +121,18 @@ function mapTypes(filter: string) {
   return types
 }
 
-export async function getPublicationsDAOByClientAndType(clientId: string, type: PublicationType) {
+export async function getPublicationsDAOByClientAndType(clientId: string, type: PublicationType, isClient: boolean) {
+  const statusArray= isClient ? [PublicationStatus.REVISADO, PublicationStatus.APROBADO, PublicationStatus.PROGRAMADO, PublicationStatus.PUBLICADO] : Object.values(PublicationStatus)
+
   const found = await prisma.publication.findMany({
     where: {
       client: {
         id: clientId
       },
-      type
+      type,
+      status: {
+        in: statusArray
+      },
     },
     orderBy: {
       publicationDate: 'desc'

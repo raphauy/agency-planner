@@ -32,7 +32,10 @@ export default async function StoriesPage({ params, searchParams }: Props) {
       redirect("/auth/404")
     }
 
-    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_STORY)
+    const currentRole= await getCurrentRole()
+    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
+
+    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_STORY, isClient)
   
     let postId= searchParams.post
     if (!postId && postId !== "new-post" && posts.length > 0) {
@@ -44,9 +47,6 @@ export default async function StoriesPage({ params, searchParams }: Props) {
     const newPost= searchParams.newPost === "true"
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
-
-    const currentRole= await getCurrentRole()
-    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     return (
       <div className="w-full md:max-w-5xl max-w-[500px]">

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { getCurrentRole } from "@/lib/utils"
+import { getCurrentRole, getCurrentUser } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getClientDAOBySlug } from "@/services/client-services"
 import { getPublicationDAO, getPublicationsDAOByClientAndType } from "@/services/publication-services"
@@ -32,7 +32,9 @@ export default async function PostsPage({ params, searchParams }: Props) {
       redirect("/auth/404")
     }
 
-    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_POST)
+    const user= await getCurrentUser()
+    const isClient= user?.role === "CLIENT_ADMIN" || user?.role === "CLIENT_USER"
+    const posts= await getPublicationsDAOByClientAndType(client.id, PublicationType.INSTAGRAM_POST, isClient)
   
     let postId= searchParams.post
     if (!postId && postId !== "new-post" && posts.length > 0) {
@@ -44,9 +46,6 @@ export default async function PostsPage({ params, searchParams }: Props) {
     const newPost= searchParams.newPost === "true"
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
-
-    const currentRole= await getCurrentRole()
-    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     return (
       <div className="w-full md:max-w-5xl max-w-[500px]">
