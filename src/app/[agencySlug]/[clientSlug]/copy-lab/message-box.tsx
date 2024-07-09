@@ -90,7 +90,7 @@ export default function MessageBox({ message, userName, userImage, addToolResult
                 // render confirmation tool (client-side tool with user interaction)
                 if (toolName === 'entregarCopys') {
                     return (
-                        <CopyOptions copy1={toolInvocation.args.copy1} copy2={toolInvocation.args.copy2} />
+                        <CopyOptions key={toolCallId} copy1={toolInvocation.args.copy1} copy2={toolInvocation.args.copy2} />
                     );
                 }
 
