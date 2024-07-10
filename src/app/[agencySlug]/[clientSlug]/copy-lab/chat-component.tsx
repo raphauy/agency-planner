@@ -73,7 +73,7 @@ export function ChatComponent({ clientSlug, conversation }: Props) {
     setMessages(messages)
     setMessagesCount(messages.filter((message) => message.content).length)
     setCopysCount(messages.filter((message) => message.toolInvocations?.some(toolInvocation => toolInvocation.toolName === "entregarCopys")).length)
-  }, [conversation])
+  }, [conversation, setMessages])
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {

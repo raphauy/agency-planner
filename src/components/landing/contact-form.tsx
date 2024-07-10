@@ -53,7 +53,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full" id="contact">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
           

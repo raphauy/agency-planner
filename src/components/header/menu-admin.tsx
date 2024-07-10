@@ -28,11 +28,6 @@ const data= [
         text: "Canales"
     },
     {
-        href: `/admin/billableitems`,
-        icon: Receipt,
-        text: "Billing"
-    },
-    {
         href: `/admin/usagetypes`,
         icon: Ratio,
         text: "Usage Types"

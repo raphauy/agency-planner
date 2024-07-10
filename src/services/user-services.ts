@@ -278,7 +278,7 @@ export async function inviteClientUser(data: UserFormValues, clientId: string) {
   }
 
   // check if user is already in the client
-  const hasUser= client.users.some((u) => u.id === user.id)
+  const hasUser= client.users.some((u) => u.id === user?.id)
 
   if (!hasUser) {
     await prisma.client.update({
@@ -374,7 +374,7 @@ export async function inviteAgencyUser(data: UserFormValues, agencyId: string) {
   }
 
   // check if user is already in the agency
-  const hasUser= agency.users.some((u) => u.id === user.id)
+  const hasUser= agency.users.some((u) => u.id === user?.id)
 
   if (!hasUser) {
     await prisma.agency.update({
