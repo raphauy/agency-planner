@@ -96,8 +96,6 @@ model Agency {
   owner         User?  @relation("AgencyOwner", fields: [ownerId], references: [id])  // gennext: skip.list
   ownerId       String?
 
-  billingItems  BillableItem[]                  // gennext: skip.list
-
   createdAt DateTime @default(now())           // gennext: skip.zod
   updatedAt DateTime @updatedAt                // gennext: skip.zod
 
@@ -127,7 +125,6 @@ model Client {
     agencyId          String
 
     functionalities   Functionality[]
-    billingItems      BillableItem[]
     publications      Publication[]
     pilars            Pilar[]
     channels          Channel[]
@@ -146,38 +143,6 @@ model Functionality {
   updatedAt     DateTime @updatedAt             // gennext: skip.zod
 
   clients       Client[]                        // gennext: skip.list
-}
-
-model BillingType {
-  id          String @id @default(cuid())
-  name        String @unique                     // gennext: show.column
-  description String?                            // gennext: show.column
-
-  billableItems BillableItem[]                   // gennext: skip.list
-
-  createdAt DateTime @default(now())             // gennext: skip.zod
-  updatedAt DateTime @updatedAt                  // gennext: skip.zod
-}
-
-model BillableItem {
-  id            String  @id @default(cuid())
-  description   String?                           // gennext: show.column
-  quantity      Int                               // genext: show.column
-  unitPrice     Float                             // genext: show.column
-  url           String?                           // genext: show.column
-  tokenType     String?                           // genext: show.column
-
-  billingType   BillingType @relation(fields: [billingTypeId], references: [id]) // Relación muchos a uno con BillingType
-  billingTypeId String
-
-  agency        Agency @relation(fields: [agencyId], references: [id])
-  agencyId      String
-
-  client        Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  clientId      String?
-
-  createdAt     DateTime @default(now())          // gennext: skip.zod
-  updatedAt     DateTime @updatedAt               // gennext: skip.zod
 }
 
 enum PublicationType {
