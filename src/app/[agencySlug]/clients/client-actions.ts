@@ -1,16 +1,14 @@
 "use server"
   
-import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAO, getClientDAOBySlug, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, updateClient } from "@/services/client-services"
+import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAOBySlug, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, updateClient } from "@/services/client-services"
 import { revalidatePath } from "next/cache"
 
 import { SelectorData } from "@/components/header/selectors/selectors"
-import { generateSlug, getCurrentAgencyId, getCurrentAgencySlug, getCurrentUser } from "@/lib/utils"
+import { generateSlug, getCurrentAgencySlug, getCurrentUser } from "@/lib/utils"
 import { getComplentaryUsers, setUsers } from "@/services/client-services"
 import { getIgProfile } from "@/services/instagram-services"
 import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
-import { BillableItemFormValues, createBillableItem } from "@/services/billableitem-services"
-import { getBillingTypeDAOByName } from "@/services/billingtype-services"
 import { redirect } from "next/navigation"
     
 
@@ -82,27 +80,28 @@ export async function createClientWithIgHandleAction(agencyId: string, igHandle:
         defaultHashtags: "#" + slug + " #agregar" + " #otros" + " #hashtags" + " #aquí"
     }
 
-    const storageBillingType= await getBillingTypeDAOByName('Storage')
-    if (!storageBillingType) {
-        throw new Error('Billing type "Storage" not found')
-    }
     const created= await createClient(data)
   
-    if (image){
-        const billableItemData: BillableItemFormValues= {
-        description: 'File storage',
-        quantity: bytes as number,
-        unitPrice: 0.01,
-        url: image,
-        billingTypeId: storageBillingType.id,
-        agencyId,
-        clientId: created.id,
-        }
-        const billableCreated= await createBillableItem(billableItemData)
-        console.log('billableCreated', billableCreated)  
-    } else {
-        console.log('no image to create billable item for client ' + created.name)
-    }
+    // if (image){
+    //     const storageBillingType= await getBillingTypeDAOByName('Storage')
+    //     if (!storageBillingType) {
+    //         throw new Error('Billing type "Storage" not found')
+    //     }
+
+    //     const billableItemData: BillableItemFormValues= {
+    //     description: 'File storage',
+    //     quantity: bytes as number,
+    //     unitPrice: 0.01,
+    //     url: image,
+    //     billingTypeId: storageBillingType.id,
+    //     agencyId,
+    //     clientId: created.id,
+    //     }
+    //     const billableCreated= await createBillableItem(billableItemData)
+    //     console.log('billableCreated', billableCreated)  
+    // } else {
+    //     console.log('no image to create billable item for client ' + created.name)
+    // }
     
     revalidatePath("/[agencySlug]", "page")
 

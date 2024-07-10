@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { ConversationDAO } from "./conversation-services"
+import { ConversationDAO, updateConversationUsage } from "./conversation-services"
 
 export type MessageDAO = {
 	id: string
@@ -46,10 +46,13 @@ export async function getMessageDAO(id: string) {
 }
     
 export async function createMessage(data: MessageFormValues) {
-  // TODO: implement createMessage
   const created = await prisma.message.create({
     data
   })
+  if (!created) return null
+
+  await updateConversationUsage(data.conversationId, data.tokens)
+  
   return created
 }
 

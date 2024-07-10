@@ -86,6 +86,9 @@ export async function getClientDAO(id: string) {
     where: {
       id
     },
+    include: {
+      agency: true
+    }
   })
   return found as ClientDAO
 }

@@ -1,9 +1,11 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { MessageDAO } from "./message-services"
-import { ClientDAO } from "./client-services"
+import { ClientDAO, getClientDAO } from "./client-services"
 import { getMessagesDAO } from "./message-services"
 import { UserDAO } from "./user-services"
+import { createUsageRecord, UsageRecordDAO, UsageRecordFormValues } from "./usagerecord-services"
+import { getUsageTypeDAOByName } from "./usagetype-services"
 
 export type ConversationDAO = {
 	id: string
@@ -17,6 +19,8 @@ export type ConversationDAO = {
 	clientId: string
   user: UserDAO
   userId: string
+  usageRecord: UsageRecordDAO
+  usageRecordId: string
 }
 
 export const conversationSchema = z.object({
@@ -59,13 +63,38 @@ export async function getConversationDAO(id: string) {
 }
     
 export async function createConversation(data: ConversationFormValues) {
-  console.log("createConversation", data)
+  const llmUsageType= await getUsageTypeDAOByName("LLM")
+  if (!llmUsageType) throw new Error("No se encontró UsageType LLM")
+
+  const client= await getClientDAO(data.clientId)
+  if (!client) throw new Error("No se encontró Cliente")
+
+  const llmUsage: UsageRecordFormValues= {
+    agencyId: client.agencyId,
+    clientId: client.id,
+    usageTypeId: llmUsageType.id,
+    credits: 0,
+    description: "Créditos para Copy Lab"    
+  }
+  const createdUsage= await createUsageRecord(llmUsage)
   
   const created = await prisma.conversation.create({
-    data,
+    data: {
+      ...data,
+      usageRecordId: createdUsage.id
+    },
     include: {
       client: true,
       messages: true,
+    }
+  })
+  // update URL of the llmUsage
+  const updatedUsage= await prisma.usageRecord.update({
+    where: {
+      id: createdUsage.id
+    },
+    data: {
+      url: `/${client.agency.slug}/${client.slug}/copy-lab/${created.id}`
     }
   })
   return created
@@ -226,4 +255,36 @@ export async function getTotalTokens(conversationId: string) {
   const totalTokens= messages.reduce((acc, message) => acc + message.tokens, 0)
 
   return totalTokens
+}
+
+export async function updateConversationUsage(id: string, tokens: number) {
+  const conversation= await prisma.conversation.findUnique({
+    where: {
+      id
+    },
+    include: {
+      usageRecord: {
+        include: {          
+          usageType: true
+        }
+      }
+    }
+  })
+  if (!conversation) throw new Error("No se encontró conversación")
+
+  const credits= tokens * conversation.usageRecord.usageType.creditFactor
+
+  console.log("tokens", tokens)
+  console.log("previous credits", conversation.usageRecord.credits)
+  console.log("new credits", credits)
+
+  const updatedUsage= await prisma.usageRecord.update({
+    where: {
+      id: conversation.usageRecordId
+    },
+    data: {
+      credits: conversation.usageRecord.credits + credits
+    }
+  })
+  return updatedUsage
 }

@@ -94,10 +94,13 @@ export async function getFileInfo(url: string): Promise<CloudinaryResponse | nul
     const publicId = parts.slice(uploadIndex + 2).join('/').split('.')[0]; // +2 para saltar 'upload' y la versión
     console.log('publicId:', publicId)
     
+    // Determina el tipo de recurso basado en la extensión del archivo
+    const fileExtension = parts.slice(-1)[0].split('.').slice(-1)[0];
+    const resourceType = fileExtension.match(/(mp4|mov|avi|mkv|webm)/i) ? 'video' : 'image';
 
     // Obtén los detalles del recurso usando el ID público
     const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
-      cloudinary.api.resource(publicId, (error, result) => {
+      cloudinary.api.resource(publicId, { resource_type: resourceType }, (error, result) => {
         if (error) reject(error);
         else if (!result) reject(new Error('No result returned from Cloudinary'));
         else resolve(result);
