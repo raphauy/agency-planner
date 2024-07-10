@@ -107,4 +107,4 @@ export async function getFullUsageRecordDAO(id: string) {
   })
   return found as UsageRecordDAO
 }
-    
+

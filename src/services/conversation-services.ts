@@ -19,7 +19,6 @@ export type ConversationDAO = {
 	clientId: string
   user: UserDAO
   userId: string
-  usageRecord: UsageRecordDAO
   usageRecordId: string
 }
 

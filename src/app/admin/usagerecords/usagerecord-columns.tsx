@@ -32,6 +32,10 @@ export const columns: ColumnDef<UsageRecordDAO>[] = [
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      return (<p>{data.credits.toFixed(2)} créditos</p>)
+    }
   },
 
   {
@@ -81,7 +85,6 @@ export const columns: ColumnDef<UsageRecordDAO>[] = [
       return (
         <div className="flex items-center justify-end gap-2">
 
-          <UsageRecordDialog id={data.id} />
           <DeleteUsageRecordDialog description={deleteDescription} id={data.id} />
         </div>
 

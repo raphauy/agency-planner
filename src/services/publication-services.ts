@@ -21,6 +21,7 @@ export type PublicationDAO = {
   client: ClientDAO
 	pilarId: string | undefined
   pilar: PilarDAO | undefined
+  usageRecordId: string | undefined
 }
 
 export const publicationSchema = z.object({	
@@ -273,4 +274,16 @@ function getStatusChangeText(type: PublicationType, oldStatus: PublicationStatus
     default:
       return `Publicación ${oldStatus} a ${newStatus}`
   }
+}
+
+export async function setUsageRecord(id: string, usageRecordId: string) {
+  const updated = await prisma.publication.update({
+    where: {
+      id
+    },
+    data: {
+      usageRecordId
+    }
+  })
+  return updated
 }

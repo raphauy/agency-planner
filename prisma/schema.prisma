@@ -178,6 +178,9 @@ model Publication {
   pilar             Pilar?     @relation(fields: [pilarId], references: [id], onDelete: Restrict) // genext: skip.list
   pilarId           String?
   comments          Comment[]                                                                     // genext: skip.list
+
+  usageRecord    UsageRecord? @relation("PublicationUsageRecord", fields: [usageRecordId], references: [id])
+  usageRecordId  String? @unique
 }
 
 model Pilar {
@@ -323,6 +326,7 @@ model UsageRecord {
   clientId               String?
 
   conversation           Conversation? @relation("ConversationUsageRecord") // gennext: skip.list
+  publication            Publication?  @relation("PublicationUsageRecord") // gennext: skip.list
 
   createdAt              DateTime @default(now())              // gennext: skip.zod
   updatedAt              DateTime @updatedAt                   // gennext: skip.zod

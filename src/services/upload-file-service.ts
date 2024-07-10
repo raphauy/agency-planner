@@ -92,7 +92,6 @@ export async function getFileInfo(url: string): Promise<CloudinaryResponse | nul
     const parts = url.split('/');
     const uploadIndex = parts.indexOf('upload');
     const publicId = parts.slice(uploadIndex + 2).join('/').split('.')[0]; // +2 para saltar 'upload' y la versión
-    console.log('publicId:', publicId)
     
     // Determina el tipo de recurso basado en la extensión del archivo
     const fileExtension = parts.slice(-1)[0].split('.').slice(-1)[0];
@@ -106,6 +105,8 @@ export async function getFileInfo(url: string): Promise<CloudinaryResponse | nul
         else resolve(result);
       });
     });
+    // @ts-ignore
+    console.log('rate_limit_remainingresult', result.rate_limit_remaining)
     return result;
   } catch (error) {
     console.error('Error obteniendo la información del archivo:', error);
