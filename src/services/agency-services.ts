@@ -12,6 +12,9 @@ export type AgencyDAO = {
 	emailFrom: string | undefined
 	contactEmail: string | undefined
   domain: string | undefined
+  storageCloudName: string | undefined
+  storageApiKey: string | undefined
+  storageApiSecret: string | undefined
 	ownerId: string | undefined
   owner: UserDAO | undefined
 	createdAt: Date
@@ -27,6 +30,9 @@ export const agencySchema = z.object({
   emailFrom: z.string().optional(),
 	contactEmail: z.string().optional(),
   domain: z.string().optional(),
+  storageCloudName: z.string().optional(),
+  storageApiKey: z.string().optional(),
+  storageApiSecret: z.string().optional(),
 })
 
 export type AgencyFormValues = z.infer<typeof agencySchema>

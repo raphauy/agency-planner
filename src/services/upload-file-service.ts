@@ -1,11 +1,5 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary, ConfigOptions } from 'cloudinary';
 import * as fs from 'fs';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 type UploadResult = {
   url: string
@@ -13,6 +7,12 @@ type UploadResult = {
 }
 
 export async function uploadFileWithUrl(url: string) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  
   try {
     // Subir el archivo a Cloudinary
     const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
@@ -38,32 +38,6 @@ export async function uploadFileWithUrl(url: string) {
 
 }
 
-// export async function uploadFile(filePath: string) {
-//   try {
-//     // Leer el archivo del sistema de archivos
-//     const fileContent = fs.createReadStream(filePath);
-    
-//     // Subir el archivo a Cloudinary
-//     const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
-//       const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'auto', upload_preset: process.env.CLOUDINARY_PRESET }, (error, result) => {
-//         if (error) reject(error);
-//         else if (!result) reject(new Error('No result returned from Cloudinary'));
-//         else resolve(result);      });
-
-//       fileContent.pipe(uploadStream);
-//     });
-
-//     console.log('Archivo subido con éxito:', result);
-//     const res: UploadResult= {
-//       url: result.secure_url,
-//       bytes: result.bytes
-//     }
-//     return res 
-//   } catch (error) {
-//     console.error('Error subiendo el archivo:', error);
-//     return null
-//   }
-// }
 
 type CloudinaryResponse= {
   public_id: string;
@@ -86,12 +60,19 @@ type CloudinaryResponse= {
 
 //const cloudinary = require('cloudinary').v2;
 
-export async function getFileInfo(url: string): Promise<CloudinaryResponse | null> {
+export async function getFileInfo(url: string, configOptions: ConfigOptions): Promise<CloudinaryResponse | null> {
+  cloudinary.config(configOptions)
+
+  if (!url.includes(configOptions.cloud_name!)) {
+    return null
+  }
+
   try {
     // Extrae el ID público del recurso de la URL
     const parts = url.split('/');
     const uploadIndex = parts.indexOf('upload');
-    const publicId = parts.slice(uploadIndex + 2).join('/').split('.')[0]; // +2 para saltar 'upload' y la versión
+    //const publicId = parts.slice(uploadIndex + 2).join('/').split('.')[0]
+    const publicId = decodeURIComponent(parts.slice(uploadIndex + 2).join('/').split('.').slice(0, -1).join('.'))
     
     // Determina el tipo de recurso basado en la extensión del archivo
     const fileExtension = parts.slice(-1)[0].split('.').slice(-1)[0];
@@ -105,8 +86,6 @@ export async function getFileInfo(url: string): Promise<CloudinaryResponse | nul
         else resolve(result);
       });
     });
-    // @ts-ignore
-    console.log('rate_limit_remainingresult', result.rate_limit_remaining)
     return result;
   } catch (error) {
     console.error('Error obteniendo la información del archivo:', error);

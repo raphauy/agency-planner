@@ -10,6 +10,9 @@ import { getFileInfo } from "./upload-file-service"
 import { createUsageRecord, updateUsageRecord, UsageRecordFormValues } from "./usagerecord-services"
 import { PublicationType } from "@prisma/client"
 import { setUsageRecord } from "./publication-services"
+import { format } from "date-fns"
+import { AgencyDAO } from "./agency-services"
+import { ConfigOptions } from "cloudinary"
 
 // if the publication have the usage record, update it, if not create it
 export async function updatePublicationsUsage(max: number) {
@@ -20,13 +23,13 @@ export async function updatePublicationsUsage(max: number) {
     const publications= await prisma.publication.findMany({
       where: {
         usageIsPending: true,
-        createdAt: {
-          gte: new Date(currentYear, currentMonth, 1),
-          lt: new Date(currentYear, currentMonth + 1, 1)
-        }
+        // createdAt: {
+        //   gte: new Date(currentYear, currentMonth, 1),
+        //   lt: new Date(currentYear, currentMonth + 1, 1)
+        // }
       },
       orderBy: {
-        createdAt: 'asc'
+        createdAt: 'desc'
       },
       include: {
         usageRecord: true,
@@ -43,27 +46,32 @@ export async function updatePublicationsUsage(max: number) {
     } else {
       console.log(`updating ${publications.length} publications`)  
     }
-    
+
   
     const usageType= await getUsageTypeDAOByName("Storage")
     if (!usageType) throw new Error("UsageType not found")
     const creditFactor= usageType.creditFactor
-  
+
+    const firstPublication= publications[0]
+    const configOptions= firstPublication && getConfigOptions(firstPublication.client.agency.storageCloudName, firstPublication.client.agency.storageApiKey, firstPublication.client.agency.storageApiSecret)
+
     for (const publication of publications) {
+
       const publicationPath= getPublicationPath(publication.type)
   
       try {
         const images= publication.images ? publication.images.split(",") : []
         let credits= 0
         for (const image of images) {
-          const fileInfo= await getFileInfo(image)
+          const fileInfo= await getFileInfo(image, configOptions)
           if (!fileInfo) {
             console.log("fileInfo not found", publication.client.name, publication.title, image)
             continue          
           }
           const megaBytes= fileInfo.bytes / 1000000
           const newCredits= megaBytes * creditFactor
-          console.log(`mb: ${megaBytes} -> ${newCredits} credits`)
+          // @ts-ignore
+          console.log(`\t${format(publication.publicationDate || publication.createdAt, "yyyy-MM-dd")} - mb: ${megaBytes.toFixed(2)} -> ${newCredits.toFixed(2)} credits || rate_limit_remaining: ${fileInfo.rate_limit_remaining}`)
           
           credits+= newCredits
           
@@ -72,6 +80,7 @@ export async function updatePublicationsUsage(max: number) {
         }
   
         const usageCreatedForm: UsageRecordFormValues= {
+          createdAt: publication.publicationDate || publication.createdAt,
           description: `${publication.title} (${images.length} archivos)`,
           credits,
           url: `/${publication.client.agency.slug}/${publication.client.slug}/${publicationPath}?post=${publication.id}`,
@@ -120,3 +129,18 @@ export async function updatePublicationsUsage(max: number) {
   }
   
   
+  function getConfigOptions(cloud_name: string | null, api_key: string | null, api_secret: string | null): ConfigOptions {
+    if (cloud_name && api_key && api_secret) {
+      return {
+        cloud_name,
+        api_key,
+        api_secret,
+      }
+    } else {
+      return {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+    }
+  }
+}

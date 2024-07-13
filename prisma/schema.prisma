@@ -91,6 +91,10 @@ model Agency {
 
   domain        String?                    // gennext: show.column
 
+  storageCloudName     String?                    // gennext: show.column
+  storageApiKey        String?                    // gennext: show.column
+  storageApiSecret     String?                    // gennext: show.column
+
   users         User[] @relation("AgencyUsers")  // gennext: skip.list
   clients       Client[]                        // gennext: skip.list
   owner         User?  @relation("AgencyOwner", fields: [ownerId], references: [id])  // gennext: skip.list

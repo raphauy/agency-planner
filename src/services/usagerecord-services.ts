@@ -14,6 +14,7 @@ export type UsageRecordDAO = {
 }
 
 export const usageRecordSchema = z.object({
+  createdAt: z.date().optional(),
 	description: z.string().optional(),
 	credits: z.number(),
 	url: z.string().optional(),

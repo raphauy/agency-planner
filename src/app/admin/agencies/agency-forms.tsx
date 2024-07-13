@@ -28,6 +28,9 @@ export function AgencyForm({ id, closeDialog }: Props) {
       emailFrom: "",
       contactEmail: "",
       domain: "",
+      storageCloudName: "",
+      storageApiKey: "",
+      storageApiSecret: "",
     },
     mode: "onChange",
   })
@@ -67,33 +70,36 @@ export function AgencyForm({ id, closeDialog }: Props) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Agency's name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center gap-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Agency's name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input placeholder="Slug" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Slug" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+          </div>
           
       
           <FormField
@@ -124,64 +130,109 @@ export function AgencyForm({ id, closeDialog }: Props) {
             )}
           />
           
-      
-      
-          <FormField
-            control={form.control}
-            name="igHandle"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>IgHandle</FormLabel>
-                <FormControl>
-                  <Input placeholder="Agency's igHandle" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center gap-2">
+            <FormField
+              control={form.control}
+              name="emailFrom"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email From</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email From" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="emailFrom"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email From</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email From" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="contactEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Contact Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <FormField
-            control={form.control}
-            name="contactEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contact Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Contact Email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center gap-2">
+            <FormField
+              control={form.control}
+              name="igHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>IgHandle</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Agency's igHandle" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="domain"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Domain</FormLabel>
-                <FormControl>
-                  <Input placeholder="Domain" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="domain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Domain</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Domain" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           
+          <div className="flex items-center gap-2">
+            <FormField
+              control={form.control}
+              name="storageCloudName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cloud Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Storage Cloud Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="storageApiKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Api Key</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Storage Api Key" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="storageApiSecret"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Api Secret</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Storage Api Secret" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
       
         <div className="flex justify-end">
             <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
