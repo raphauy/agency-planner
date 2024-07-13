@@ -74,7 +74,7 @@ export async function updatePublicationsUsage(max: number) {
           const megaBytes= fileInfo.bytes / 1000000
           const newCredits= megaBytes * creditFactor
           // @ts-ignore
-          console.log(`\t${format(publication.publicationDate || publication.createdAt, "yyyy-MM-dd")} - mb: ${megaBytes.toFixed(2)} -> ${newCredits.toFixed(2)} credits || rate_limit_remaining: ${fileInfo.rate_limit_remaining}`)
+          console.log(`\t${format(publication.createdAt, "yyyy-MM-dd")} - mb: ${megaBytes.toFixed(2)} -> ${newCredits.toFixed(2)} credits || rate_limit_remaining: ${fileInfo.rate_limit_remaining}`)
           
           credits+= newCredits
           
@@ -83,7 +83,7 @@ export async function updatePublicationsUsage(max: number) {
         }
   
         const usageCreatedForm: UsageRecordFormValues= {
-          createdAt: publication.publicationDate || publication.createdAt,
+          createdAt: publication.createdAt,
           description: `${publication.title} (${images.length} archivos)`,
           credits,
           url: `/${publication.client.agency.slug}/${publication.client.slug}/${publicationPath}?post=${publication.id}`,

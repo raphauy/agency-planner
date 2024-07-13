@@ -66,8 +66,7 @@ export async function getFileInfo(url: string, configOptions: ConfigOptions): Pr
     console.log("configOptions.cloud_name", configOptions.cloud_name)
     const defaultCloudName= process.env.CLOUDINARY_CLOUD_NAME!
     if (!url.includes(defaultCloudName)) {
-      console.log("url not found", url)
-      console.log("default cloud name", defaultCloudName)      
+      console.log("url not found", url, "default cloud name", defaultCloudName)      
       return null
     } else {
       console.log("using default cloud name", defaultCloudName)
