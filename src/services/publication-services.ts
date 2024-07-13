@@ -15,6 +15,7 @@ export type PublicationDAO = {
 	hashtags: string | undefined
 	copy: string | undefined
 	publicationDate: Date | null
+  usageIsPending: boolean
 	createdAt: Date
 	updatedAt: Date
 	clientId: string
@@ -160,7 +161,10 @@ export async function getPublicationDAO(id: string) {
     
 export async function createPublication(data: PublicationFormValues) {
   const created = await prisma.publication.create({
-    data
+    data: {
+      ...data,
+      usageIsPending: true
+    }
   })
   if (!created) return null
   const currentUser = await getCurrentUser()
@@ -193,7 +197,10 @@ export async function updatePublication(id: string, data: PublicationFormValues)
     where: {
       id
     },
-    data
+    data: {
+      ...data,
+      usageIsPending: true
+    }
   })
   return updated
 }

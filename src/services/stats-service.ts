@@ -117,3 +117,4 @@ export async function getMonthlyStats(clientId: string, lasMonths: number = 6): 
     }
     return monthlyStats.reverse();
 }
+

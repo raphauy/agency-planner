@@ -12,16 +12,14 @@ import { PublicationType } from "@prisma/client"
 import { setUsageRecord } from "./publication-services"
 
 // if the publication have the usage record, update it, if not create it
-export async function updatePublicationsUsage(clientId: string) {
-    const client= await getClientDAO(clientId)
-    if (!client) throw new Error("Client not found")
+export async function updatePublicationsUsage(max: number) {
   
     const currentMonth= new Date().getMonth()
     const currentYear= new Date().getFullYear()
     
     const publications= await prisma.publication.findMany({
       where: {
-        clientId,
+        usageIsPending: true,
         createdAt: {
           gte: new Date(currentYear, currentMonth, 1),
           lt: new Date(currentYear, currentMonth + 1, 1)
@@ -31,10 +29,21 @@ export async function updatePublicationsUsage(clientId: string) {
         createdAt: 'asc'
       },
       include: {
-        usageRecord: true
-      }
+        usageRecord: true,
+        client: {
+          include: {
+            agency: true
+          }
+        }
+      },
+      take: max
     })
-    console.log(`updating ${publications.length} publications`)  
+    if (publications.length === 0) {
+      console.log("No publications found")
+    } else {
+      console.log(`updating ${publications.length} publications`)  
+    }
+    
   
     const usageType= await getUsageTypeDAOByName("Storage")
     if (!usageType) throw new Error("UsageType not found")
@@ -49,15 +58,14 @@ export async function updatePublicationsUsage(clientId: string) {
         for (const image of images) {
           const fileInfo= await getFileInfo(image)
           if (!fileInfo) {
-            console.log("fileInfo not found", client.name, publication.title, image)
+            console.log("fileInfo not found", publication.client.name, publication.title, image)
             continue          
           }
           const megaBytes= fileInfo.bytes / 1000000
           const newCredits= megaBytes * creditFactor
-          console.log(`mb: ${megaBytes}, newCredits: ${newCredits}`)
+          console.log(`mb: ${megaBytes} -> ${newCredits} credits`)
           
           credits+= newCredits
-          console.log(`adding ${newCredits} credits to ${publication.title}`)
           
           // sleep for 1 second
           await new Promise(resolve => setTimeout(resolve, 1000))
@@ -66,19 +74,28 @@ export async function updatePublicationsUsage(clientId: string) {
         const usageCreatedForm: UsageRecordFormValues= {
           description: `${publication.title} (${images.length} archivos)`,
           credits,
-          url: `/${client.agency.slug}/${client.slug}/${publicationPath}?post=${publication.id}`,
+          url: `/${publication.client.agency.slug}/${publication.client.slug}/${publicationPath}?post=${publication.id}`,
           usageTypeId: usageType.id,
-          agencyId: client.agencyId,
-          clientId: client.id,
+          agencyId: publication.client.agencyId,
+          clientId: publication.client.id,
         }
         if (publication.usageRecord) {
           await updateUsageRecord(publication.usageRecord.id, usageCreatedForm)
-          console.log("updated usage record")        
+          console.log(`${publication.client.name} - ${publication.title} - ${credits.toFixed(2)} credits - updated`)
         } else {
           const usageCreated= await createUsageRecord(usageCreatedForm)
-          console.log("created usage record")
+          console.log(`${publication.client.name} - ${publication.title} - ${credits.toFixed(2)} credits - created`)
           await setUsageRecord(publication.id, usageCreated.id)
         }
+
+        await prisma.publication.update({
+          where: {
+            id: publication.id
+          },
+          data: {
+            usageIsPending: false
+          }
+        })
   
       } catch (error) {
         console.error(error)

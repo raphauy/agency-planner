@@ -170,6 +170,8 @@ model Publication {
   copy              String?                               // genext: show.column  
   publicationDate   DateTime?                             // genext: show.column
 
+  usageIsPending    Boolean @default(false)               // genext: show.column
+
   createdAt         DateTime  @default(now())             // gennext: skip.zod
   updatedAt         DateTime  @updatedAt                  // gennext: skip.zod  
 
