@@ -94,8 +94,9 @@ export async function getFileInfo(url: string, configOptions: ConfigOptions): Pr
         if (error) reject(error);
         else if (!result) reject(new Error('No result returned from Cloudinary'));
         else resolve(result);
-      });
-    });
+      })
+    })
+    
     return result;
   } catch (error) {
     console.error('Error obteniendo la información del archivo:', error);
