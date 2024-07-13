@@ -61,17 +61,27 @@ type CloudinaryResponse= {
 //const cloudinary = require('cloudinary').v2;
 
 export async function getFileInfo(url: string, configOptions: ConfigOptions): Promise<CloudinaryResponse | null> {
-  cloudinary.config(configOptions)
 
   if (!url.includes(configOptions.cloud_name!)) {
-    return null
+    console.log("configOptions.cloud_name", configOptions.cloud_name)
+    const defaultCloudName= process.env.CLOUDINARY_CLOUD_NAME!
+    if (!url.includes(defaultCloudName)) {
+      console.log("url not found", url)
+      console.log("default cloud name", defaultCloudName)      
+      return null
+    } else {
+      console.log("using default cloud name", defaultCloudName)
+      configOptions.cloud_name= defaultCloudName
+      configOptions.api_key= process.env.CLOUDINARY_API_KEY!
+      configOptions.api_secret= process.env.CLOUDINARY_API_SECRET!
+    }
   }
+  cloudinary.config(configOptions)
 
   try {
     // Extrae el ID público del recurso de la URL
     const parts = url.split('/');
     const uploadIndex = parts.indexOf('upload');
-    //const publicId = parts.slice(uploadIndex + 2).join('/').split('.')[0]
     const publicId = decodeURIComponent(parts.slice(uploadIndex + 2).join('/').split('.').slice(0, -1).join('.'))
     
     // Determina el tipo de recurso basado en la extensión del archivo

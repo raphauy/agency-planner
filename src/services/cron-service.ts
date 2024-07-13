@@ -52,10 +52,11 @@ export async function updatePublicationsUsage(max: number) {
     if (!usageType) throw new Error("UsageType not found")
     const creditFactor= usageType.creditFactor
 
-    const firstPublication= publications[0]
-    const configOptions= firstPublication && getConfigOptions(firstPublication.client.agency.storageCloudName, firstPublication.client.agency.storageApiKey, firstPublication.client.agency.storageApiSecret)
 
     for (const publication of publications) {
+      console.log(`agency: ${publication.client.agency.name}`)
+      
+      const configOptions= getConfigOptions(publication.client.agency.storageCloudName, publication.client.agency.storageApiKey, publication.client.agency.storageApiSecret)      
 
       const publicationPath= getPublicationPath(publication.type)
   
@@ -130,6 +131,8 @@ export async function updatePublicationsUsage(max: number) {
   
   
   function getConfigOptions(cloud_name: string | null, api_key: string | null, api_secret: string | null): ConfigOptions {
+    console.log("getConfigOptions", cloud_name, api_key, api_secret)
+    
     if (cloud_name && api_key && api_secret) {
       return {
         cloud_name,

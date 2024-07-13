@@ -264,8 +264,12 @@ export async function geTotaltUsage(dateFrom: Date, dateTo: Date) {
 
   for (const agency of agencies) {
     const agencyUsage = await getUsageByAgency(agency.id, dateFrom, dateTo)
+    // sort by credits
+    agencyUsage.clientUsages.sort((a, b) => b.totalCredits - a.totalCredits)
     res.push(agencyUsage)
   }
+
+  res.sort((a, b) => b.totalCredits - a.totalCredits)
 
   return res
 }
