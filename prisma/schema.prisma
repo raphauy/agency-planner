@@ -105,6 +105,7 @@ model Agency {
 
   invitations   Invitation[]
   usageRecords  UsageRecord[]
+  monthlyUsages MonthlyUsage[]
 }
 
 model Client {
@@ -136,6 +137,7 @@ model Client {
     documents         Document[]
     conversations     Conversation[]
     usageRecords      UsageRecord[]
+    monthlyUsages     MonthlyUsage[]    
 }
 
 model Functionality {
@@ -319,6 +321,11 @@ model UsageType {
 model UsageRecord {
   id                     String @id @default(cuid())
   description            String?                              // gennext: show.column
+  
+  imagesCount            Int? @default(0)                      // gennext: show.column
+  videosCount            Int? @default(0)                      // gennext: show.column
+  storageMB              Float? @default(0)                    // gennext: show.column
+
   credits                Float                                // gennext: show.column
   url                    String?                              // gennext: show.column
 
@@ -334,6 +341,9 @@ model UsageRecord {
   conversation           Conversation? @relation("ConversationUsageRecord") // gennext: skip.list
   publication            Publication?  @relation("PublicationUsageRecord") // gennext: skip.list
 
+  monthlyUsage           MonthlyUsage? @relation(fields: [monthlyUsageId], references: [id]) // gennext: skip.list
+  monthlyUsageId         String?
+
   createdAt              DateTime @default(now())              // gennext: skip.zod
   updatedAt              DateTime @updatedAt                   // gennext: skip.zod
 
@@ -341,4 +351,35 @@ model UsageRecord {
   @@index([clientId])                                          // gennext: skip.list
   @@index([usageTypeId])                                       // gennext: skip.list
   @@index([createdAt])                                         // gennext: skip.list
+}
+
+model MonthlyUsage {
+  id                String    @id @default(cuid())
+  month             Int                              // gennext: show.column
+  year              Int
+  storageCredits    Float @default(0)                 // gennext: show.column
+  publicationsCount Int @default(0)                   // gennext: show.column
+  imagesCount       Int @default(0)                   // gennext: show.column
+  videosCount       Int @default(0)                   // gennext: show.column
+  storageMB         Float @default(0)                 // gennext: show.column
+  llmCredits        Float @default(0)                 // gennext: show.column
+  conversationsCount Int @default(0)                  // gennext: show.column
+
+  monthLabel        String                            // gennext: show.column
+  agencyName        String                            // gennext: show.column
+  clientName        String                            // gennext: show.column
+
+  client            Client  @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
+  clientId          String
+
+  agency            Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade) // gennext: skip.list
+  agencyId          String
+
+  usageRecords      UsageRecord[]                          // gennext: skip.list
+
+  createdAt         DateTime @default(now())              // gennext: skip.zod
+  updatedAt         DateTime @updatedAt                   // gennext: skip.zod
+
+  @@index([month, year, clientId])                         // gennext: skip.list
+  @@index([month, year, agencyId])                         // gennext: skip.list
 }

@@ -62,29 +62,35 @@ export async function updatePublicationsUsage(max: number) {
 
       const publicationPath= getPublicationPath(publication.type)
   
+      let imagesCount= 0
+      let videosCount= 0
+      let storageMB= 0
       try {
         const images= publication.images ? publication.images.split(",") : []
-        let credits= 0
         for (const image of images) {
           const fileInfo= await getFileInfo(image, configOptions)
           if (!fileInfo) {
             console.log("fileInfo not found", publication.client.name, publication.title, image)
             continue          
           }
-          const megaBytes= fileInfo.bytes / 1000000
-          const newCredits= megaBytes * creditFactor
+          imagesCount+= fileInfo.resource_type === "image" ? 1 : 0
+          videosCount+= fileInfo.resource_type === "video" ? 1 : 0
+          storageMB+= fileInfo.bytes / 1000000
           // @ts-ignore
-          console.log(`\t${format(publication.createdAt, "yyyy-MM-dd")} - mb: ${megaBytes.toFixed(2)} -> ${newCredits.toFixed(2)} credits || rate_limit_remaining: ${fileInfo.rate_limit_remaining}`)
-          
-          credits+= newCredits
+          console.log(`\t\trate_limit_remaining: ${fileInfo.rate_limit_remaining}`)
           
           // sleep for 1 second
           await new Promise(resolve => setTimeout(resolve, 1000))
         }
+        const credits= storageMB * creditFactor
+        console.log(`\t${format(publication.createdAt, "yyyy-MM-dd")} - mb: ${storageMB.toFixed(2)} -> ${credits.toFixed(2)} credits`)
   
         const usageCreatedForm: UsageRecordFormValues= {
           createdAt: publication.createdAt,
           description: `${publication.title} (${images.length} archivos)`,
+          imagesCount,
+          videosCount,
+          storageMB,
           credits,
           url: `/${publication.client.agency.slug}/${publication.client.slug}/${publicationPath}?post=${publication.id}`,
           usageTypeId: usageType.id,

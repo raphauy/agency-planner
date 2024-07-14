@@ -4,11 +4,15 @@ import { prisma } from "@/lib/db"
 export type UsageRecordDAO = {
 	id: string
 	description: string | undefined
+  imagesCount: number | undefined
+  videosCount: number | undefined
+  storageMB: number | undefined
 	credits: number
 	url: string | undefined
 	usageTypeId: string
 	agencyId: string
 	clientId: string | undefined
+  monthlyUsageId: string
 	createdAt: Date
 	updatedAt: Date
 }
@@ -16,6 +20,9 @@ export type UsageRecordDAO = {
 export const usageRecordSchema = z.object({
   createdAt: z.date().optional(),
 	description: z.string().optional(),
+  imagesCount: z.number().optional(),
+  videosCount: z.number().optional(),
+  storageMB: z.number().optional(),
 	credits: z.number(),
 	url: z.string().optional(),
 	usageTypeId: z.string().min(1, "usageTypeId is required."),
@@ -45,12 +52,8 @@ export async function getUsageRecordDAO(id: string) {
 }
     
 export async function createUsageRecord(data: UsageRecordFormValues) {
-  const credits = data.credits ? Number(data.credits) : 0
   const created = await prisma.usageRecord.create({
-    data: {
-      ...data,
-      credits
-    }
+    data
   })
   return created
 }
