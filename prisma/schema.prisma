@@ -341,9 +341,6 @@ model UsageRecord {
   conversation           Conversation? @relation("ConversationUsageRecord") // gennext: skip.list
   publication            Publication?  @relation("PublicationUsageRecord") // gennext: skip.list
 
-  monthlyUsage           MonthlyUsage? @relation(fields: [monthlyUsageId], references: [id]) // gennext: skip.list
-  monthlyUsageId         String?
-
   createdAt              DateTime @default(now())              // gennext: skip.zod
   updatedAt              DateTime @updatedAt                   // gennext: skip.zod
 
@@ -374,8 +371,6 @@ model MonthlyUsage {
 
   agency            Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade) // gennext: skip.list
   agencyId          String
-
-  usageRecords      UsageRecord[]                          // gennext: skip.list
 
   createdAt         DateTime @default(now())              // gennext: skip.zod
   updatedAt         DateTime @updatedAt                   // gennext: skip.zod

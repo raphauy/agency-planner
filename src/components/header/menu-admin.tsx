@@ -41,6 +41,11 @@ const data= [
         href: `/admin/credits`,
         icon: CreditCard,
         text: "Credits"
+    },
+    {
+        href: `/admin/monthlyusages`,
+        icon: Receipt,
+        text: "Monthly Usages"
     }
   ]
 

@@ -12,7 +12,6 @@ export type UsageRecordDAO = {
 	usageTypeId: string
 	agencyId: string
 	clientId: string | undefined
-  monthlyUsageId: string
 	createdAt: Date
 	updatedAt: Date
 }
@@ -112,3 +111,84 @@ export async function getFullUsageRecordDAO(id: string) {
   return found as UsageRecordDAO
 }
 
+type ClientUsage = {
+  clientId: string;
+  year: number;
+  month: number;
+  imagesCount: number;
+  videosCount: number;
+  storageMB: number;
+  storageCredits: number;
+  llmCredits: number;
+};
+
+export async function getClientUsage(clientId: string, year: number, month: number): Promise<ClientUsage | null> {
+  console.log("getClientUsage", clientId, year, month)
+  
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 0);
+
+  // Obtener los usageTypeId correspondientes a "Storage" y "LLM"
+  const storageUsageType = await prisma.usageType.findUnique({ where: { name: 'Storage' } });
+  const llmUsageType = await prisma.usageType.findUnique({ where: { name: 'LLM' } });
+
+  if (!storageUsageType || !llmUsageType) {
+    throw new Error("Usage types not found");
+  }
+
+  // Consulta de agrupación para "Storage"
+  const storageRecords = await prisma.usageRecord.groupBy({
+    by: ['clientId'],
+    where: {
+      clientId: clientId,
+      usageTypeId: storageUsageType.id,
+      createdAt: {
+        gte: startDate,
+        lt: endDate,
+      },
+    },
+    _sum: {
+      imagesCount: true,
+      videosCount: true,
+      storageMB: true,
+      credits: true,
+    },
+  });
+
+  // Consulta de agrupación para "LLM"
+  const llmRecords = await prisma.usageRecord.groupBy({
+    by: ['clientId'],
+    where: {
+      clientId: clientId,
+      usageTypeId: llmUsageType.id,
+      createdAt: {
+        gte: startDate,
+        lt: endDate,
+      },
+    },
+    _sum: {
+      imagesCount: true,
+      videosCount: true,
+      storageMB: true,
+      credits: true,
+    },
+  });
+
+  if (storageRecords.length === 0 && llmRecords.length === 0) {
+    return null;
+  }
+
+  const storageData = storageRecords[0]?._sum || { imagesCount: 0, videosCount: 0, storageMB: 0, credits: 0 };
+  const llmData = llmRecords[0]?._sum || { imagesCount: 0, videosCount: 0, storageMB: 0, credits: 0 };
+
+  return {
+    clientId: clientId,
+    year: year,
+    month: month,
+    imagesCount: storageData.imagesCount || 0,
+    videosCount: storageData.videosCount || 0,
+    storageMB: storageData.storageMB || 0,
+    storageCredits: storageData.credits || 0,
+    llmCredits: llmData.credits || 0,
+  };
+}
