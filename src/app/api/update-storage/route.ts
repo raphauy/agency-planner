@@ -1,9 +1,10 @@
-import { getClientDAOBySlug } from '@/services/client-services'
 import { updatePublicationsUsage } from '@/services/cron-service'
-import { getUsageByAgency } from '@/services/usagetype-services'
+import { sendWapMessage } from '@/services/whatsapp-service'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const maxDuration = 59
+export const maxDuration = 299
+
+const RCPhone= process.env.RC_PHONE
 
 export async function GET(req: NextRequest) {
     if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -13,7 +14,12 @@ export async function GET(req: NextRequest) {
     const max= parseInt(req.nextUrl.searchParams.get("max") || "10")
     console.log(`Starting updatePublicationsUsage with max: ${max}`)
 
-    await updatePublicationsUsage(max)
+    const publicationsCount= await updatePublicationsUsage(max)
+
+    const message= `Publications updated: ${publicationsCount}`
+    console.log(message)
+
+    await sendWapMessage(RCPhone!, message)
     
     return NextResponse.json({ ok: true })
 }
