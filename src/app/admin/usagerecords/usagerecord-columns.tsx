@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { UsageRecordDAO } from "@/services/usagerecord-services"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, Bot, Database } from "lucide-react"
 import { DeleteUsageRecordDialog, UsageRecordDialog } from "./usagerecord-dialogs"
 import Link from "next/link"
 import { es } from "date-fns/locale"
@@ -84,7 +84,7 @@ export const columns: ColumnDef<UsageRecordDAO>[] = [
   },
 
   {
-    accessorKey: "url",
+    accessorKey: "type",
     header: ({ column }) => {
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
@@ -103,7 +103,10 @@ export const columns: ColumnDef<UsageRecordDAO>[] = [
           </Button>
         </Link>
       )
-    }
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.original.usageType.name)
+    },
   },
 
   {
@@ -130,25 +133,16 @@ export const columns: ColumnDef<UsageRecordDAO>[] = [
     )},
     cell: ({ row }) => {
       const data= row.original
-      return (<p>{data.credits.toFixed(2)} créditos</p>)
+      return (
+        <div>
+          <p>{data.credits.toFixed(2)} créditos</p>
+          {data.usageType.name === "Storage" && <Database size={20} />}
+          {data.usageType.name === "LLM" && <Bot size={20} />}
+        </div>
+      )
     }
   },
 
-  // {
-  //   accessorKey: "role",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button variant="ghost" className="pl-0 dark:text-white"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-  //         Rol
-  //         <ArrowUpDown className="w-4 h-4 ml-1" />
-  //       </Button>
-  //     )
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id))
-  //   },
-  // },
   {
     id: "actions",
     cell: ({ row }) => {

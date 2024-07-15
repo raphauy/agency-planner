@@ -1,5 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
+import { UsageTypeDAO } from "./usagetype-services"
 
 export type UsageRecordDAO = {
 	id: string
@@ -9,6 +10,7 @@ export type UsageRecordDAO = {
   storageMB: number | undefined
 	credits: number
 	url: string | undefined
+  usageType: UsageTypeDAO
 	usageTypeId: string
 	agencyId: string
 	clientId: string | undefined
@@ -95,6 +97,7 @@ export async function getFullUsageRecordsDAO() {
       updatedAt: 'desc'
     },
     include: {
+      usageType: true
 		}
   })
   return found as UsageRecordDAO[]
@@ -106,6 +109,7 @@ export async function getFullUsageRecordDAO(id: string) {
       id
     },
     include: {
+      usageType: true
 		}
   })
   return found as UsageRecordDAO

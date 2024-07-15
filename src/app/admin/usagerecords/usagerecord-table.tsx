@@ -19,6 +19,8 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({ table, agencySlugs }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
+  const types= ["Storage", "LLM"]
+
   return (
     <div className="flex gap-1 dark:text-white items-center">
 
@@ -27,39 +29,33 @@ export function DataTableToolbar<TData>({ table, agencySlugs }: DataTableToolbar
           column={table.getColumn("agency")}
           title="Agency"
           options={agencySlugs}
-        />
+        />        
       )}
 
-          <Input className="max-w-xs" placeholder="description filter..."
-              value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("description")?.setFilterValue(event.target.value)}                
-          />
+      {table.getColumn("type") && (
+        <DataTableFacetedFilter
+          column={table.getColumn("type")}
+          title="Type"
+          options={types}
+        />        
+      )}
+
+      <Input className="max-w-xs" placeholder="description filter..."
+          value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("description")?.setFilterValue(event.target.value)}                
+      />
           
       
-          <Input className="max-w-xs" placeholder="credits filter..."
-              value={(table.getColumn("credits")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("credits")?.setFilterValue(event.target.value)}                
-          />
-          
-      
-          <Input className="max-w-xs" placeholder="url filter..."
-              value={(table.getColumn("url")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("url")?.setFilterValue(event.target.value)}                
-          />
-          
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <X className="w-4 h-4 ml-2" />
-          </Button>
-        )}
-        <div className="flex-1 ">
-          <DataTableViewOptions table={table}/>
-        </div>
+      {isFiltered && (
+        <Button
+          variant="ghost"
+          onClick={() => table.resetColumnFilters()}
+          className="h-8 px-2 lg:px-3"
+        >
+          Reset
+          <X className="w-4 h-4 ml-2" />
+        </Button>
+      )}
     </div>
   )
 }
