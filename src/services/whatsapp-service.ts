@@ -6,7 +6,7 @@ export const maxDuration = 30; // This function can run for a maximum of 30 seco
 export async function sendWapMessage(phone: string, text: string): Promise<string> {
 
   phone= phone + '@s.whatsapp.net'
-  text= "*[bus-data]*:\n" + text
+  text= "*[agency-planner]*:\n" + text
 
   const tintaEndpoint= process.env.TINTA_WHATSAPP_ENDPOINT
 

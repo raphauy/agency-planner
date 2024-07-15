@@ -16,10 +16,17 @@ export async function GET(req: NextRequest) {
 
     const publicationsCount= await updatePublicationsUsage(max)
 
-    const message= `Publications updated: ${publicationsCount}`
-    console.log(message)
-
-    await sendWapMessage(RCPhone!, message)
+    const actualHour= new Date().getHours()
+    const actualMinute= new Date().getMinutes()
+    if (publicationsCount > 0) {
+        const message= `Publications updated: ${publicationsCount}`
+        console.log(message)
+          await sendWapMessage(RCPhone!, message)
+    } else if (actualMinute === 0 && actualHour > 6 && actualHour < 22) {
+        const message= `Ping with from Agency Planner`
+        console.log(message)
+        await sendWapMessage(RCPhone!, message)
+    }
     
     return NextResponse.json({ ok: true })
 }
