@@ -147,3 +147,18 @@ export async function getAgencyOfPublication(publicationId: string) {
   return found as AgencyDAO
 }
 
+export async function getAgencySlugs() {
+  const found = await prisma.agency.findMany({
+    orderBy: {
+      slug: 'asc'
+    },
+    select: {
+      slug: true
+    }
+  })
+  if (!found) return []
+  const slugs: string[] = found.map((agency) => agency.slug)
+  const res= Array.from(new Set(slugs))
+  
+  return res
+}

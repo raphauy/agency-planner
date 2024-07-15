@@ -92,7 +92,7 @@ export async function deleteUsageRecord(id: string) {
 export async function getFullUsageRecordsDAO() {
   const found = await prisma.usageRecord.findMany({
     orderBy: {
-      id: 'asc'
+      updatedAt: 'desc'
     },
     include: {
 		}

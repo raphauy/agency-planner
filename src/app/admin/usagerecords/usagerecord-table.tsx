@@ -9,17 +9,27 @@ import { X } from "lucide-react"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
   
 interface DataTableToolbarProps<TData> {
-  table: TanstackTable<TData>;
+  table: TanstackTable<TData>
+  agencySlugs: string[]
 }
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table, agencySlugs }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
     <div className="flex gap-1 dark:text-white items-center">
-        
+
+      {table.getColumn("agency") && (
+        <DataTableFacetedFilter
+          column={table.getColumn("agency")}
+          title="Agency"
+          options={agencySlugs}
+        />
+      )}
+
           <Input className="max-w-xs" placeholder="description filter..."
               value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn("description")?.setFilterValue(event.target.value)}                
@@ -37,13 +47,6 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
               onChange={(event) => table.getColumn("url")?.setFilterValue(event.target.value)}                
           />
           
-        {/* {table.getColumn("role") && roles && (
-          <DataTableFacetedFilter
-            column={table.getColumn("role")}
-            title="Rol"
-            options={roles}
-          />
-        )} */}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -66,6 +69,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   columnsOff?: string[]
   subject: string
+  agencySlugs: string[]
 }
 
 export function DataTable<TData, TValue>({
@@ -73,6 +77,7 @@ export function DataTable<TData, TValue>({
   data,
   columnsOff,
   subject,
+  agencySlugs,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -112,7 +117,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-4 dark:text-white">
-      <DataTableToolbar table={table}/>
+      <DataTableToolbar table={table} agencySlugs={agencySlugs}/>
       <div className="border rounded-md">
         <Table>
           <TableHeader>

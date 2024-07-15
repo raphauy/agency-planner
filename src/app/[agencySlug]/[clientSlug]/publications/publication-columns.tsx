@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button"
 import { PublicationDAO } from "@/services/publication-services"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, Camera, GalleryHorizontalEnd, Video } from "lucide-react"
-import { format } from "date-fns"
+import { format, formatDistanceToNow } from "date-fns"
 import { DeletePublicationDialog, PublicationDialog } from "./publication-dialogs"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import Image from "next/image"
+import { es } from "date-fns/locale"
 
 
 export const columns: ColumnDef<PublicationDAO>[] = [
@@ -31,7 +32,7 @@ export const columns: ColumnDef<PublicationDAO>[] = [
       return (
         <Link href={`/${data.client.agency.slug}/${data.client.slug}/instagram/${pathType}?post=${data.id}`}>
           <div className="relative h-full overflow-hidden">
-            <Button variant="link" className="px-0">{data.title}</Button>
+            <Button variant="link" className="px-0 max-w-40"><p className="truncate">{data.title}</p></Button>
             <Image src={firstImage} alt={data.title} width={200} height={200} className='overflow-hidden aspect-square object-cover h-20 w-20 rounded-md'/>
           </div>
         </Link>
@@ -49,6 +50,12 @@ export const columns: ColumnDef<PublicationDAO>[] = [
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      return (
+        <p className="line-clamp-5">{data.copy}</p>
+      )
+    }
   },
 
   {
@@ -64,7 +71,14 @@ export const columns: ColumnDef<PublicationDAO>[] = [
 		cell: ({ row }) => {
       const data= row.original
       const date= data.publicationDate && format(new Date(data.publicationDate), "yyyy-MM-dd")
-      return (<p>{date}</p>)
+      const updated= formatDistanceToNow(data.updatedAt, { locale: es })
+      return (
+        <div>
+          <p>{date}</p>
+          <p className="text-xs text-muted-foreground mt-7">actualizado:</p>
+          <p className="text-xs text-muted-foreground font-bold">{updated}</p>
+        </div>
+      )
     }
   },
 
