@@ -20,14 +20,19 @@ export async function updatePublicationsUsage(max: number) {
 
   const clientIds: string[]= []
   
+  const currentMonth= new Date().getMonth()
+  const currentYear= new Date().getFullYear()
+
+  console.log(currentMonth, currentYear)
+  
     
   const publications= await prisma.publication.findMany({
     where: {
       usageIsPending: true,
-      // createdAt: {
-      //   gte: new Date(currentYear, currentMonth, 1),
-      //   lt: new Date(currentYear, currentMonth + 1, 1)
-      // }
+      createdAt: {
+        gte: new Date(currentYear, currentMonth, 1),
+        lt: new Date(currentYear, currentMonth + 1, 1)
+      }
     },
     orderBy: {
       createdAt: 'desc'
@@ -124,11 +129,8 @@ export async function updatePublicationsUsage(max: number) {
     }
 
   }
-  const currentMonth= new Date().getMonth() + 1
-  const currentYear= new Date().getFullYear()
-
   const uniqueClientIds= Array.from(new Set(clientIds))
-  await updateMUsage(uniqueClientIds, currentMonth, currentYear)
+  await updateMUsage(uniqueClientIds, currentMonth+1, currentYear)
 }
   
   
