@@ -14,16 +14,16 @@ export async function GET(req: NextRequest) {
     const max= parseInt(req.nextUrl.searchParams.get("max") || "10")
     console.log(`Starting updatePublicationsUsage with max: ${max}`)
 
-    const publicationsCount= await updatePublicationsUsage(max)
+    const agenciesNames= await updatePublicationsUsage(max)
 
     const actualHour= new Date().getHours()
     const actualMinute= new Date().getMinutes()
-    if (publicationsCount > 0) {
-        const message= `Publications updated: ${publicationsCount}`
+    if (agenciesNames.length > 0) {
+        const message= `Agencies updated: ${agenciesNames.join(", ")}`
         console.log(message)
-          await sendWapMessage(RCPhone!, message)
-    } else if (actualMinute === 0 && actualHour > 6 && actualHour < 22) {
-        const message= `Ping with from Agency Planner`
+        await sendWapMessage(RCPhone!, message)
+    } else if (actualMinute === 0 && (actualHour === 9 || actualHour === 12 || actualHour === 15 || actualHour === 18 || actualHour === 21)) {
+        const message= `Ping from Agency Planner`
         console.log(message)
         await sendWapMessage(RCPhone!, message)
     }

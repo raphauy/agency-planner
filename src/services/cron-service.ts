@@ -132,7 +132,9 @@ export async function updatePublicationsUsage(max: number) {
   const uniqueClientIds= Array.from(new Set(clientIds))
   await updateMUsage(uniqueClientIds, currentMonth+1, currentYear)
 
-  return publications.length
+  const agenciesNames= publications.map(p => p.client.agency.name)
+  const uniqueAgenciesNames= Array.from(new Set(agenciesNames))
+  return uniqueAgenciesNames
 }
   
   
