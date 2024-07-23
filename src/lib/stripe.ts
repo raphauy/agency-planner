@@ -1,4 +1,4 @@
-import { getAgencyDAO, getAgencyDAOByStripeCustomerId } from "@/services/agency-services";
+import { getAgencyDAO, getAgencyDAOBySlug, getAgencyDAOByStripeCustomerId } from "@/services/agency-services";
 import { getPlanDAOByPriceId } from "@/services/plan-services";
 import { changePlan, createSubscription, getSubscriptionDAOByStripeSubscriptionId, SubscriptionFormValues, SubscriptionUpdateFormValues, updateSubscription } from "@/services/subscription-services";
 import { Subscription, SubscriptionStatus } from "@prisma/client";
@@ -20,9 +20,13 @@ export async function createStripeCustomer(email: string, agencyName: string) {
 }
 
 export async function generateCustomerPortalUrl(stripeCustomerId: string, agencySlug: string) {
+    const agency= await getAgencyDAOBySlug(agencySlug)
+    if (!agency) throw new Error("Agency not found")
+
+    const protocol= process.env.NODE_ENV === "production" ? "https" : "http"
     const portalSession = await stripe.billingPortal.sessions.create({
         customer: stripeCustomerId,
-        return_url: `${process.env.NEXT_PUBLIC_URL}/${agencySlug}/subscriptions`,        
+        return_url: `${protocol}://${agency.domain}/${agencySlug}/subscriptions`,        
     });
 
     return portalSession.url;
