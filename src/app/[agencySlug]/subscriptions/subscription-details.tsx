@@ -11,7 +11,7 @@ export default function SubscriptionDetails({ subscription }: Props) {
     const customPlan= !subscription.plan.priceId?.startsWith("price_")
     const year= subscription.stripePeriodEnd.getFullYear()
     const proximoPago= year === 2030 ? "Indeterminado" : format(subscription.stripePeriodEnd, "yyyy-MM-dd")
-    const nextPaymentLabel= customPlan ? "Vencimiento" : "Próximo pago"
+    const nextPaymentLabel= customPlan || subscription.status === "CANCELLED" ? "Vencimiento" : "Próximo pago"
     return (
         <div className="space-y-6 my-5">
             <div className="text-center space-y-4">
@@ -27,19 +27,23 @@ export default function SubscriptionDetails({ subscription }: Props) {
                             </div>
                             <div className="grid grid-cols-2 items-center">
                                 <div className="text-muted-foreground">Precio</div>
-                                <div>{subscription.planPrice} {subscription.planCurrency}</div>
+                                <div>{subscription.planPrice} {subscription.planCurrency} por mes</div>
                             </div>
                             <div className="grid grid-cols-2 items-center">
                                 <div className="text-muted-foreground">{nextPaymentLabel}</div>
                                 <div>{proximoPago}</div>
                             </div>
                             <div className="grid grid-cols-2 items-center">
-                                <div className="text-muted-foreground">Método de pago</div>
+                                <div className="text-muted-foreground mr-2">Método de pago</div>
                                 <div>{subscription.stripePaymentMethod}</div>
                             </div>
                             <div className="grid grid-cols-2 items-center">
                                 <div className="text-muted-foreground">Stripe</div>
                                 <div>{subscription.stripeCustomerEmail}</div>
+                            </div>
+                            <div className="grid grid-cols-2 items-center">
+                                <div className="text-muted-foreground">Estado</div>
+                                <div>{subscription.status}</div>
                             </div>
                         </div>
                     </div>

@@ -184,6 +184,7 @@ export async function getBestValidSubscription(agencyId: string) {
       stripePeriodEnd: {
         gte: now
       },
+      status: "ACTIVE"
     },
     orderBy: {
       maxLLMCredits: 'desc',

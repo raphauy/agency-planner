@@ -111,8 +111,8 @@ export default async function SubscriptionsPage({ params }: Props) {
                                     </ul>
                                 </div>
                                 {
-                                    bestSubscription && bestSubscription.planId.startsWith("price_") ?
-                                    <ManageSubscriptionButton agencyId={agency.id} customPlan={customPlan} label={activePlanPriceId === plan.priceId ? "Gestionar suscripción" : "Suscribirse(*)"} disabled={disabled} />
+                                    bestSubscription && bestSubscription.plan.priceId && bestSubscription.plan.priceId.startsWith("price_") ?
+                                    <ManageSubscriptionButton agencyId={agency.id} customPlan={customPlan} label={activePlanPriceId === plan.priceId ? "Gestionar suscripción" : "Cambiar plan"} disabled={disabled} />
                                     :
                                     plan.priceId && user?.email && <SubscribeButton priceId={plan.priceId} agencyId={agency.id} email={user.email} disabled={disabled} />
                                 }
