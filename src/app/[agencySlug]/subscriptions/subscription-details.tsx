@@ -23,7 +23,7 @@ export default function SubscriptionDetails({ subscription }: Props) {
                         <div className="grid gap-2">
                             <div className="grid grid-cols-2 items-center">
                                 <div className="text-muted-foreground">Plan</div>
-                                <div>{subscription.plan.name}</div>
+                                <div>{subscription.planName}</div>
                             </div>
                             <div className="grid grid-cols-2 items-center">
                                 <div className="text-muted-foreground">Precio</div>
