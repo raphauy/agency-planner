@@ -16,6 +16,7 @@ import { FormSuccess } from "./_components/form-success";
 import { loginAction } from "./actions";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
 
 
 type Props = {
@@ -54,10 +55,15 @@ export function LoginForm({ requestedEmail }: Props) {
       }
       loginAction(values)
         .then((data) => {
+          console.log("loginAction", data)
+          
           if (data?.error) {
+            console.log("data?.error", data.error)
+            
             form.reset();
             setError(data.error)
             form.setValue("email", values.email)
+            toast({ title: data.error, variant: "destructive" })
           }
 
           if (data?.success) {
