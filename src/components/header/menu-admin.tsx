@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { CreditCard, LayoutDashboard, ListChecks, Megaphone, Ratio, Receipt, User } from "lucide-react"
+import { Captions, CreditCard, LayoutDashboard, ListChecks, Megaphone, Ratio, Receipt, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -46,6 +46,16 @@ const data= [
         href: `/admin/monthlyusages`,
         icon: Receipt,
         text: "Monthly Usages"
+    },
+    {
+        href: `/admin/plans`,
+        icon: Captions,
+        text: "Plans"
+    },
+    {
+        href: `/admin/subscriptions`,
+        icon: CreditCard,
+        text: "Subscriptions"
     }
   ]
 

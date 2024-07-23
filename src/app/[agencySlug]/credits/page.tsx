@@ -65,7 +65,7 @@ export default async function CreditsPage({ params, searchParams }: Props) {
     <div className="w-full">
 
 
-      <div className="container bg-white mb-5 p-3 py-4 mx-auto border rounded-md text-muted-foreground dark:text-white">
+      <div className="container bg-background mb-5 p-3 py-4 mx-auto border rounded-md text-muted-foreground">
         <div className="border-b mb-2 pb-2">
           <MonthSelector />
         </div>

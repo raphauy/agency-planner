@@ -8,6 +8,7 @@ export type AgencyDAO = {
   slug: string
 	image: string | undefined
 	igHandle: string | undefined
+  stripeCustomerId: string | undefined
   description: string | undefined
 	emailFrom: string | undefined
 	contactEmail: string | undefined
@@ -161,4 +162,29 @@ export async function getAgencySlugs() {
   const res= Array.from(new Set(slugs))
   
   return res
+}
+
+export async function setStripeCustomerId(id: string, stripeCustomerId: string) {
+  const updated= await prisma.agency.update({
+    where: {
+      id
+    },
+    data: {
+      stripeCustomerId
+    }
+  })
+  return updated
+}
+
+export async function getAgencyDAOByStripeCustomerId(stripeCustomerId: string) {
+  const found= await prisma.agency.findFirst({
+    where: {
+      stripeCustomerId
+    },
+    select: {
+      id: true,
+      slug: true
+    }
+  })
+  return found as AgencyDAO
 }

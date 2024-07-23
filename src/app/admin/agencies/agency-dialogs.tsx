@@ -27,8 +27,7 @@ export function AgencyDialog({ id, igForm }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Update' : 'Create'} Agency
-          </DialogTitle>
+          <DialogTitle>{id ? 'Update' : 'Create'} Agency</DialogTitle>
         </DialogHeader>
         {
           igForm ? <IgAgencyForm id={id} closeDialog={() => setOpen(false)} /> : <AgencyForm id={id} closeDialog={() => setOpen(false)} />

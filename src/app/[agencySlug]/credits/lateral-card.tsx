@@ -40,7 +40,7 @@ export default function LateralCard({ id, name, credits, maxCredits }: Props) {
     const creditsPercentage= credits / maxCredits * 100
     return (
         <Link href={`credits?c=${id}${otherParams}`} prefetch={false}>
-            <div className={cn("p-4 border rounded-lg shadow-md bg-white", selected && "border-blue-500 bg-sky-50")}>
+            <div className={cn("p-4 border rounded-lg shadow-md bg-background", selected && "border-blue-500 bg-sky-50")}>
                 <div className="flex justify-between items-center">
                     <div className="text-lg font-bold truncate">{name}</div>
                     <div className="text-sm text-muted-foreground">Créditos</div>

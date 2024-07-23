@@ -1,16 +1,16 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { AgencyDAO } from "@/services/agency-services"
+import { PlanDAO } from "@/services/plan-services"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, CheckIcon } from "lucide-react"
 import { format } from "date-fns"
-import { DeleteAgencyDialog, AgencyDialog, UserSelectorDialog } from "./agency-dialogs"
-import Image from "next/image"
-import Link from "next/link"
+import { DeletePlanDialog, PlanDialog } from "./plan-dialogs"
 
+import { SubscriptionsDialog } from "./plan-dialogs"
+  
 
-export const columns: ColumnDef<AgencyDAO>[] = [
+export const columns: ColumnDef<PlanDAO>[] = [
   
   {
     accessorKey: "name",
@@ -22,23 +22,6 @@ export const columns: ColumnDef<AgencyDAO>[] = [
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
-    cell: ({ row }) => {
-      const data= row.original
-      if (!data.image) return null
-      
-      const shortName= data.name.length > 15 ? data.name.slice(0, 15) + "..." : data.name
-      return (
-        <div className="flex items-center min-w-40">
-          <Image src={data.image} alt={data.name} width={50} height={50} className="rounded-full" />
-          <Link href={`/${data.slug}`} prefetch={false}>
-            <Button variant="link">
-              {shortName}
-            </Button>
-          </Link>
-        </div>
-        
-      )
-    }
   },
 
   {
@@ -51,61 +34,81 @@ export const columns: ColumnDef<AgencyDAO>[] = [
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      const features:string[]= data.features.split(",")
+      return (
+        <div>
+          <p>{data.description}</p>
+          <ul className="space-y-2 text-sm ml-5 mt-2">
+            {
+              features.map((feature, index) => {
+                return (
+                  <li key={index} className="flex items-center gap-2">
+                    <CheckIcon className="h-4 w-4 text-primary" />
+                    {feature}
+                  </li>
+                  )
+              })
+            }
+            </ul>
+          </div>
+      )
+    }
   },
 
   {
-    accessorKey: "igHandle",
+    accessorKey: "price",
     header: ({ column }) => {
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Instagram
+            Price
             <ArrowUpDown className="w-4 h-4 ml-1" />
-          </Button>
-    )},
-  },
-
-  {
-    accessorKey: "slug",
-    header: ({ column }) => {
-        return (
-          <Button variant="ghost" className="pl-0 dark:text-white"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Slug
-            <ArrowUpDown className="w-4 h-4 ml-1" />
-          </Button>
-    )},
-  },
-
-  {
-    accessorKey: "owner",
-    header: ({ column }) => {
-        return (
-          <Button variant="ghost" className="pl-0 dark:text-white"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Owner
-            <ArrowUpDown className="w-4 h-4 ml-1" />
-          </Button>
+          </Button>          
     )},
     cell: ({ row }) => {
       const data= row.original
-      if (!data.owner?.name) return null
-
       return (
         <div className="flex items-center">
-          <p className="ml-2">{data.owner.name}</p>
+          <p className="text-right">{data.price} {data.currency}</p>
         </div>
       )
     }
   },
 
   {
-    accessorKey: "stripeCustomerId",
+    accessorKey: "maxClients",
     header: ({ column }) => {
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Stripe CustomerId
+            Limits
+            <ArrowUpDown className="w-4 h-4 ml-1" />
+          </Button>
+    )},
+    cell: ({ row }) => {
+      const data= row.original
+      return (
+        <div className="grid grid-cols-2 gap-2 w-44">
+          <p>Clients:</p>
+          <p>{data.maxClients}</p>
+          <p>Credits:</p>
+          <p>{data.maxCredits}</p>
+          <p>LLM Credits:</p>
+          <p>{data.maxLLMCredits}</p>
+        </div>
+      )
+    }
+  },
+
+  {
+    accessorKey: "priceId",
+    header: ({ column }) => {
+        return (
+          <Button variant="ghost" className="pl-0 dark:text-white"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            PriceId
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
@@ -116,14 +119,15 @@ export const columns: ColumnDef<AgencyDAO>[] = [
     cell: ({ row }) => {
       const data= row.original
 
-      const deleteDescription= `Do you want to delete Agency ${data.id}?`
+      const deleteDescription= `Do you want to delete Plan ${data.id}?`
  
       return (
         <div className="flex items-center justify-end gap-2">
 
-          <UserSelectorDialog agencyId={data.id} />
-          <AgencyDialog id={data.id} />
-          <DeleteAgencyDialog description={deleteDescription} id={data.id} />
+          <SubscriptionsDialog id={data.id} title={"Subscriptions"} />
+  
+          <PlanDialog id={data.id} />
+          <DeletePlanDialog description={deleteDescription} id={data.id} />
         </div>
 
       )

@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         const message= `Agencies updated: ${agenciesNames.join(", ")}`
         console.log(message)
         await sendWapMessage(RCPhone!, message)
-    } else if (actualMinute === 0 && (actualHour === 6 || actualHour === 9 || actualHour === 12 || actualHour === 15 || actualHour === 18 || actualHour === 21)) {
+    } else if (actualMinute === 0 && (actualHour === 9 || actualHour === 12 || actualHour === 15 || actualHour === 18 || actualHour === 21 || actualHour === 0)) {
         const message= `Ping from Agency Planner`
         console.log(message)
         await sendWapMessage(RCPhone!, message)
