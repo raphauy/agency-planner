@@ -75,6 +75,17 @@ export async function getLastPublicationsWithoutListeners(take: number) {
   return found as PublicationDAO[]
 }
 
+export async function getCountPublicationsWithoutListeners() {
+  const count = await prisma.publication.count({
+    where: {
+      listeners: {
+        none: {}
+      }
+    }
+  })
+  return count
+}
+
 export async function getPublicationsDAOByClientSlug(clientSlug: string) {
   const found = await prisma.publication.findMany({
     where: {

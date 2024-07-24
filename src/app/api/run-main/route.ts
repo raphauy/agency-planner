@@ -1,5 +1,5 @@
 import { getPendingInvitationsOfClient } from '@/services/invitation-services'
-import { addListeners, getLastPublicationsWithoutListeners, getPublicationsDAO } from '@/services/publication-services'
+import { addListeners, getCountPublicationsWithoutListeners, getLastPublicationsWithoutListeners, getPublicationsDAO } from '@/services/publication-services'
 import { getUsersOfClient } from '@/services/user-services'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
 
     }
 
+    const totalCount= await getCountPublicationsWithoutListeners()
     
-    return NextResponse.json({ ok: true, data: { count } })
+    return NextResponse.json({ ok: true, data: { count, totalCount } })
 }
