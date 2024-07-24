@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
     console.log(`Starting update Publications Listeners with max: ${max}`)
 
     const publicactions= await getLastPublicationsWithoutListeners(max)
+    const count= publicactions.length
 
-    if (publicactions.length === 0) {
+    if (count === 0) {
         console.log("No publicactions without listeners")
     }
 
@@ -31,5 +32,5 @@ export async function GET(req: NextRequest) {
     }
 
     
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, data: { count } })
 }
