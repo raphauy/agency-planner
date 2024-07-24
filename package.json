@@ -17,6 +17,8 @@
     "@ai-sdk/openai": "^0.0.34",
     "@auth/prisma-adapter": "1.0.12",
     "@hookform/resolvers": "^3.3.4",
+    "@knocklabs/node": "^0.6.13",
+    "@knocklabs/react": "^0.2.25",
     "@nivo/bar": "^0.87.0",
     "@nivo/line": "^0.87.0",
     "@prisma/client": "^5.16.1",

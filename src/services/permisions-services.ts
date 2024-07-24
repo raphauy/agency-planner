@@ -44,7 +44,10 @@ export async function getPermissionsOfUser(userId: string): Promise<PermissionsD
 export async function getPermissionsOfAgency(agencyId: string): Promise<PermissionsDAO[]> {
   const found= await prisma.user.findMany({
     where: {
-      agencyId
+      agencyId,
+      role: {
+        in: ["AGENCY_OWNER", "AGENCY_ADMIN", "AGENCY_CREATOR"]
+      }
     },
     include: {
       clients: true

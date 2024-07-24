@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
-import { PublicationStatus, UserRole } from "@prisma/client"
+import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
 import { format as formatTZ, toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale";
 import { format, isThisWeek, isToday, isYesterday, parseISO } from "date-fns";
@@ -138,3 +138,16 @@ export const colorPalette = [
   'rgb(8, 8, 8)',
   'rgb(5, 5, 5)',
 ];
+
+export function getPublicationPath(type: PublicationType) {
+  switch (type) {
+    case PublicationType.INSTAGRAM_POST:
+      return "instagram/posts"
+    case PublicationType.INSTAGRAM_REEL:
+      return "instagram/reels"
+    case PublicationType.INSTAGRAM_STORY:
+      return "instagram/historias"
+    default:
+      return "instagram/feed"
+  }
+}

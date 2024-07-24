@@ -14,6 +14,7 @@ import { format } from "date-fns"
 import { AgencyDAO } from "./agency-services"
 import { ConfigOptions } from "cloudinary"
 import { createMonthlyUsage, MonthlyUsageFormValues, updateMonthlyUsage } from "./monthlyusage-services"
+import { getPublicationPath } from "@/lib/utils"
 
 // if the publication have the usage record, update it, if not create it
 export async function updatePublicationsUsage(max: number) {
@@ -138,33 +139,21 @@ export async function updatePublicationsUsage(max: number) {
 }
   
   
-  function getPublicationPath(type: PublicationType) {
-    switch (type) {
-      case PublicationType.INSTAGRAM_POST:
-        return "instagram/posts"
-      case PublicationType.INSTAGRAM_REEL:
-        return "instagram/reels"
-      case PublicationType.INSTAGRAM_STORY:
-        return "instagram/historias"
-      default:
-        return "instagram/feed"
+  
+  
+function getConfigOptions(cloud_name: string | null, api_key: string | null, api_secret: string | null): ConfigOptions {
+  
+  if (cloud_name && api_key && api_secret) {
+    return {
+      cloud_name,
+      api_key,
+      api_secret,
     }
-  }
-  
-  
-  function getConfigOptions(cloud_name: string | null, api_key: string | null, api_secret: string | null): ConfigOptions {
-    
-    if (cloud_name && api_key && api_secret) {
-      return {
-        cloud_name,
-        api_key,
-        api_secret,
-      }
-    } else {
-      return {
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET,
+  } else {
+    return {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
     }
   }
 }

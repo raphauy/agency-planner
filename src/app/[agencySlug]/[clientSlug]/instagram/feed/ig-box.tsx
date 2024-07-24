@@ -2,7 +2,7 @@ import { Comments } from "@/components/comments"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentRole } from "@/lib/utils"
-import { PublicationDAO } from "@/services/publication-services"
+import { getListeners, getTeamMembers, PublicationDAO } from "@/services/publication-services"
 import { PublicationType, UserRole } from "@prisma/client"
 import { format as formatTz, toZonedTime } from 'date-fns-tz'
 import { es } from "date-fns/locale"
@@ -14,6 +14,8 @@ import { AgencyPubStatusSelector } from "./agency-status-selector"
 import { ClientPubStatusSelector } from "./client-status-selector"
 import CopyBox from "./copy-box"
 import IgCarousel from "./ig-carousel"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import NotificationsBox from "./notifications-box"
 
 type Props= {
     post: PublicationDAO
@@ -35,6 +37,8 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
     const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     const zonedDate = post.publicationDate ? toZonedTime(post.publicationDate, "America/Montevideo") : null
+
+    const teamMembers= await getTeamMembers(post.id)
 
     return (
       <div>
@@ -131,8 +135,24 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             )})}
           </div>
 
-          <div className='p-4 mt-4 bg-white border rounded gap-4'>
+          <div className='p-4 mt-4 bg-white border rounded gap-4' id="comments">
+
             <Comments publication={post} />
+
+            {
+              !isClient &&
+              <Accordion type="single" collapsible className="mt-10">
+                <AccordionItem value="Notas del presupuesto" className="border-none">
+                    <AccordionTrigger>
+                        <p className="font-bold text-lg">Notificaciones</p>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                        <NotificationsBox publicationId={post.id} team={teamMembers} />
+                    </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            }
+
           </div>
 
       </div>

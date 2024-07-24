@@ -1,19 +1,15 @@
 
-import Logged from '@/components/header/logged';
-import Logo from '@/components/header/logo';
-import Menu from '@/components/header/menu';
-import Selectors from '@/components/header/selectors/selectors';
 import { TailwindIndicator } from '@/components/shadcn/tailwind-indicator';
 import { ThemeProvider } from '@/components/shadcn/theme-provider';
 import { LinealToggle } from '@/components/shadcn/toggle-theme';
+import { Toaster } from '@/components/ui/toaster';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ['latin'] })
 

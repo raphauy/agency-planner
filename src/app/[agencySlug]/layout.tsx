@@ -6,6 +6,7 @@ import Menu from "@/components/header/menu";
 import Logo from "@/components/header/logo";
 import Selectors from "@/components/header/selectors/selectors";
 import Logged from "@/components/header/logged";
+import { NotificationFeed } from "@/components/notifications-feed";
 
 interface Props {
   children: React.ReactNode
@@ -39,6 +40,7 @@ export default async function AdminLayout({ children, params }: Props) {
         <div className="flex justify-between items-center">
           <Logo />
           <Selectors />
+          <NotificationFeed />
           <Logged />
         </div>
         <Menu />

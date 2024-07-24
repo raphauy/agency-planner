@@ -39,6 +39,9 @@ model User {
 
   invitations     Invitation[]
   conversations   Conversation[]
+
+  publications    PublicationListener[]
+
 }
 
 model Account {
@@ -191,6 +194,8 @@ model Publication {
 
   usageRecord    UsageRecord? @relation("PublicationUsageRecord", fields: [usageRecordId], references: [id])
   usageRecordId  String? @unique
+
+  listeners       PublicationListener[]
 }
 
 model Pilar {
@@ -442,4 +447,14 @@ model Subscription {
 
   plan                 Plan @relation(fields: [planId], references: [id], onDelete: Cascade) // gennext: skip.list
   planId               String
+}
+
+model PublicationListener {
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+  
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+
+  @@id([publicationId, userId])
 }

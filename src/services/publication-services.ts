@@ -1,10 +1,12 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { PublicationStatus, PublicationType } from "@prisma/client"
+import { PublicationListener, PublicationStatus, PublicationType } from "@prisma/client"
 import { ClientDAO } from "./client-services"
 import { PilarDAO } from "./pilar-services"
 import { CommentDAO, CommentFormValues, createComment } from "./comment-services"
 import { getCurrentUser } from "@/lib/utils"
+import { getUserDAO, getUsersOfClient, UserDAO } from "./user-services"
+import { getPendingInvitationsOfClient } from "./invitation-services"
 
 export type PublicationDAO = {
 	id: string
@@ -23,6 +25,7 @@ export type PublicationDAO = {
 	pilarId: string | undefined
   pilar: PilarDAO | undefined
   usageRecordId: string | undefined
+  listeners: PublicationListener[]
 }
 
 export const publicationSchema = z.object({	
@@ -46,6 +49,28 @@ export async function getPublicationsDAO() {
     orderBy: {
       id: 'asc'
     },
+  })
+  return found as PublicationDAO[]
+}
+
+export async function getLastPublicationsWithoutListeners(take: number) {
+  const found = await prisma.publication.findMany({
+    where: {
+      listeners: {
+        none: {}
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    },
+    include: {
+      client: {
+        select: {
+          name: true
+        }
+      }
+		},
+    take,
   })
   return found as PublicationDAO[]
 }
@@ -158,7 +183,25 @@ export async function getPublicationDAO(id: string) {
   })
   return found as PublicationDAO
 }
-    
+
+
+export async function getPublicationDAOWithAgency(id: string) {
+  const found = await prisma.publication.findUnique({
+    where: {
+      id
+    },
+    include: {
+      client: {
+        include: {
+          agency: true,
+        }
+      },
+      listeners: true
+    }
+  })
+  return found as PublicationDAO
+}
+
 export async function createPublication(data: PublicationFormValues) {
   const created = await prisma.publication.create({
     data: {
@@ -176,6 +219,13 @@ export async function createPublication(data: PublicationFormValues) {
     publicationId: created.id
   }
   await createComment(commentForm)
+
+  const users= await getUsersOfClient(created.clientId)
+  const pendingInvitations= await getPendingInvitationsOfClient(created.clientId)
+  const userIdsPendingInvitations= pendingInvitations.map((i) => i.userId)
+  const activeUsers= users.filter((u) => !userIdsPendingInvitations.includes(u.id))
+  await addListeners(created.id, activeUsers.map((u) => u.id))
+
   return created
 }
 
@@ -220,8 +270,6 @@ export async function getFullPublicationsDAO() {
     orderBy: {
       id: 'asc'
     },
-    include: {      
-		}
   })
   return found as PublicationDAO[]
 }
@@ -293,4 +341,127 @@ export async function setUsageRecord(id: string, usageRecordId: string) {
     }
   })
   return updated
+}
+
+export async function getListeners(publicationId: string) {
+
+  const publicationListeners= await prisma.publicationListener.findMany({
+    where: {
+      publicationId
+    },
+    orderBy: {
+      user: {
+        name: 'asc'
+      }
+    },
+    include: {
+      user: true
+		}
+  })
+
+  const res= publicationListeners.map((listener) => listener.user)
+
+  return res  
+}
+
+export async function addListener(publicationId: string, userId: string) {
+  const publication= await getPublicationDAO(publicationId)
+  if (!publication) throw new Error("Publication not found")
+
+  const user= await getUserDAO(userId)
+  if (!user) throw new Error("User not found")
+
+  const listener= await prisma.publicationListener.create({
+    data: {
+      publicationId,
+      userId
+    }
+  })
+
+  if (!listener) throw new Error("Error al agregar el listener")
+
+  return listener
+}
+
+export async function addListeners(publicationId: string, userIds: string[]) {
+  const publication= await getPublicationDAO(publicationId)
+  if (!publication) throw new Error("Publication not found")
+
+  const users= await prisma.user.findMany({
+    where: {
+      id: {
+        in: userIds
+      }
+    }
+  })
+
+  if (!users) throw new Error("Users not found")
+
+  const listeners= users.map(user => {
+    return {
+      publicationId,
+      userId: user.id
+    }
+  })
+
+  await prisma.publicationListener.createMany({
+    data: listeners
+  })
+
+  return true
+}
+
+export async function removeListener(publicationId: string, userId: string) {
+
+  const deleted=await prisma.publicationListener.delete({
+    where: {
+      publicationId_userId: {
+        publicationId,
+        userId,
+      },
+    },
+  })
+
+  return deleted
+}
+
+export type PublicationMember = {
+  id: string
+  name: string | undefined
+  image: string | undefined
+  listener: boolean
+}
+
+export async function getTeamMembers(publicationId: string) {
+  const publication= await getPublicationDAOWithAgency(publicationId)
+  if (!publication) throw new Error("Publication not found")
+
+  const clientUsers= await getUsersOfClient(publication.clientId)
+  const listenersIds= await prisma.publicationListener.findMany({
+    where: {
+      publicationId
+    },
+    select: {
+      userId: true
+    }
+  })
+
+  const res: PublicationMember[] = clientUsers.map((user) => {
+    const listener= listenersIds.some(listener => listener.userId === user.id)
+    let altImage= publication.client.image
+    if (user.role.startsWith("AGENCY")) {
+        altImage= publication.client.agency.image
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      image: user.image || altImage,
+      listener
+    }
+  })
+
+  return res
+
+
 }
