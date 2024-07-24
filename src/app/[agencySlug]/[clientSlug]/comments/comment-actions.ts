@@ -77,6 +77,12 @@ async function createNotificatioin(data: CommentFormValues) {
 
         const publicationPath= getPublicationPath(publication.type)
       
+        await knock.users.identify(user.id, {
+            name: user.name,
+            email: user.email,
+            avatar: user.image
+        });
+
         await knock.workflows.trigger("comment-created", {
             actor: user.id,
             data: {
