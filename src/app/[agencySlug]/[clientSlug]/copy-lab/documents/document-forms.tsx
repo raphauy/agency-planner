@@ -31,7 +31,7 @@ export function DocumentForm({ id, clientId, closeDialog }: Props) {
     setLoading(true)
     try {
       await createOrUpdateDocumentAction(id ? id : null, data)
-      toast({ title: id ? "Document updated" : "Document created" })
+      toast({ title: id ? "Documento actualizado" : "Documento creado" })
       closeDialog()
       window.location.reload()
     } catch (error: any) {
@@ -66,7 +66,7 @@ export function DocumentForm({ id, clientId, closeDialog }: Props) {
               <FormItem>
                 <FormLabel>Nombre del documento</FormLabel>
                 <FormControl>
-                  <Input placeholder="ej: Detalles del viaje a Portugal" {...field} />
+                  <Input placeholder="ej: Detalles de la cerveza Super Rubia" {...field} />
                 </FormControl>
                 <FormDescription>Cuanto más descriptivo el nombre mejor para la IA</FormDescription>
                 <FormMessage />
@@ -81,7 +81,7 @@ export function DocumentForm({ id, clientId, closeDialog }: Props) {
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Textarea rows={10} placeholder="ej: En este documento se detallan los paseos del viaje a Portugal, así como los hoteles involucrados" {...field} />
+                  <Textarea rows={10} placeholder="ej: En este documento se detallan las características de la cerveza Super Rubia, tanto organoléptica como nutricional. También se menciona el uso de la cerveza en diferentes contextos, como en eventos deportivos o en la vida cotidiana." {...field} />
                 </FormControl>
                 <FormDescription>Esta descripción será utilizada para seleccionar información relevante para la IA entre todos los documentos.</FormDescription>
                 <FormDescription>No es información que le llegará al usuario, pero es muy importante para poder filtrar los documentos relevantes.</FormDescription>
@@ -116,7 +116,7 @@ export function DeleteDocumentForm({ id, closeDialog }: DeleteProps) {
     setLoading(true)
     deleteDocumentAction(id)
     .then(() => {
-      toast({title: "Document deleted" })
+      toast({title: "Documento eliminado" })
     })
     .catch((error) => {
       toast({title: "Error", description: error.message, variant: "destructive"})
@@ -129,10 +129,10 @@ export function DeleteDocumentForm({ id, closeDialog }: DeleteProps) {
   
   return (
     <div>
-      <Button onClick={() => closeDialog && closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+      <Button onClick={() => closeDialog && closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
       <Button onClick={handleDelete} variant="destructive" className="w-32 gap-1 ml-2">
         { loading && <Loader className="w-4 h-4 animate-spin" /> }
-        Delete  
+        Eliminar
       </Button>
     </div>
   )

@@ -1,5 +1,6 @@
 import { updatePublicationsUsage } from '@/services/cron-service'
 import { sendWapMessage } from '@/services/whatsapp-service'
+import { warn } from 'console'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const maxDuration = 299
@@ -18,14 +19,19 @@ export async function GET(req: NextRequest) {
 
     const actualHour= new Date().getHours()
     const actualMinute= new Date().getMinutes()
-    if (agenciesNames.length > 0) {
-        const message= `Agencies updated: ${agenciesNames.join(", ")}`
-        console.log(message)
-        await sendWapMessage(RCPhone!, message)
-    } else if (actualMinute === 0 && (actualHour === 9 || actualHour === 12 || actualHour === 15 || actualHour === 18 || actualHour === 21 || actualHour === 0)) {
-        const message= `Ping from Agency Planner`
-        console.log(message)
-        await sendWapMessage(RCPhone!, message)
+    try {
+        if (agenciesNames.length > 0) {
+            const message= `Agencies updated: ${agenciesNames.join(", ")}`
+            console.log(message)
+            await sendWapMessage(RCPhone!, message)
+        } else if (actualMinute === 0 && (actualHour === 9 || actualHour === 12 || actualHour === 15 || actualHour === 18 || actualHour === 21 || actualHour === 0)) {
+            const message= `Ping from Agency Planner`
+            console.log(message)
+            await sendWapMessage(RCPhone!, message)
+        }            
+    } catch (error) {
+        //console.error(error)
+        return NextResponse.json({ warn: "Error sending whatsapp message" }, { status: 200 })         
     }
     
     return NextResponse.json({ ok: true })

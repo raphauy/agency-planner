@@ -78,7 +78,7 @@ export async function POST(req: Request) {
   }, 2));
   
   const result= await streamText({
-    model: openai("gpt-4o"),
+    model: openai("gpt-4o-2024-08-06"),
     system: systemMessage,
     messages: convertToCoreMessages(last20),
     tools,

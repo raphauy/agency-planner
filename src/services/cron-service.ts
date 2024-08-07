@@ -30,10 +30,14 @@ export async function updatePublicationsUsage(max: number) {
   const publications= await prisma.publication.findMany({
     where: {
       usageIsPending: true,
-      createdAt: {
+      updatedAt: {
         gte: new Date(currentYear, currentMonth, 1),
         lt: new Date(currentYear, currentMonth + 1, 1)
       }
+      // createdAt: {
+      //   gte: new Date(currentYear, currentMonth, 1),
+      //   lt: new Date(currentYear, currentMonth + 1, 1)
+      // }
     },
     orderBy: {
       createdAt: 'desc'

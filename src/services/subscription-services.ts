@@ -57,6 +57,19 @@ export const subscriptionUpdateSchema = z.object({
 
 export type SubscriptionUpdateFormValues = z.infer<typeof subscriptionUpdateSchema>
 
+export const shortSubscriptionSchema = z.object({
+  stripePeriodEnd: z.date(),
+  stripePaymentMethod: z.string().optional(),
+	planPrice: z.string().refine((val) => !isNaN(Number(val)), { message: "(debe ser un número)" }).optional(),
+	maxClients: z.string().refine((val) => !isNaN(Number(val)), { message: "(debe ser un número)" }).optional(),
+	maxCredits: z.string().refine((val) => !isNaN(Number(val)), { message: "(debe ser un número)" }).optional(),
+	maxLLMCredits: z.string().refine((val) => !isNaN(Number(val)), { message: "(debe ser un número)" }).optional(),
+	agencyId: z.string().min(1, "agencyId is required."),
+	planId: z.string().min(1, "planId is required."),
+})
+
+export type ShortSubscriptionFormValues = z.infer<typeof shortSubscriptionSchema>
+
 export async function getSubscriptionsDAO() {
   const found = await prisma.subscription.findMany({
     orderBy: {
@@ -129,6 +142,27 @@ export async function createSubscriptionCustom(agencyId: string, priceId: string
   if (!created) throw new Error("Error al crear la subscripcion")
 
   return created
+}
+
+export async function updateShortSubscription(id: string, data: ShortSubscriptionFormValues) {
+  const price= data.planPrice ? Number(data.planPrice) : 0
+  const maxClients= data.maxClients ? Number(data.maxClients) : 0
+  const maxCredits= data.maxCredits ? Number(data.maxCredits) : 0
+  const maxLLMCredits= data.maxLLMCredits ? Number(data.maxLLMCredits) : 0
+  const updated = await prisma.subscription.update({
+    where: {
+      id
+    },
+    data: {
+      stripePeriodEnd: data.stripePeriodEnd,
+      stripePaymentMethod: data.stripePaymentMethod,
+      planPrice: price,
+      maxClients,
+      maxCredits,
+      maxLLMCredits,
+    }
+  })
+  return updated
 }
 
 export async function updateSubscription(id: string, data: SubscriptionUpdateFormValues) {

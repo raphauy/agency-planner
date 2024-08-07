@@ -1,6 +1,6 @@
 "use server"
   
-import { SubscriptionDAO, deleteSubscription, getFullSubscriptionDAO } from "@/services/subscription-services"
+import { ShortSubscriptionFormValues, SubscriptionDAO, deleteSubscription, getFullSubscriptionDAO, updateShortSubscription } from "@/services/subscription-services"
 import { revalidatePath } from "next/cache"
 
 
@@ -16,3 +16,10 @@ export async function deleteSubscriptionAction(id: string): Promise<Subscription
     return deleted as SubscriptionDAO
 }
 
+export async function updateShortSubscriptionAction(id: string, data: ShortSubscriptionFormValues): Promise<SubscriptionDAO | null> {    
+    const updated= await updateShortSubscription(id, data)
+
+    revalidatePath("/admin/subscriptions")
+
+    return updated as SubscriptionDAO
+}

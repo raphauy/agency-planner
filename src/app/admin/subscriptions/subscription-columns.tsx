@@ -7,7 +7,7 @@ import { SubscriptionDAO } from "@/services/subscription-services"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { ArrowUpDown } from "lucide-react"
-import { DeleteSubscriptionDialog } from "./subscription-dialogs"
+import { DeleteSubscriptionDialog, SubscriptionDialog } from "./subscription-dialogs"
 import { Separator } from "@/components/ui/separator"
 
 
@@ -150,10 +150,14 @@ export const columns: ColumnDef<SubscriptionDAO>[] = [
       const data= row.original
 
       const deleteDescription= `Do you want to delete Subscription ${data.id}?`
+
+      const isEditable= data.stripeSubscriptionId ? false : true
  
+      if (!isEditable) return null
+      
       return (
         <div className="flex items-center justify-end gap-2">
-
+          <SubscriptionDialog id={data.id} />
           <DeleteSubscriptionDialog description={deleteDescription} id={data.id} />
         </div>
 
