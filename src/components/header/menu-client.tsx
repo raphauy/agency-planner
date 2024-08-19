@@ -82,8 +82,8 @@ export default function MenuClient() {
                         borderB= true
                     }
 
-                    if (item.text === "Copy Lab" && agencySlug !== "tinta") 
-                        return null
+                    // if (item.text === "Copy Lab" && agencySlug !== "tinta") 
+                    //     return null
 
                     return (
                         <li key={index} className={cn("border-b-primary", borderB && "border-b-2")}>
