@@ -59,7 +59,7 @@ export function CopyOptions({ copy1, copy2 }: Props) {
             >
               <Copy /> Copiar texto
             </Button>
-            <Button variant="outline" className="flex-1 justify-center">Crear Publicación</Button>
+            {/* <Button variant="outline" className="flex-1 justify-center">Crear Publicación</Button> */}
           </div>
         </CardContent>
       </Card>
@@ -90,7 +90,7 @@ export function CopyOptions({ copy1, copy2 }: Props) {
             >
               <Copy /> Copiar texto
             </Button>
-            <Button variant="outline" className="flex-1 justify-center">Crear Publicación</Button>
+            {/* <Button variant="outline" className="flex-1 justify-center">Crear Publicación</Button> */}
           </div>
         </CardContent>
       </Card>
