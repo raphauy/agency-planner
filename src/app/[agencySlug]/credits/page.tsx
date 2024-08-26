@@ -1,8 +1,9 @@
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import LateralPanel from "./lateral-panel"
 import DetailsCard, { DetailsInfo } from "./details-card"
-import { getMonthlyUsagesDAOByAgency, MonthlyUsageDAO } from "@/services/monthlyusage-services"
+import { AgencyMonthlyInfo, getMonthlyUsagesDAOByAgency, MonthlyUsageDAO } from "@/services/monthlyusage-services"
 import { MonthSelector } from "./month-selector"
+import { getBestValidSubscription } from "@/services/subscription-services"
 
 type Props = {
   params: {
@@ -32,8 +33,22 @@ export default async function CreditsPage({ params, searchParams }: Props) {
   console.log("year", year)
   console.log("month", month)
   
+  const bestSubscription= await getBestValidSubscription(agency.id)
 
-  const agencyInfo= await getMonthlyUsagesDAOByAgency(agency.id, year, month)
+  if (!bestSubscription) {
+    return <div>Aún no hay suscripción válida</div>
+  }
+
+  let agencyInfo: AgencyMonthlyInfo | undefined
+  if (bestSubscription) {
+    agencyInfo= await getMonthlyUsagesDAOByAgency(agency.id, bestSubscription, year, month)
+
+  }
+
+  if (!agencyInfo) {
+    return <div>Aún no hay información disponible</div>
+  }
+
   const clientId= searchParams.c
   let info: DetailsInfo | undefined
   if (clientId && clientId !== "agency") {

@@ -33,9 +33,10 @@ export default function SubscribeButton({ priceId, agencyId, email, disabled }: 
         
 
     return (
-        <Button className="w-full" onClick={handleSubscribe} disabled={loading || disabled}>
-            {
-                loading ? <Loader className="animate-spin" /> : <p>Subscribirse</p>
+        // <Button className="w-full" onClick={handleSubscribe} disabled={loading || disabled}>
+        <Button className="w-full" onClick={handleSubscribe} disabled={true}>
+        {
+                loading ? <Loader className="animate-spin" /> : <p>Suscribirse (comming soon...)</p>
             }
         </Button>
     );

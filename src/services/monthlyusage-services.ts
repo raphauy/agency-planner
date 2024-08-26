@@ -2,7 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { clientSchema } from "./client-services"
 import { getAgencyDAO } from "./agency-services"
-import { getBestValidSubscription } from "./subscription-services"
+import { getBestValidSubscription, SubscriptionDAO } from "./subscription-services"
 
 export type MonthlyUsageDAO = {
 	id: string
@@ -126,10 +126,10 @@ export type AgencyMonthlyInfo= {
   conversationsCount: number
   clientMonthlyUsages: MonthlyUsageDAO[]
 }
-export async function getMonthlyUsagesDAOByAgency(agencyId: string, year: number, month: number): Promise<AgencyMonthlyInfo> {
+export async function getMonthlyUsagesDAOByAgency(agencyId: string,bestValidSubscription: SubscriptionDAO, year: number, month: number): Promise<AgencyMonthlyInfo> {
   month= month + 1
   const agency= await getAgencyDAO(agencyId)
-  const bestValidSubscription= await getBestValidSubscription(agencyId)
+//  const bestValidSubscription= await getBestValidSubscription(agencyId)
   const agencyMaxCredits= bestValidSubscription.maxCredits
 
   const found = await prisma.monthlyUsage.findMany({

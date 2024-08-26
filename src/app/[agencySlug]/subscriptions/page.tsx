@@ -45,21 +45,24 @@ export default async function SubscriptionsPage({ params }: Props) {
     let year= now.getFullYear()
     
   
-    const agencyInfo= await getMonthlyUsagesDAOByAgency(agency.id, year, month)
-    const info= {
-        name: agency.name,
-        imagesCount: agencyInfo.imagesCount,
-        videosCount: agencyInfo.videosCount,
-        storageMB: agencyInfo.storageMB,
-        storageCredits: agencyInfo.storageCredits,
-        llmCredits: agencyInfo.llmCredits,
-        conversationsCount: agencyInfo.conversationsCount,
+    let info: DetailsInfo | undefined
+    if (bestSubscription) {
+        const agencyInfo= await getMonthlyUsagesDAOByAgency(agency.id, bestSubscription, year, month)
+        info= {
+            name: agency.name,
+            imagesCount: agencyInfo.imagesCount,
+            videosCount: agencyInfo.videosCount,
+            storageMB: agencyInfo.storageMB,
+            storageCredits: agencyInfo.storageCredits,
+            llmCredits: agencyInfo.llmCredits,
+            conversationsCount: agencyInfo.conversationsCount,
+        }
     }
 
     return (
         <div className="w-full mx-auto bg-background border rounded-md">
             {
-                bestSubscription && 
+                bestSubscription && info &&
                 <div className="flex gap-4 justify-center xl:gap-10">
                     <SubscriptionDetails subscription={bestSubscription} />
                     <UsageDetails subscription={bestSubscription} info={info} />
