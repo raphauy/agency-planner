@@ -5,6 +5,7 @@ import { useState } from "react";
 import { subcribeAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
 import { Loader } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 type Props= {
     priceId: string
@@ -14,6 +15,9 @@ type Props= {
 }
 export default function SubscribeButton({ priceId, agencyId, email, disabled }: Props) {
     const [loading, setLoading] = useState(false)
+
+    const session = useSession()
+    const userEmail = session?.data?.user?.email
 
     function handleSubscribe() {
         setLoading(true)
@@ -29,6 +33,17 @@ export default function SubscribeButton({ priceId, agencyId, email, disabled }: 
             setLoading(false)
         })
 
+    }
+
+
+    if (userEmail && userEmail === "rapha.uy@rapha.uy") {
+        return (
+            <Button className="w-full" onClick={handleSubscribe} disabled={loading || disabled}>
+                {
+                    loading ? <Loader className="animate-spin" /> : <p>Suscribirse (RC)</p>
+                }
+            </Button>
+        );
     }
         
 
