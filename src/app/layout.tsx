@@ -15,10 +15,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "Agency Planner",
-  description: "A nice planner for agencies",
+  description: "A strategic content planner for agencies.",
   openGraph: {
     title: "Agency Planner",
-    description: "A nice planner for agencies",
+    description: "A strategic content planner for agencies.",
     type: "website",
     url: "https://agency-planner.com",
     images: [
