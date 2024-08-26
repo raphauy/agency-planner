@@ -13,6 +13,10 @@ export async function sendWapMessage(phone: string, text: string): Promise<strin
   if (!tintaEndpoint) throw new Error("tintaEndpoint not found")
 
   console.log(`endpoint: ${tintaEndpoint}`)
+
+  console.log("Whatsapp momentainly disabled")
+  return ""
+  
   
   const sendWapURL= `${tintaEndpoint}/send`
 
