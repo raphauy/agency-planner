@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button"
 import { getCurrentRole } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { getPublicationDAO, getPublicationsDAOByClientAndType } from "@/services/publication-services"
 import { PublicationType, UserRole } from "@prisma/client"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import Feed from "./feed"
 import IgBox from "../feed/ig-box"
 import { PostForm } from "../feed/post-form"
+import Feed from "./feed"
 
 type Props = {
     params: {
@@ -27,7 +27,7 @@ type Props = {
 export default async function ReelsPage({ params, searchParams }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!agency || !client) {
       redirect("/auth/404")
     }

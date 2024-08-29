@@ -113,7 +113,7 @@ export async function getPublicationsDAOByClient(clientId: string) {
   return found as PublicationDAO[]
 }
 
-export async function getPublicationsDAOByClientWithFilter(clientSlug: string, filter: string, isClient: boolean) {
+export async function getPublicationsDAOByClientWithFilter(agencySlug: string,clientSlug: string, filter: string, isClient: boolean) {
 
   const statusArray= isClient ? [PublicationStatus.REVISADO, PublicationStatus.APROBADO, PublicationStatus.PROGRAMADO, PublicationStatus.PUBLICADO] : Object.values(PublicationStatus)
 
@@ -123,7 +123,10 @@ export async function getPublicationsDAOByClientWithFilter(clientSlug: string, f
   const found = await prisma.publication.findMany({
     where: {
       client: {
-        slug: clientSlug
+        slug: clientSlug,
+        agency: {
+          slug: agencySlug
+        }
       },
       type: {
         in: types

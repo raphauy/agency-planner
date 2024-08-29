@@ -1,10 +1,10 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getCurrentUser } from "@/lib/utils";
-import { getClientDAOBySlug } from "@/services/client-services";
+import { getClientDAOBySlugs } from "@/services/client-services";
+import { getFullConversationsBySlugs } from "@/services/conversation-services";
 import { redirect } from "next/navigation";
 import { CopySideBar } from "./copy-side-bar";
 import "./prosemirror.css";
-import { getFullConversationsByClientSlug } from "@/services/conversation-services";
 
 type Props= {
   children: React.ReactNode
@@ -26,11 +26,11 @@ export default async function SlugLayout({ children, params }: Props) {
   if (currentUser.role !== 'ADMIN' && !currentUser.role.startsWith("AGENCY_"))
     return redirect("/unauthorized?message=No estas autorizado a acceder a esta página!")
 
-  let client= await getClientDAOBySlug(clientSlug)
+  let client= await getClientDAOBySlugs(agencySlug, clientSlug)
   if (!client) 
     return <div>Cliente no encontrado</div>
 
-  const conversations= await getFullConversationsByClientSlug(clientSlug)
+  const conversations= await getFullConversationsBySlugs(agencySlug, clientSlug)
 
   return (
     <>

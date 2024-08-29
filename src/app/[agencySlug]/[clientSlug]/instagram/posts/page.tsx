@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button"
-import { getCurrentRole, getCurrentUser } from "@/lib/utils"
+import { getCurrentUser } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { getPublicationDAO, getPublicationsDAOByClientAndType } from "@/services/publication-services"
-import { PublicationType, UserRole } from "@prisma/client"
+import { PublicationType } from "@prisma/client"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -27,7 +27,7 @@ type Props = {
 export default async function PostsPage({ params, searchParams }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!agency || !client) {
       redirect("/auth/404")
     }

@@ -22,18 +22,21 @@ type Props= {
 }
 
 export function PilarForm({ id, closeDialog }: Props) {
+  const agencySlug= useParams().agencySlug as string
+  const clientSlug= useParams().clientSlug as string
+
   const form = useForm<PilarFormValues>({
     resolver: zodResolver(pilarSchema),
     defaultValues: {
       name: "",
       description: "",
       color: "",
-      clientSlug: "",
+      agencySlug,
+      clientSlug,
     },
     mode: "onChange",
   })
   const [loading, setLoading] = useState(false)
-  const clientSlug= useParams().clientSlug as string
 
   const onSubmit = async (data: PilarFormValues) => {
     data.clientSlug= clientSlug
@@ -54,6 +57,7 @@ export function PilarForm({ id, closeDialog }: Props) {
       getPilarDAOAction(id).then((data) => {
         if (data) {
           form.reset(data)
+          form.setValue("agencySlug", agencySlug)
           form.setValue("clientSlug", clientSlug)
           form.setValue("color", data.color)
         }
@@ -64,7 +68,7 @@ export function PilarForm({ id, closeDialog }: Props) {
         })
       })
     }
-  }, [form, id, clientSlug])
+  }, [form, id, clientSlug, agencySlug])
 
   return (
     <div className="p-4 bg-white rounded-md">

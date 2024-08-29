@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { getClientDAO, getClientDAOBySlug } from "./client-services"
+import { getClientDAO, getClientDAOBySlugs } from "./client-services"
 
 export type PilarDAO = {
 	id: string
@@ -14,6 +14,7 @@ export const pilarSchema = z.object({
 	name: z.string({required_error: "name is required."}),
 	description: z.string().optional(),
 	color: z.string({required_error: "color is required."}),
+  agencySlug: z.string({required_error: "agencySlug is required."}),
 	clientSlug: z.string({required_error: "clientSlug is required."}),
 })
 
@@ -29,8 +30,8 @@ export async function getPilarsDAO() {
   return found as PilarDAO[]
 }
 
-export async function getPilarsDAOByClientSlug(clientSlug: string) {
-  const client= await getClientDAOBySlug(clientSlug)
+export async function getPilarsDAOBySlugs(agencySlug: string, clientSlug: string) {
+  const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   const found = await prisma.pilar.findMany({
     where: {
       clientId: client.id
@@ -53,7 +54,7 @@ export async function getPilarDAO(id: string) {
 }
     
 export async function createPilar(data: PilarFormValues) {
-  const client= await getClientDAOBySlug(data.clientSlug)
+  const client= await getClientDAOBySlugs(data.agencySlug, data.clientSlug)
   const created = await prisma.pilar.create({
     data: {      
       clientId: client.id,
@@ -66,7 +67,7 @@ export async function createPilar(data: PilarFormValues) {
 }
 
 export async function updatePilar(id: string, data: PilarFormValues) {
-  const client= await getClientDAOBySlug(data.clientSlug)
+  const client= await getClientDAOBySlugs(data.agencySlug, data.clientSlug)
   const updated = await prisma.pilar.update({
     where: {
       id

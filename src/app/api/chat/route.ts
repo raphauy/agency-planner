@@ -1,9 +1,9 @@
 import { getCurrentUser } from "@/lib/utils";
-import { getClientDAOBySlug } from "@/services/client-services";
+import { getClientDAOBySlugs } from "@/services/client-services";
 import { createConversation, getConversationDAO } from "@/services/conversation-services";
 import { getContext } from "@/services/function-call-services";
 import { MessageFormValues, createMessage } from "@/services/message-services";
-import { DocumentResult, tools } from "@/services/tools";
+import { tools } from "@/services/tools";
 import { openai } from '@ai-sdk/openai';
 import { convertToCoreMessages, streamText } from "ai";
 
@@ -11,7 +11,7 @@ export const maxDuration = 299
 
 export async function POST(req: Request) {
 
-  const { messages, conversationId, clientSlug, prompt } = await req.json()
+  const { messages, conversationId, agencySlug, clientSlug, prompt } = await req.json()
 
   const currentUser= await getCurrentUser()
   if (!currentUser || !currentUser.email) return new Response("No se encontró un usuario logueado", { status: 404 })
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   if (!conversation && conversationId === "new") {
     console.log("new conversation")
     
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!client) return new Response("Client not found", { status: 404 })
 
     const created= await createConversation({

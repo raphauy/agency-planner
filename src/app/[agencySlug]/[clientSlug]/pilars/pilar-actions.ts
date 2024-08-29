@@ -24,7 +24,7 @@ export async function createOrUpdatePilarAction(id: string | null, data: PilarFo
 export async function deletePilarAction(id: string): Promise<PilarDAO | null> {    
     const deleted= await deletePilar(id)
 
-    revalidatePath("/[clientSlug]/pilars")
+    revalidatePath("/[agencySlug]/[clientSlug]/pilars", "page")
 
     return deleted as PilarDAO
 }

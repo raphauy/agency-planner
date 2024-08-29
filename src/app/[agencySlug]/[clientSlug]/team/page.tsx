@@ -1,10 +1,9 @@
-import { InviteDialog, UserDialog } from "@/app/admin/users/user-dialogs"
-import { getAgencyDAOBySlug } from "@/services/agency-services"
-import { getUsersOfAgency, getUsersOfClient, getUsersOfClientWithPendingInvitations } from "@/services/user-services"
-import { DataTable } from "./user-table"
-import { columns } from "./user-columns"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { InviteDialog } from "@/app/admin/users/user-dialogs"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { getPendingInvitationsOfClient } from "@/services/invitation-services"
+import { getUsersOfClient, getUsersOfClientWithPendingInvitations } from "@/services/user-services"
+import { columns } from "./user-columns"
+import { DataTable } from "./user-table"
 
 type Props = {
   params: {
@@ -13,8 +12,9 @@ type Props = {
   }
 }
 export default async function UsersPage({ params }: Props) {
+  const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
-  const client= await getClientDAOBySlug(clientSlug)
+  const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   const data= await getUsersOfClient(client.id)
   const pendingInvitations= await getPendingInvitationsOfClient(client.id)
   const userIdsPendingInvitations= pendingInvitations.map((i) => i.userId)

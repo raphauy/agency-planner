@@ -2,12 +2,12 @@ import { DescriptionForm } from "@/components/description-form";
 import { IconBadge } from "@/components/icon-badge";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentRole } from "@/lib/utils";
-import { getClientDAOBySlug } from "@/services/client-services";
+import { getClientDAOBySlugs } from "@/services/client-services";
 import { UserRole } from "@prisma/client";
 import { LayoutDashboard, SparklesIcon } from "lucide-react";
-import SwitchBox from "./switch-box";
+import { setBrandVoiceAction, setIncludeBrandVoiceAction } from "../../settings/actions";
 import { setPromptAction } from "./actions";
-import { setBrandVoiceAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "../../settings/actions";
+import SwitchBox from "./switch-box";
 
 type Props = {
     params: {
@@ -17,8 +17,9 @@ type Props = {
 }
 
 export default async function SettingsPage({ params }: Props) {
+    const agencySlug= params.agencySlug as string
     const clientSlug = params.clientSlug
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!client) return <div>Client not found</div>
     
     const currentRole= await getCurrentRole()

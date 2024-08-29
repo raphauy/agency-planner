@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getChannelsByClientSlug } from "@/services/channel-services"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { getInstagramStats, getMonthlyStats } from "@/services/stats-service"
 import * as LucideIcons from "lucide-react"
 import Image from "next/image"
@@ -22,7 +22,7 @@ type Props = {
 export default async function ClientPage({ params }: Props) {
   const { agencySlug, clientSlug } = params
   const agency= await getAgencyDAOBySlug(agencySlug)
-  const client= await getClientDAOBySlug(clientSlug)
+  const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   if (!agency || !client) {
     redirect("/auth/404")
   }

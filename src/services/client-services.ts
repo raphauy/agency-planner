@@ -93,20 +93,6 @@ export async function getClientDAO(id: string) {
   return found as ClientDAO
 }
 
-export async function getClientDAOBySlug(slug: string) {
-  const found = await prisma.client.findFirst({
-    where: {
-      slug
-    },
-    include: {
-      pilars: true,
-      agency: true,
-      channels: true,
-    }
-  })
-  return found as ClientDAO  
-}
-
 export async function getClientDAOBySlugs(agencySlug: string, clientSlug: string) {
   const found = await prisma.client.findFirst({
     where: {

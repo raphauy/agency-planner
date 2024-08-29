@@ -1,4 +1,4 @@
-import { getPilarsDAO, getPilarsDAOByClientSlug } from "@/services/pilar-services"
+import { getPilarsDAO, getPilarsDAOBySlugs } from "@/services/pilar-services"
 import { PilarDialog } from "./pilar-dialogs"
 import { DataTable } from "./pilar-table"
 import { columns } from "./pilar-columns"
@@ -11,9 +11,10 @@ type Props= {
 }
 export default async function PilarsPage({ params }: Props) {
 
+  const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
   
-  const data= await getPilarsDAOByClientSlug(clientSlug)
+  const data= await getPilarsDAOBySlugs(agencySlug, clientSlug)
 
   return (
     <div className="w-full">      

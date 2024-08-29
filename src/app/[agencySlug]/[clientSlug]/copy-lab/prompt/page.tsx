@@ -1,16 +1,18 @@
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { updatePromptAction } from "./actions"
 import { PromptForm } from "./prompt-form"
 
 type Props= {
     params: {
-      clientSlug: string
+        agencySlug: string
+        clientSlug: string
     }
 }  
 export default async function PromptPage({ params }: Props) {
-    const slug= params.clientSlug as string
+    const agencySlug= params.agencySlug as string
+    const clientSlug= params.clientSlug as string
         
-    const client= await getClientDAOBySlug(slug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!client) {
       return <div>Cliente no encontrado</div>
     }

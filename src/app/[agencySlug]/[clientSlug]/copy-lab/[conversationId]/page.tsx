@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/utils"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { createConversation, getFullConversationDAO } from "@/services/conversation-services"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -27,7 +27,7 @@ export default async function SimulatorPage({ params }: Props) {
         if (!currentUser || !currentUser.email) return <div>No se encontró el usuario logueado</div>
         const now= new Date()
         const dayOfWeek= format(now, "eeee", { locale: es })
-        const client= await getClientDAOBySlug(clientSlug)
+        const client= await getClientDAOBySlugs(agencySlug, clientSlug)
         if (!client) return <div>Client not found</div>
         const created= await createConversation({
             clientId: client.id,      
@@ -43,7 +43,7 @@ export default async function SimulatorPage({ params }: Props) {
   
     return (
         <div className="flex flex-col items-center w-full h-full">
-          <ChatComponent clientSlug={clientSlug} conversation={conversation} />
+          <ChatComponent agencySlug={agencySlug} clientSlug={clientSlug} conversation={conversation} />
         </div>
     )
 }

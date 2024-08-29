@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button"
+import { getCurrentRole } from "@/lib/utils"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { PublicationDAO, getPublicationDAO, getPublicationsDAOByClient } from "@/services/publication-services"
-import { Camera, GalleryHorizontalEnd, PlusCircle, PlusIcon, Video } from "lucide-react"
+import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
+import { Camera, GalleryHorizontalEnd, PlusIcon, Video } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import Feed from "./feed"
 import IgBox from "./ig-box"
 import { PostForm } from "./post-form"
-import { getCurrentRole, getCurrentUser } from "@/lib/utils"
-import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
 
 type Props = {
     params: {
@@ -27,7 +27,7 @@ type Props = {
 export default async function FeedPage({ params, searchParams }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!agency || !client) {
       redirect("/auth/404")
     }

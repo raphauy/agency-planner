@@ -209,12 +209,15 @@ export async function getFullConversationDAO(id: string) {
   return found as ConversationDAO
 }
 
-export async function getFullConversationsByClientSlug(clientSlug: string) {
+export async function getFullConversationsBySlugs(agencySlug: string, clientSlug: string) {
   const found = await prisma.conversation.findMany({
     where: {
       client: {
-        slug: clientSlug
-      }
+        slug: clientSlug,
+        agency: {
+          slug: agencySlug
+        }
+      },      
     },
     include: {
 			client: true,

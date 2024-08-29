@@ -1,5 +1,5 @@
 import { getAgencyDAOBySlug } from "@/services/agency-services"
-import { getClientDAOBySlug } from "@/services/client-services"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { redirect } from "next/navigation"
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 export default async function LinkedinPage({ params }: Props) {
     const { agencySlug, clientSlug } = params
     const agency= await getAgencyDAOBySlug(agencySlug)
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!agency || !client) {
       redirect("/auth/404")
     }

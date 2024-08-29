@@ -108,7 +108,7 @@ export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
   useEffect(() => {
     if (!clientSlug) return
 
-    getClientDAOBySlugAction(clientSlug)
+    getClientDAOBySlugAction(agencySlug, clientSlug)
     .then((client) => {
       if (client) {
         form.setValue("clientId", client.id)

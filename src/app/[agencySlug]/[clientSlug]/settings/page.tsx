@@ -3,16 +3,14 @@ import { IconBadge } from "@/components/icon-badge";
 import { ImageForm } from "@/components/image-form";
 import { SlugForm } from "@/components/slug-form";
 import { TitleForm } from "@/components/title-form";
-import { getClientDAOBySlug } from "@/services/client-services";
-import { LayoutDashboard, SparklesIcon } from "lucide-react";
-import { DeleteClientDialog } from "../../clients/client-dialogs";
-import { setBrandVoiceAction, setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setDefaultHashtagsAction, setIncludeBrandVoiceAction, setIncludeLastCopysAction } from "./actions";
-import SwitchBox from "./switch-box";
-import { UserRole } from "@prisma/client";
-import { getCurrentRole } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { getCurrentRole } from "@/lib/utils";
+import { getClientDAOBySlugs } from "@/services/client-services";
+import { UserRole } from "@prisma/client";
+import { LayoutDashboard, SparklesIcon } from "lucide-react";
 import Link from "next/link";
+import { DeleteClientDialog } from "../../clients/client-dialogs";
+import { setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setDefaultHashtagsAction } from "./actions";
 
 type Props = {
     params: {
@@ -22,8 +20,9 @@ type Props = {
 }
 
 export default async function SettingsPage({ params }: Props) {
+    const agencySlug= params.agencySlug as string
     const clientSlug = params.clientSlug
-    const client= await getClientDAOBySlug(clientSlug)
+    const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!client) return <div>Client not found</div>
     
     const currentRole= await getCurrentRole()

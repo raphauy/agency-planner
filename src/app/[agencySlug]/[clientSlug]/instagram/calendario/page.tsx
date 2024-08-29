@@ -24,7 +24,7 @@ export default async function CalendarPage({ params, searchParams }: Props) {
   const user= await getCurrentUser()
   const isClient= user?.role === "CLIENT_ADMIN" || user?.role === "CLIENT_USER"
 
-  const posts= await getPublicationsDAOByClientWithFilter(clientSlug, filter, isClient)
+  const posts= await getPublicationsDAOByClientWithFilter(agencySlug, clientSlug, filter, isClient)
 
   const filteredPosts= posts.filter((post): post is { publicationDate: Date } & typeof post => post.publicationDate !== null)
   const events: Event[] = filteredPosts

@@ -1,18 +1,17 @@
-import { DocumentDialog } from "./document-dialogs"
-import { DataTable } from "./document-table"
-import { columns } from "./document-columns"
+import { getClientDAOBySlugs } from "@/services/client-services"
 import { getDocumentsDAOByClient } from "@/services/document-services"
-import { getClientDAOBySlug } from "@/services/client-services"
 import DocumentsTabs from "./documents-tabs"
 
 type Props= {
   params: {
+    agencySlug: string
     clientSlug: string
   }
 }
 export default async function UsersPage({ params }: Props) {
+  const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
-  const client= await getClientDAOBySlug(clientSlug)
+  const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   if (!client) {
     return <div>Cliente no encontrado</div>
   }

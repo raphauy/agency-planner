@@ -21,11 +21,12 @@ import { useSession } from "next-auth/react"
 import { getTotalTokensActions } from "./_conversations/conversation-actions"
 
 type Props= {
+  agencySlug: string
   clientSlug: string
   conversation: ConversationDAO
 }
 
-export function ChatComponent({ clientSlug, conversation }: Props) {
+export function ChatComponent({ agencySlug, clientSlug, conversation }: Props) {
 
   const formRef = useRef<HTMLFormElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -42,6 +43,7 @@ export function ChatComponent({ clientSlug, conversation }: Props) {
     maxToolRoundtrips: 2,
     body: {
       conversationId: conversation.id,
+      agencySlug,
       clientSlug
     },
     onFinish: () => {onFinishActions()}
