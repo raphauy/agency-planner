@@ -379,6 +379,24 @@ export async function getListeners(publicationId: string) {
   return res  
 }
 
+export async function getAgencyListeners(publicationId: string) {
+  const publicationListeners= await prisma.publicationListener.findMany({
+    where: {
+      publicationId,
+      user: {
+        role: { in: ["AGENCY_OWNER", "AGENCY_ADMIN", "AGENCY_CREATOR"] }
+      }
+    },
+    include: {
+      user: true
+		}
+  })
+
+  const res= publicationListeners.map((listener) => listener.user)
+
+  return res
+}
+
 export async function addListener(publicationId: string, userId: string) {
   const publication= await getPublicationDAO(publicationId)
   if (!publication) throw new Error("Publication not found")

@@ -1,7 +1,7 @@
 "use server"
   
 import { CommentDAO, CommentFormValues, createComment, deleteComment, getFullCommentDAO, updateComment } from "@/services/comment-services"
-import { getListeners, getPublicationDAO, getPublicationDAOWithAgency } from "@/services/publication-services"
+import { getAgencyListeners, getListeners, getPublicationDAO, getPublicationDAOWithAgency } from "@/services/publication-services"
 import { getUserDAO } from "@/services/user-services"
 import { revalidatePath } from "next/cache"
 import { Knock } from "@knocklabs/node";
@@ -46,7 +46,13 @@ async function createNotificatioin(data: CommentFormValues) {
 
         console.log("sending notification on comment")
 
-        const listeners= await getListeners(data.publicationId)
+        let listeners
+        if (publication.status === "BORRADOR") {
+            listeners= await getAgencyListeners(data.publicationId)
+        } else {
+            listeners= await getListeners(data.publicationId)
+        }
+
         const recipients= listeners
             .filter(listener => listener.id !== user.id)
             .map(listener => {
