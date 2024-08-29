@@ -86,12 +86,13 @@ export async function getCountPublicationsWithoutListeners() {
   return count
 }
 
-export async function getPublicationsDAOByClientSlug(clientSlug: string) {
+export async function getPublicationsDAOByClient(clientId: string) {
+
   const found = await prisma.publication.findMany({
     where: {
       client: {
-        slug: clientSlug
-      }
+        id: clientId
+      },
     },
     orderBy: {
       publicationDate: 'desc'

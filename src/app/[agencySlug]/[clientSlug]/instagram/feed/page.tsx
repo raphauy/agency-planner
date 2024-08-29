@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getClientDAOBySlug } from "@/services/client-services"
-import { PublicationDAO, getPublicationDAO, getPublicationsDAOByClientSlug } from "@/services/publication-services"
+import { PublicationDAO, getPublicationDAO, getPublicationsDAOByClient } from "@/services/publication-services"
 import { Camera, GalleryHorizontalEnd, PlusCircle, PlusIcon, Video } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import Feed from "./feed"
 import IgBox from "./ig-box"
 import { PostForm } from "./post-form"
-import { getCurrentRole } from "@/lib/utils"
+import { getCurrentRole, getCurrentUser } from "@/lib/utils"
 import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
 
 type Props = {
@@ -32,10 +32,13 @@ export default async function FeedPage({ params, searchParams }: Props) {
       redirect("/auth/404")
     }
 
-    const allPosts= await getPublicationsDAOByClientSlug(clientSlug)
     const currentRole= await getCurrentRole()
     if (!currentRole) redirect("/auth/404")
-    
+
+    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
+
+    const allPosts= await getPublicationsDAOByClient(client.id)
+
     const filteredByRole= filterPublicationsByRole(allPosts, currentRole)
     const posts= filteredByRole.filter((post) => post.type !== PublicationType.INSTAGRAM_STORY)
   
@@ -49,8 +52,6 @@ export default async function FeedPage({ params, searchParams }: Props) {
     const newPost= searchParams.newPost === "true"
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
-
-    const isClient= currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER
 
     return (
       <div className="w-full md:max-w-5xl max-w-[500px]">

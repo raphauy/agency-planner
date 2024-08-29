@@ -104,8 +104,24 @@ export async function getClientDAOBySlug(slug: string) {
       channels: true,
     }
   })
-  return found as ClientDAO
+  return found as ClientDAO  
+}
 
+export async function getClientDAOBySlugs(agencySlug: string, clientSlug: string) {
+  const found = await prisma.client.findFirst({
+    where: {
+      agency: {
+        slug: agencySlug
+      },
+      slug: clientSlug
+    },
+    include: {
+      pilars: true,
+      agency: true,
+      channels: true,
+    }
+  })
+  return found as ClientDAO
 }
     
 export async function createClient(data: ClientFormValues) {
