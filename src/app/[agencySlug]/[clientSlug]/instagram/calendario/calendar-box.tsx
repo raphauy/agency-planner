@@ -1,13 +1,13 @@
 "use client"
 
-import format from 'date-fns/format'
-import getDay from 'date-fns/getDay'
-import es from 'date-fns/locale/es'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
+import { format } from 'date-fns'
+import { getDay } from 'date-fns'
+import { parse } from 'date-fns'
+import { startOfWeek } from 'date-fns'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import CustomEvent, { Event } from './CustomEvent'
+import { es } from 'date-fns/locale'
 
 const locales = {
   'es': es,
