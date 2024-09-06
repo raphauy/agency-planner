@@ -104,7 +104,7 @@ export function UserForm({ id, agencyId, closeDialog }: Props) {
 
               <>
                 <FormField
-                  disabled={currentRole !== "ADMIN"}
+                  disabled={currentRole !== "ADMIN" && currentRole !== "AGENCY_OWNER"}
                   control={form.control}
                   name="email"
                   render={({ field }) => (

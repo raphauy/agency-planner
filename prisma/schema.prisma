@@ -186,7 +186,7 @@ model Publication {
   createdAt         DateTime  @default(now())             // gennext: skip.zod
   updatedAt         DateTime  @updatedAt                  // gennext: skip.zod  
 
-  client            Client    @relation(fields: [clientId], references: [id], onDelete: Restrict) // genext: skip.list
+  client            Client    @relation(fields: [clientId], references: [id], onDelete: Cascade) // genext: skip.list
   clientId          String
   pilar             Pilar?     @relation(fields: [pilarId], references: [id], onDelete: Restrict) // genext: skip.list
   pilarId           String?

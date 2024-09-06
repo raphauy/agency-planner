@@ -18,7 +18,7 @@ export function useRoles() {
 
   if (agencySlug) {
     if (currentRole === "AGENCY_OWNER")
-      return ["AGENCY_OWNER", "AGENCY_ADMIN", "AGENCY_CREATOR"]
+      return ["AGENCY_ADMIN", "AGENCY_CREATOR"]
 
     if (currentRole === "AGENCY_ADMIN") 
       return ["AGENCY_ADMIN", "AGENCY_CREATOR"]
