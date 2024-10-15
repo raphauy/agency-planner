@@ -65,19 +65,19 @@ export default async function ClientPage({ params }: Props) {
       </Card>
 
       {
-        stats ? 
+        stats && client.channels.some(c => c.slug === 'instagram') ? 
         <ClientDashboard stats={stats} monthlyPosts={monthlyPosts} monthlyReels={monthlyReels} monthlyStories={monthlyStories} />
         :
         <div className="flex flex-col items-center justify-center h-full">
-          <p className="text-gray-500 dark:text-gray-400 text-center">No hay publicaciones</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center"></p>
         </div>
       }
 
-      <div className="flex gap-4 mt-5 justify-center">
+      <div className="flex gap-4 mt-20 justify-center">
         {
           channels.map((channel) => (
             <Link key={channel.slug} href={`/${agencySlug}/${clientSlug}/${channel.slug}`}>
-              <Button className="flex gap-2">
+              <Button className="flex gap-2 w-32">
                 {
                   // @ts-ignore
                   channel.icon && React.createElement(LucideIcons[channel.icon], {className: cn("w-5 h-5 mb-0.5", channel.name === "Linkedin" && "mb-1.5")})

@@ -1,15 +1,13 @@
 "use client"
 
+import { useAgencySlug } from "@/app/admin/users/use-roles"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
+import { ChannelDAO } from "@/services/channel-services"
 import { ClientDAO } from "@/services/client-services"
 import { useEffect, useState } from "react"
-import { getClientsDAOByAgencyIdAction, getClientsDAOByAgencySlugAction } from "../clients/client-actions"
+import { getClientsDAOByAgencySlugAction } from "../clients/client-actions"
 import { changeClientChannelPermissionAction } from "./permissions-actions"
-import { FunctionalityDAO } from "@/services/functionality-services"
-import { useAgencySlug } from "@/app/admin/users/use-roles"
-import { Loader } from "lucide-react"
-import { ChannelDAO } from "@/services/channel-services"
 
 type Props = {
     channel: ChannelDAO

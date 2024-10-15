@@ -1,11 +1,13 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
+import { ChannelStatus } from "@prisma/client"
 
 export type ChannelDAO = {
 	id: string
 	name: string
 	slug: string
 	icon: string
+	status: ChannelStatus
 	createdAt: Date
 	updatedAt: Date
 }
@@ -14,6 +16,7 @@ export const channelSchema = z.object({
 	name: z.string().min(1, "name is required."),
 	slug: z.string().min(1, "slug is required."),
 	icon: z.string().min(1, "icon is required."),
+	status: z.nativeEnum(ChannelStatus),
 })
 
 export type ChannelFormValues = z.infer<typeof channelSchema>
@@ -32,6 +35,15 @@ export async function getChannelDAO(id: string) {
   const found = await prisma.channel.findUnique({
     where: {
       id
+    },
+  })
+  return found as ChannelDAO
+}
+
+export async function getChannelDAOBySlug(slug: string) {
+  const found = await prisma.channel.findUnique({
+    where: {
+      slug
     },
   })
   return found as ChannelDAO

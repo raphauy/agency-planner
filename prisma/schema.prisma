@@ -222,12 +222,18 @@ model Comment {
   publicationId     String
 }
 
+enum ChannelStatus {
+  ACTIVE
+  INACTIVE
+  PRIVATE
+}
+
 model Channel {
   id            String    @id @default(cuid())
   name          String                          // gennext: show.column
   slug          String    @unique               // gennext: show.column
   icon          String                          // gennext: show.column
-
+  status        ChannelStatus @default(ACTIVE)  // gennext: show.column
   createdAt     DateTime @default(now())        // gennext: skip.zod  
   updatedAt     DateTime @updatedAt             // gennext: skip.zod
 

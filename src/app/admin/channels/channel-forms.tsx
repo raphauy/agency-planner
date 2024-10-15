@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Loader } from "lucide-react"
+import { ChannelStatus } from "@prisma/client"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+const statuses= Object.values(ChannelStatus)
 
 type Props= {
   id?: string
@@ -23,6 +27,7 @@ export function ChannelForm({ id, closeDialog }: Props) {
       name: "",
       slug: "",
       icon: "",
+      status: ChannelStatus.ACTIVE
     },
     mode: "onChange",
   })
@@ -104,6 +109,31 @@ export function ChannelForm({ id, closeDialog }: Props) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rol</FormLabel>
+                <Select onValueChange={(value) => field.onChange(value)} value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un Rol" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {statuses.map(status => (
+                      <SelectItem key={status} value={status}>{status}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           
 
         <div className="flex justify-end">

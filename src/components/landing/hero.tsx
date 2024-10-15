@@ -37,8 +37,7 @@ export function Hero() {
               width={550}
               height={310}
               alt="Hero"
-              layout="responsive"
-              className="rounded-xl"
+              className="rounded-xl w-full h-auto"
             />
           </div>
         </div>

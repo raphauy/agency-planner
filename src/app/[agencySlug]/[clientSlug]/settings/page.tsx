@@ -6,11 +6,13 @@ import { TitleForm } from "@/components/title-form";
 import { Button } from "@/components/ui/button";
 import { getCurrentRole } from "@/lib/utils";
 import { getClientDAOBySlugs } from "@/services/client-services";
-import { UserRole } from "@prisma/client";
-import { LayoutDashboard, SparklesIcon } from "lucide-react";
+import { ChannelStatus, UserRole } from "@prisma/client";
+import { LayoutDashboard, ListCollapse, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { DeleteClientDialog } from "../../clients/client-dialogs";
 import { setClientDescriptionAction, setClientImageAction, setClientNameAction, setClientSlugAction, setCopyPromptAction, setDefaultHashtagsAction } from "./actions";
+import ToggleChannel from "./toggle-channel";
+import { getChannelsDAO } from "@/services/channel-services";
 
 type Props = {
     params: {
@@ -20,6 +22,7 @@ type Props = {
 }
 
 export default async function SettingsPage({ params }: Props) {
+
     const agencySlug= params.agencySlug as string
     const clientSlug = params.clientSlug
     const client= await getClientDAOBySlugs(agencySlug, clientSlug)
@@ -28,6 +31,10 @@ export default async function SettingsPage({ params }: Props) {
     const currentRole= await getCurrentRole()
     if (currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER)
         return <div>No puedes acceder a esta página</div>
+
+    const allChannels= await getChannelsDAO()
+    const nonPrivateChannels= allChannels.filter(c => c.status !== ChannelStatus.PRIVATE)
+    const privateChannels= allChannels.filter(c => c.status === ChannelStatus.PRIVATE)
 
     return (
         <>
@@ -65,10 +72,10 @@ export default async function SettingsPage({ params }: Props) {
                     </div>
                     <div className="min-w-96">
                         <div className="flex items-center gap-x-2">
-                        <IconBadge icon={SparklesIcon} />
-                        <h2 className="text-xl">
-                            Prompt rápido para la creación de una publicación
-                        </h2>
+                            <IconBadge icon={SparklesIcon} />
+                            <h2 className="text-xl">
+                                Prompt rápido para la creación de una publicación
+                            </h2>
                         </div>
                         <DescriptionForm
                             label="Prompt para el copy"
@@ -89,7 +96,25 @@ export default async function SettingsPage({ params }: Props) {
                             initialValue={client.defaultHashtags || ""}
                             id={client.id}
                             update={setDefaultHashtagsAction}
-                        />                        
+                        />
+
+                        <div className="flex items-center gap-x-2 mt-6">
+                            <IconBadge icon={ListCollapse} />
+                            <h2 className="text-xl">
+                                Canales
+                            </h2>
+                        </div>
+
+                        {
+                            nonPrivateChannels.map((channel) => (
+                                <ToggleChannel key={channel.id} channel={channel} clientId={client.id} isEnabled={client.channels.some((c) => c.id === channel.id)} />
+                            ))
+                        }
+                        {   currentRole === UserRole.ADMIN &&
+                            privateChannels.map((channel) => (
+                                <ToggleChannel key={channel.id} channel={channel} clientId={client.id} isEnabled={client.channels.some((c) => c.id === channel.id)} />
+                            ))
+                        }
                     </div>
                 </div> 
             </div>

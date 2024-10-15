@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/utils"
 import * as z from "zod"
 import { AgencyDAO } from "./agency-services"
-import { ChannelDAO } from "./channel-services"
+import { ChannelDAO, getChannelDAOBySlug } from "./channel-services"
 import { PilarDAO } from "./pilar-services"
 import { UserDAO, getUsersDAO } from "./user-services"
 
@@ -139,6 +139,22 @@ export async function createClient(data: ClientFormValues) {
   console.log(`connecting ${agencyAdminUsers.length} users to the client ${created.name}`)
 
   await setUsers(created.id, agencyAdminUsers)
+
+  // set default channels
+  const instagramCheannel= await getChannelDAOBySlug('instagram')
+  if (instagramCheannel) {
+    await prisma.client.update({
+      where: {
+        id: created.id
+      },
+      data: {
+        channels: {
+          connect: {id: instagramCheannel.id}
+        }
+      }
+    })
+    console.log('channel connected', instagramCheannel)
+  }
 
   return created
 }
