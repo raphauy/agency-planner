@@ -14,7 +14,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^0.0.34",
+    "@ai-sdk/openai": "0.0.34",
     "@auth/prisma-adapter": "1.0.12",
     "@hookform/resolvers": "^3.3.4",
     "@knocklabs/node": "^0.6.13",
