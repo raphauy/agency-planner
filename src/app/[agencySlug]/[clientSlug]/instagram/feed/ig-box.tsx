@@ -82,9 +82,12 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             <span className="mr-1 font-bold">{post.client.igHandle} </span>
             {post.copy}            
           </p>
-          <p className="p-3 font-bold">
-            {post.hashtags}
-          </p>
+          {
+            post.type !== "INSTAGRAM_STORY" &&
+            <p className="p-3 font-bold">
+              {post.hashtags}
+            </p>
+          }
 
         </div>
         
