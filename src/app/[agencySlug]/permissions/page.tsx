@@ -7,6 +7,8 @@ import { DataTable } from "./channel-table"
 import { columns as permissionsColumns } from "./permissions-columns"
 import { DataTable as PermissionsTable } from "./permissions-table"
 import { useRoles } from "@/app/admin/users/use-roles"
+import { getCurrentUser } from "@/lib/utils"
+import { redirect } from "next/navigation"
 
 type Props = {
   params: {
@@ -17,7 +19,15 @@ export default async function PermissionsPage({ params }: Props) {
   const agencySlug= params.agencySlug
   const agency= await getAgencyDAOBySlug(agencySlug)
   const dataUserPermissions= await getPermissionsOfAgency(agency.id)
-  const channels= await getFullChannelsDAO()
+  const allChannels= await getFullChannelsDAO()
+  const currentUser= await getCurrentUser()
+  let channels= allChannels
+  if (!currentUser) {
+    return redirect("/login")
+  }
+  if (currentUser.role !== "ADMIN") {
+    channels= allChannels.filter(c => c.status === "ACTIVE")
+  }
 
   return (
     <Tabs defaultValue="permissions" className="w-full mt-5 gap-4 max-w-3xl">

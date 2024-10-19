@@ -27,7 +27,7 @@ export default async function AdminLayout({ children, params }: Props) {
   if (currentRole?.startsWith("AGENCY") || currentRole?.startsWith("CLIENT")) {
     
     if (currentUser?.agencySlug!==agencySlug) {
-      return redirect("/auth/unauthorized?message=You are not authorized to access this page ss")
+      return redirect("/auth/unauthorized?message=You are not authorized to access this page (user is not in the agency)")
     }
 
   } else if (!currentRole?.startsWith("ADMIN")) {
