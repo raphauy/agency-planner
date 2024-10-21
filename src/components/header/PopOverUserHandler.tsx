@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ExtendedUser } from "@/next-auth";
 import { useRouter } from "next/navigation";
 import { UserRole } from "@prisma/client";
+import { LinealToggle } from "../shadcn/toggle-theme";
 
 
 type Props = {
@@ -44,6 +45,10 @@ export default function PopOverUserHandler({ user }: Props) {
           {user.role === 'ADMIN' && <AdminMenu />}
 
           <div className="border-b mx-4 mb-2 mt-16" />
+
+          <LinealToggle isDevMode={false} />
+
+          <div className="border-b mx-4 mb-2 mt-2" />
 
           <li className="w-full hover:bg-gray-200">
             <div onClick={onLogout} 

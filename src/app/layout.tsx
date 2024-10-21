@@ -1,7 +1,5 @@
-
 import { TailwindIndicator } from '@/components/shadcn/tailwind-indicator';
 import { ThemeProvider } from '@/components/shadcn/theme-provider';
-import { LinealToggle } from '@/components/shadcn/toggle-theme';
 import { Toaster } from '@/components/ui/toaster';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -10,6 +8,7 @@ import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { LinealToggle } from '@/components/shadcn/toggle-theme';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -43,15 +42,12 @@ export default async function RootLayout({ children }: Props) {
   return (
     <SessionProvider session={session}>
       <html lang="es" suppressHydrationWarning>
-        <body className={cn(inter.className, "flex flex-col")}>
+        <body className={cn(inter.className, "flex flex-col min-h-screen")}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>            
             <div className='flex-1'>
               {children}
-              <Analytics />
             </div>
-            <div className='self-end w-full dark:bg-black'>
-              <LinealToggle isDevMode={isDevMode} />
-            </div>
+            <Analytics />
             <TailwindIndicator />
             <Toaster />
           </ThemeProvider>

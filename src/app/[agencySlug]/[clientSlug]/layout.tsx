@@ -10,7 +10,7 @@ interface Props {
   }
 }
 
-export default async function AdminLayout({ children, params }: Props) {
+export default async function ClientLayout({ children, params }: Props) {
   const currentUser = await getCurrentUser()
 
   if (!currentUser) {

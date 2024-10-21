@@ -42,7 +42,7 @@ export function LinealToggle({ isDevMode }: Props) {
     const { theme, setTheme } = useTheme()
 
     return (
-        <div className="flex justify-end p-2 gap-3">
+        <div className="flex justify-between p-2 gap-3">
             <Button
                 variant="ghost"
                 size="icon"

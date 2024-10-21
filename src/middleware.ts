@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import authConfig from "@/lib/auth.config"
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from "@/routes"
 import { NextResponse } from "next/server"
+import { headers } from "next/headers"
   
 const { auth } = NextAuth(authConfig)
 

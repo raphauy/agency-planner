@@ -14,7 +14,7 @@ export default function PopOver({ trigger, body }: PopOverProps) {
         <RadixPopover.Trigger>{trigger}</RadixPopover.Trigger>
         <RadixPopover.Portal>
           <RadixPopover.Content align="end"
-            className="rounded-2xl border py-3 w-fit bg-white z-50
+            className="rounded-2xl border py-3 w-fit z-50
             shadow-md
             will-change-[transform,opacity] 
             data-[state=open]:data-[side=top]:animate-slideDownAndFade 

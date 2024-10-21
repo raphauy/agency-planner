@@ -20,7 +20,7 @@ export default async function Logged() {
             <PopoverTrigger asChild>
             <Button variant="ghost">{user.email}</Button>
             </PopoverTrigger>
-            <PopoverContent className="rounded-2xl border py-3 w-fit bg-white shadow-xl mr-3">
+            <PopoverContent className="rounded-2xl border py-3 w-fit shadow-xl mr-3">
                 <PopOverUserHandler user={user}/>
             </PopoverContent>
         </Popover>

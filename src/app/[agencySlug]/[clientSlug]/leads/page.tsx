@@ -1,8 +1,8 @@
-
 export default function LeadsPage() {
+
   return (
     <div>
-      <p>Leads</p>
+      <p>Leads page</p>
     </div>
   )
 }

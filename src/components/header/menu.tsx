@@ -10,6 +10,7 @@ import MenuClient from "./menu-client"
 import MenuInstagram from "./menu-instagram"
 import { cn } from "@/lib/utils"
 import { UserRole } from "@prisma/client"
+import MenuLeads from "./menu-leads"
 
 export default function Menu() {
 
@@ -28,6 +29,8 @@ export default function Menu() {
         menu= <MenuAdmin />
     } else if (channel === "instagram") {
         menu= <MenuInstagram />
+    } else if (channel === "leads") {
+        menu= <MenuLeads />
     } else if (clientSlug) {
         menu= <MenuClient />
     } else if (agencySlug) {

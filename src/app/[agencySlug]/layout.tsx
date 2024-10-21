@@ -15,7 +15,7 @@ interface Props {
   }
 }
 
-export default async function AdminLayout({ children, params }: Props) {
+export default async function AgencyLayout({ children, params }: Props) {
   const currentUser = await getCurrentUser()
 
   if (!currentUser) {
@@ -35,18 +35,20 @@ export default async function AdminLayout({ children, params }: Props) {
   }
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-48px)] w-full text-muted-foreground">
-      <div className="px-3 sm:px-4 md:px-5 lg:px-3 border-b border-b-gray-300 w-full">
-        <div className="flex justify-between items-center">
-          <Logo />
-          <Selectors />
-          <NotificationFeed />
-          <Logged />
+    <div className="flex flex-col h-full w-full text-muted-foreground">
+      <div className="fixed top-0 left-0 right-0 z-10 bg-background">
+        <div className="px-3 sm:px-4 md:px-5 lg:px-3 border-b border-b-gray-300 w-full">
+          <div className="flex justify-between items-center">
+            <Logo />
+            <Selectors />
+            <NotificationFeed />
+            <Logged />
+          </div>
+          <Menu />
         </div>
-        <Menu />
       </div>
 
-      <div className="px-3 sm:px-4 md:px-5 xl:px-3 flex flex-col items-center flex-1 w-full bg-slate-50 dark:bg-black">
+      <div className="mt-[90px] px-3 sm:px-4 md:px-5 xl:px-3 flex flex-col items-center flex-1 w-full bg-slate-50 dark:bg-black">
         <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1350px]">
           <TooltipProvider delayDuration={0}>
           {children}
