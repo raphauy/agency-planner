@@ -12,17 +12,24 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Loader } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
+import { DocumentType } from "@prisma/client"
 
 type Props= {
   id?: string
   clientId: string
+  type: DocumentType
   closeDialog: () => void
 }
 
-export function DocumentForm({ id, clientId, closeDialog }: Props) {
+export function DocumentForm({ id, clientId, type, closeDialog }: Props) {
   const form = useForm<DocumentFormValues>({
     resolver: zodResolver(documentSchema),
-    defaultValues: {},
+    defaultValues: {
+      name: "",
+      description: "",
+      clientId: clientId,
+      type: type
+    },
     mode: "onChange",
   })
   const [loading, setLoading] = useState(false)
@@ -48,11 +55,11 @@ export function DocumentForm({ id, clientId, closeDialog }: Props) {
           form.setValue("name", data.name)
           form.setValue("description", data.description)
           form.setValue("clientId", data.clientId)
+          form.setValue("type", data.type)
         }
       })
     }
-    form.setValue("clientId", clientId)
-  }, [form, id, clientId])
+  }, [form, id])
 
   return (
     <div className="p-4 bg-white rounded-md">

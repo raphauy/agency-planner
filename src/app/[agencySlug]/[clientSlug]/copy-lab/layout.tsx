@@ -30,7 +30,7 @@ export default async function SlugLayout({ children, params }: Props) {
   if (!client) 
     return <div>Cliente no encontrado</div>
 
-  const conversations= await getFullConversationsBySlugs(agencySlug, clientSlug)
+  const conversations= await getFullConversationsBySlugs(agencySlug, clientSlug, "COPY_LAB")
 
   return (
     <>

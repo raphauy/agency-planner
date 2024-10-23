@@ -1,9 +1,9 @@
 import { getCurrentUser } from "@/lib/utils";
 import { getClientDAOBySlugs } from "@/services/client-services";
 import { createConversation, getConversationDAO } from "@/services/conversation-services";
-import { getContext } from "@/services/function-call-services";
+import { getCopyLabContext } from "@/services/function-call-services";
 import { MessageFormValues, createMessage } from "@/services/message-services";
-import { tools } from "@/services/tools";
+import { copyLabTools } from "@/services/tools";
 import { openai } from '@ai-sdk/openai';
 import { convertToCoreMessages, streamText } from "ai";
 
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
       name: currentUser.name,
       title: "Nueva conversación",
       userId: currentUser.id,
+      type: "COPY_LAB",
     })
 
     conversation= await getConversationDAO(created.id)
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
   }
 
   const brandVoice= client.includeBrandVoice ? client.brandVoice : undefined
-  const contextString= await getContext(client.id, phone, input, brandVoice)
+  const contextString= await getCopyLabContext(client.id, phone, input, brandVoice)
 
   const systemMessage= client.prompt + "\n" + contextString
   console.log("systemMessage", systemMessage)
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
     model: openai("gpt-4o-2024-08-06"),
     system: systemMessage,
     messages: convertToCoreMessages(last20),
-    tools,
+    tools: copyLabTools,
     onFinish: async ({text, toolCalls, toolResults, finishReason, usage,}) => {
       console.log("onFinish")
       console.log("text", text)

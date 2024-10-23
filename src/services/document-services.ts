@@ -2,6 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { JSONContent } from "novel"
 import { colorPalette } from "@/lib/utils"
+import { DocumentType } from "@prisma/client"
 
 export type DocumentDAO = {
 	id: string
@@ -9,7 +10,7 @@ export type DocumentDAO = {
 	description: string | undefined
 	jsonContent: JSONContent | undefined
 	textContent: string | undefined
-	type: string
+	type: DocumentType
 	fileSize: number | undefined
 	wordsCount: number | undefined
 	status: string
@@ -24,6 +25,7 @@ export type DocumentDAO = {
 export const documentSchema = z.object({
 	name: z.string({required_error: "name is required."}),
 	description: z.string().optional(),
+	type: z.nativeEnum(DocumentType),
 	jsonContent: z.string().optional(),
 	textContent: z.string().optional(),
 	fileSize: z.number().optional(),
@@ -64,10 +66,11 @@ export async function getDocumentsDAO() {
   return res as DocumentDAO[]
 }
 
-export async function getDocumentsDAOByClient(clientId: string) {
+export async function getDocumentsDAOByClient(clientId: string, type: DocumentType) {
   const found = await prisma.document.findMany({
     where: {
-      clientId
+      clientId,
+      type
     },
     orderBy: {
       createdAt: 'asc'

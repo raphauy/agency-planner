@@ -1,7 +1,11 @@
 import OpenAI from "openai";
 import { ChatCompletionCreateParams, ChatCompletionMessageParam, ChatCompletionSystemMessageParam } from "openai/resources/index.mjs";
-import { Client } from "@prisma/client";
+import { Client, DocumentType } from "@prisma/client";
 import { getDocumentsDAOByClient } from "./document-services";
+import { ClientDAO } from "./client-services";
+import { createMessage, MessageFormValues } from "./message-services";
+import { CoreTool, CoreToolCall, CoreToolResult } from "ai";
+import { ToolCall } from "openai/resources/beta/threads/runs/steps.mjs";
 
 
 // export async function completionInit(client: Client, functions: ChatCompletionCreateParams.Function[], messages: ChatCompletionMessageParam[], modelName?: string): Promise<CompletionInitResponse | null> {
@@ -72,13 +76,13 @@ import { getDocumentsDAOByClient } from "./document-services";
 // }
 
 
-export async function getContext(clientId: string, phone: string, userInput: string, brandVoice?: string) {
+export async function getCopyLabContext(clientId: string, phone: string, userInput: string, brandVoice?: string) {
   let contextString= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
 
   contextString+= "Cuando el usuario solicita un copy, debes utilizar la tool 'entregarCopys'\n"
   contextString+= "No hace falta explicar que vas a crear dos opciones, simplemente utiliza la función que ésta le mostrará al usuario el resultado.'\n"
 
-  const documents= await getDocumentsDAOByClient(clientId)
+  const documents= await getDocumentsDAOByClient(clientId, DocumentType.COPY_LAB)
   contextString+= "\n**** Documentos ****\n"
   if (documents.length === 0) {
     contextString+= "No hay documentos disponibles.\n"
@@ -103,3 +107,70 @@ documentDescription: "${doc.description}",
 
 }
 
+
+export async function getLeadsContext(client: ClientDAO) {
+  let contextString= ""
+  const prompt= client.leadPrompt || "Eres un asistente virtual"
+  contextString+= prompt
+
+  contextString+= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
+
+  const documents= await getDocumentsDAOByClient(client.id, DocumentType.LEAD)
+  contextString+= "\n**** Documentos ****\n"
+  if (documents.length === 0) {
+    contextString+= "No hay documentos disponibles.\n"
+  } else {
+    contextString+= "Documentos que pueden ser relevantes para elaborar una respuesta:\n"
+  }
+  documents.map((doc) => {
+    contextString += `{
+documentId: "${doc.id}",
+documentName: "${doc.name}",
+documentDescription: "${doc.description}",
+},
+`
+  })
+  contextString+= "\n********************\n"
+
+  
+  return contextString
+}
+
+export async function saveLLMResponse(text: string, toolCalls: any, toolResults: CoreToolResult<any, any, any>[], finishReason: string, usage: any, conversationId: string) {
+  console.log("onFinish")
+  console.log("text", text)
+  
+  if (text) {
+    const messageForm: MessageFormValues= {
+      role: "assistant",
+      content: text,
+      tokens: usage.completionTokens + (usage.promptTokens * 3),
+      conversationId,
+    }        
+    await createMessage(messageForm)
+  }
+
+  console.log("finishReason", finishReason)
+  console.log("toolCalls", toolCalls)
+  console.log("usage", usage)
+  console.log("toolResults", toolResults)
+  
+  
+  if (!toolResults) return
+
+  // Handle tool results
+  for (const toolResult of toolResults) {
+    const messageForm: MessageFormValues= {
+      role: "function",
+      content: "",
+      name: toolResult.toolName,
+      tokens: usage.completionTokens + (usage.promptTokens * 3),
+      toolInvocations: JSON.stringify(toolResult),
+      conversationId,
+    }
+    await createMessage(messageForm)
+
+  }      
+
+  return
+}

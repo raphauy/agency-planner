@@ -4,20 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { DeleteDocumentForm, DocumentForm } from "./document-forms";
-import { DocumentType } from "@prisma/client";
+import { DeletePromptVersionForm, PromptVersionForm } from "./promptversion-forms";
 
 type Props= {
   id?: string
-  clientId: string
-  type: DocumentType
 }
 
-const addTrigger= <Button variant="outline"><PlusCircle size={22} className="mr-2"/>Crear Documento</Button>
+const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create PromptVersion</Button>
 const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
-export function DocumentDialog({ id, clientId, type }: Props) {
-
+export function PromptVersionDialog({ id }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -27,10 +23,10 @@ export function DocumentDialog({ id, clientId, type }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Actualizar' : 'Crear'} Documento
+          <DialogTitle>{id ? 'Update' : 'Create'} PromptVersion
           </DialogTitle>
         </DialogHeader>
-        <DocumentForm closeDialog={() => setOpen(false)} id={id} clientId={clientId} type={type} />
+        <PromptVersionForm closeDialog={() => setOpen(false)} id={id} />
       </DialogContent>
     </Dialog>
   )
@@ -41,7 +37,7 @@ type DeleteProps= {
   description: string
 }
 
-export function DeleteDocumentDialog({ id, description }: DeleteProps) {
+export function DeletePromptVersionDialog({ id, description }: DeleteProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -51,11 +47,21 @@ export function DeleteDocumentDialog({ id, description }: DeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Eliminar Documento</DialogTitle>
+          <DialogTitle>Delete PromptVersion</DialogTitle>
           <DialogDescription className="py-8">{description}</DialogDescription>
         </DialogHeader>
-        <DeleteDocumentForm closeDialog={() => setOpen(false)} id={id} />
+        <DeletePromptVersionForm closeDialog={() => setOpen(false)} id={id} />
       </DialogContent>
     </Dialog>
   )
 }
+
+interface CollectionProps{
+  id: string
+  title: string
+}
+
+
+
+
+  

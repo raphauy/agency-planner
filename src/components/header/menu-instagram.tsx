@@ -78,7 +78,7 @@ export default function MenuInstagram() {
                             return null
                         return (
                             <li key={index} className={cn("border-b-primary", path === item.href && "border-b-2")}>
-                                <Link href={item.href}>
+                                <Link href={item.href} prefetch={false}>
                                     <Button variant="ghost">
                                         <item.icon className="w-4 h-4 mr-1 mb-0.5" />
                                         {item.text}

@@ -1,4 +1,4 @@
-import { tools } from '@/services/tools';
+import { copyLabTools } from '@/services/tools';
 import { openai } from '@ai-sdk/openai';
 import { convertToCoreMessages, streamText } from 'ai';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: openai('gpt-4o-2024-08-06'),
     messages: convertToCoreMessages(messages),
-    tools,
+    tools: copyLabTools,
     // tools: {
     //   // server-side tool with execute function:
     //   getWeatherInformation: {

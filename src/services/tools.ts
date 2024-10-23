@@ -2,7 +2,20 @@ import { tool } from 'ai';
 import { z } from 'zod';
 import { getDocumentDAO } from './document-services';
 
-export const tools= {
+export const leadTools= {
+    obtenerDocumento: tool({
+        description: 'Devuelve la información completa de un documento a partir de su id. Los documentos pueden utilizarse para responder a las peticiones del usuario.".',
+        parameters: z.object({
+            documentId: z.string().describe('El identificador del documento'),
+        }),
+        execute: async ({ documentId }) => {
+          const document= await obtenerDocumento(documentId)
+          return document
+        },
+    }),
+}
+
+export const copyLabTools= {
     obtenerDocumento: tool({
         description: 'Devuelve la información completa de un documento a partir de su id. Los documentos pueden utilizarse para responder a las peticiones del usuario.".',
         parameters: z.object({

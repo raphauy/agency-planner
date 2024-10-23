@@ -19,6 +19,8 @@ export type ClientDAO = {
   defaultHashtags: string | undefined
   includeBrandVoice: boolean
   includeLastCopys: boolean
+  leadPrompt: string | undefined
+  sessionTTL: number
 	createdAt: Date
 	updatedAt: Date
 	users: UserDAO[]
@@ -473,4 +475,31 @@ export async function setPrompt(clientId: string, prompt: string) {
   })
 
   return client   
+}
+
+export async function setLeadPrompt(clientId: string, leadPrompt: string) {
+  const client= await prisma.client.update({
+    where: {
+      id: clientId
+    },
+    data: {
+      leadPrompt
+    }
+  })
+
+  return client   
+}
+
+export async function getSessionTTL(clientId: string) {
+  const client = await prisma.client.findUnique({
+    where: {
+      id: clientId
+    },
+    select: {
+      sessionTTL: true
+    }
+  })
+  if (!client) return null
+  
+  return client.sessionTTL
 }

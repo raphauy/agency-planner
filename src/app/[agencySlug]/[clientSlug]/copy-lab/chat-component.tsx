@@ -89,6 +89,8 @@ export function ChatComponent({ agencySlug, clientSlug, conversation }: Props) {
     scrollToBottom()
   }, [messages])
 
+  if (!conversation.user) return <div>User not found</div>
+
   return (
     <div className="flex-1 flex flex-col w-full">
       <div className="bg-background border p-4 flex items-center justify-between rounded-tr-lg border-l-0">
@@ -117,6 +119,7 @@ export function ChatComponent({ agencySlug, clientSlug, conversation }: Props) {
 
           {messages.length > 0 ? (
             messages.map((message, i) => {
+              if (!conversation.user) return <div key={i}>User not found</div>
 
               const messageDAO= message as MessageDAO
               return (

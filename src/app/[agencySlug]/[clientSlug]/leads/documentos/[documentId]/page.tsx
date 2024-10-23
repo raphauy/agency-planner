@@ -1,7 +1,7 @@
 import { getDocumentDAO } from "@/services/document-services";
 import { redirect } from "next/navigation";
-import { DocumentDialog } from "../document-dialogs";
-import NovelOnClient from "./editor-on-client";
+import { DocumentDialog } from "../../../copy-lab/documents/document-dialogs";
+import NovelOnClient from "../../../copy-lab/documents/[documentId]/editor-on-client";
 
 type Props = {
     params: {
@@ -24,7 +24,7 @@ export default async function Page({ params }: Props) {
     }
 
     if (document.clientSlug !== clientSlug) {
-        redirect(`/${agencySlug}/${clientSlug}/copy-lab/documents`)
+        redirect(`/${agencySlug}/${clientSlug}/leads/documentos`)
     }
 
     const BASE_PATH= process.env.NEXTAUTH_URL

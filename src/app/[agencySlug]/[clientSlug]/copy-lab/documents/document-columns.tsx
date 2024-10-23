@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { ArrowUpDown, WholeWord } from "lucide-react"
 import Link from "next/link"
 import { DeleteDocumentDialog } from "./document-dialogs"
+import { DocumentType } from "@prisma/client"
 
 
 export const columns: ColumnDef<DocumentDAO>[] = [
@@ -23,9 +24,10 @@ export const columns: ColumnDef<DocumentDAO>[] = [
     )},
     cell: ({ row }) => {
       const data= row.original
+      const path= data.type === DocumentType.COPY_LAB ? "copy-lab/documents" : "leads/documentos"
       return (
         <div className="">
-          <Link href={`/${data.agencySlug}/${data.clientSlug}/copy-lab/documents/${data.id}`}>
+          <Link href={`/${data.agencySlug}/${data.clientSlug}/${path}/${data.id}`}>
             <Button variant="link" className="text-left px-0">{data.name}</Button>
           </Link>
           <p className="">{data.wordsCount} palabras</p>

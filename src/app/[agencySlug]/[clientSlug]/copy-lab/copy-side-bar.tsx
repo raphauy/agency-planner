@@ -19,7 +19,7 @@ interface Props {
 
 export function CopySideBar({ agencySlug, clientSlug, conversations }: Props) {
 
-  const path= usePathname()
+  const path= usePathname()  
 
   return (
     <aside className="flex flex-col bg-background border transition-all duration-300 ease-in-out rounded-l-lg min-w-[300px]">
@@ -41,8 +41,10 @@ export function CopySideBar({ agencySlug, clientSlug, conversations }: Props) {
       </div>
       <ScrollArea className="h-[calc(100vh-325px)]">
         <div className="grid gap-2 p-4">
-          {conversations.map((conversation) => (
-            <Link key={conversation.id} href={`/${agencySlug}/${clientSlug}/copy-lab/${conversation.id}`} prefetch={false}>
+          {conversations.map((conversation) => {
+            if (!conversation.user) return <div key={conversation.id}>User not found</div>
+            return (
+              <Link key={conversation.id} href={`/${agencySlug}/${clientSlug}/copy-lab/${conversation.id}`} prefetch={false}>
               <Button
                 variant="ghost"
                 className={cn("group flex items-center justify-between p-2 h-14 rounded-md hover:bg-muted/100 transition-colors w-full", path.endsWith(conversation.id) && "bg-muted/100 border")}
@@ -66,8 +68,9 @@ export function CopySideBar({ agencySlug, clientSlug, conversations }: Props) {
                   </div>
                 </div>
               </Button>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
 
         </div>
       </ScrollArea>

@@ -151,3 +151,22 @@ export function getPublicationPath(type: PublicationType) {
       return "instagram/feed"
   }
 }
+
+
+export function getFormatInTimezone(date: Date, timeZone: string) {
+  
+  // Convert the date to the desired time zone
+  const zonedDate = toZonedTime(date, timeZone);
+  
+  const today = toZonedTime(new Date(), timeZone);
+
+  if (
+    zonedDate.getDate() === today.getDate() &&
+    zonedDate.getMonth() === today.getMonth() &&
+    zonedDate.getFullYear() === today.getFullYear()
+  ) {
+    return formatTZ(zonedDate, "HH:mm", { timeZone, locale: es });
+  } else {
+    return formatTZ(zonedDate, "yyyy/MM/dd", { timeZone, locale: es });
+  }
+}

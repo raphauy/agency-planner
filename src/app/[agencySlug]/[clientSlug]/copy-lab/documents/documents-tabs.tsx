@@ -11,12 +11,14 @@ import { DocumentDialog } from "./document-dialogs"
 import { DataTable } from "./document-table"
 import { columns } from "./document-columns"
 import DocumentGrid from "./document-grid"
+import { DocumentType } from "@prisma/client"
 
 type Props= {
     documents: DocumentDAO[]
     clientId: string
+    type: DocumentType
 }
-export default function DocumentsTabs({ documents, clientId }: Props) {
+export default function DocumentsTabs({ documents, clientId, type }: Props) {
 
     const [filteredDocs, setfilteredDocs] = useState<DocumentDAO[]>(documents)
     const [showX, setShowX] = useState(false)
@@ -40,8 +42,8 @@ export default function DocumentsTabs({ documents, clientId }: Props) {
         }
     }
     return (
-        <Tabs defaultValue="grid" className="gap-4">
-            <div className="flex justify-end gap-2 relative">
+        <Tabs defaultValue="grid" className="gap-4 w-full">
+            <div className="flex justify-end gap-2 relative w-full">
                 <div className="relative w-full flex-grow">
                     <input type="text" placeholder="Buscar documento..." 
                         className="border pl-10 py-1 h-full rounded-md w-full" 
@@ -60,10 +62,10 @@ export default function DocumentsTabs({ documents, clientId }: Props) {
                     <TabsTrigger value="list" className="data-[state=active]:bg-gray-100"><List className="h-5 w-5" /></TabsTrigger>
                 </TabsList>
 
-                <DocumentDialog clientId={clientId} />
+                <DocumentDialog clientId={clientId} type={type} />
             </div>
             <TabsContent value="grid">
-                <DocumentGrid documents={filteredDocs} />
+                <DocumentGrid documents={filteredDocs} type={type} />
             </TabsContent>
 
             <TabsContent value="list">

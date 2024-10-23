@@ -125,7 +125,7 @@ export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
       toast({ title: "Error", description: error.message, variant: "destructive" })
     })
 
-  }, [clientSlug, form])
+  }, [clientSlug, agencySlug, form])
   
   useEffect(() => {
     if (id) {

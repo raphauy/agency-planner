@@ -1,35 +1,29 @@
+import { getClientDAOBySlugs } from "@/services/client-services"
+import { getDocumentsDAOByClient } from "@/services/document-services"
+import DocumentsTabs from "../../copy-lab/documents/documents-tabs"
+import { DocumentType } from "@prisma/client"
 
-export default function DocumentosPage() {
-    return (
-        <div className="p-4 space-y-4">
-            <p className="text-2xl font-bold">Documentos</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-        </div>
-    )
+type Props= {
+  params: {
+    agencySlug: string
+    clientSlug: string
+  }
+}
+export default async function DocumentsPage({ params }: Props) {
+  const agencySlug= params.agencySlug as string
+  const clientSlug= params.clientSlug
+  const client= await getClientDAOBySlugs(agencySlug, clientSlug)
+  if (!client) {
+    return <div>Cliente no encontrado</div>
+  }
+  
+  const data= await getDocumentsDAOByClient(client.id, DocumentType.LEAD)
+
+  return (
+    <div className="w-full">
+
+      <DocumentsTabs clientId={client.id} documents={data} type={DocumentType.LEAD} />
+
+    </div>
+  )
 }

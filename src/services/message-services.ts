@@ -6,12 +6,11 @@ export type MessageDAO = {
 	id: string
 	role: string
 	content: string
-  name: string | undefined
-  toolInvocations: string | undefined
+  name: string | undefined | null
+  toolInvocations: string | undefined | null
   tokens: number
 	createdAt: Date
 	updatedAt: Date
-	conversation: ConversationDAO
 	conversationId: string
 }
 

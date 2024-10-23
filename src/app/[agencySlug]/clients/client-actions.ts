@@ -1,6 +1,6 @@
 "use server"
   
-import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAOBySlugs, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, updateClient } from "@/services/client-services"
+import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAOBySlugs, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, setLeadPrompt, updateClient } from "@/services/client-services"
 import { revalidatePath } from "next/cache"
 
 import { SelectorData } from "@/components/header/selectors/selectors"
@@ -10,6 +10,7 @@ import { getIgProfile } from "@/services/instagram-services"
 import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
 import { redirect } from "next/navigation"
+import { createPromptVersion, PromptVersionFormValues } from "@/services/prompt-version-services"
     
 
 export async function getClientDAOAction(id: string): Promise<ClientDAO | null> {
@@ -145,4 +146,20 @@ export async function getClientDAOBySlugAction(agencySlug: string, clientSlug: s
     const client= await getClientDAOBySlugs(agencySlug, clientSlug)
 
     return client as ClientDAO
+}
+
+export async function updateLeadPromptAndCreateVersionAction(versionPrompt: PromptVersionFormValues) {
+
+    await setLeadPrompt(versionPrompt.clientId, versionPrompt.content)
+    const newVersion= await createPromptVersion(versionPrompt)
+    if (!newVersion) throw new Error("Error al crear la versión del prompt")
+
+    revalidatePath(`/[agencySlug]`, "page")
+    return newVersion
+}
+
+export async function updateLeadPromptAction(clientId: string, leadPrompt: string) {
+    await setLeadPrompt(clientId, leadPrompt)
+    revalidatePath(`/[agencySlug]`, "page")
+    return true
 }

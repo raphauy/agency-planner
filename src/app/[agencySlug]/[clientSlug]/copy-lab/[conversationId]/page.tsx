@@ -35,6 +35,7 @@ export default async function SimulatorPage({ params }: Props) {
             name: currentUser.name,
             title: dayOfWeek,
             userId: currentUser.id,
+            type: "COPY_LAB",
         })
         revalidatePath(`/${agencySlug}/${clientSlug}/copy-lab/${created.id}`)
 

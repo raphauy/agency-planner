@@ -127,6 +127,10 @@ model Client {
     includeBrandVoice Boolean? @default(false)
     includeLastCopys  Boolean? @default(false)
 
+    sessionTTL            Int       @default(5)
+
+    leadPrompt        String? @default("¡Eres es un asistente virtual de...!\n\nTu respuesta debe estar en formato whatsapp.")
+
     createdAt         DateTime  @default(now()) // gennext: skip.zod
     updatedAt         DateTime  @updatedAt      // gennext: skip.zod
 
@@ -143,6 +147,7 @@ model Client {
     conversations     Conversation[]
     usageRecords      UsageRecord[]
     monthlyUsages     MonthlyUsage[]    
+    promptVersions    PromptVersion[]
 }
 
 model Functionality {
@@ -263,17 +268,22 @@ model Invitation {
   agencyId      String?
 }
 
+enum DocumentType {
+  COPY_LAB
+  LEAD
+}
+
 model Document {
   id                     String   @id @default(cuid())
   name                   String                               // gennext: show.column
   description            String?                              // gennext: show.column
   jsonContent            String?  @db.Text                    
   textContent            String?  @db.Text                    // gennext: show.column
-  type                   String   @default("text")            // gennext: skip.zod
   fileSize               Int?
   wordsCount             Int?     @default(0)                 // gennext: show.column
   status                 String   @default("pending")         // gennext: skip.zod
   color                  String   @default("#000000")         // gennext: skip.zod
+  type                   DocumentType @default(COPY_LAB)      // gennext: skip.zod
 
   createdAt             DateTime  @default(now())             // gennext: skip.zod
   updatedAt             DateTime  @updatedAt @default(now())  // gennext: skip.zod show.column
@@ -288,6 +298,10 @@ model Conversation {
   name           String?  @default("")                            // gennext: skip.zod show.column
   title          String                                           // gennext: show.column
 
+  closed         Boolean  @default(false)
+
+  type           DocumentType @default(COPY_LAB)      // gennext: skip.zod
+
   createdAt      DateTime @default(now())                          // gennext: skip.zod
   updatedAt      DateTime @updatedAt                              // gennext: skip.zod
 
@@ -296,8 +310,8 @@ model Conversation {
   client         Client  @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
   clientId       String
 
-  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade) // gennext: skip.list
-  userId         String
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade) // gennext: skip.list
+  userId         String?
 
   usageRecord    UsageRecord @relation("ConversationUsageRecord", fields: [usageRecordId], references: [id])
   usageRecordId  String @unique
@@ -463,4 +477,14 @@ model PublicationListener {
   userId        String
 
   @@id([publicationId, userId])
+}
+
+model PromptVersion {
+  id                  String       @id @default(cuid())
+  content             String
+  timestamp           DateTime     @default(now())
+  user                String
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
 }

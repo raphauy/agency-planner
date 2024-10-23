@@ -1,24 +1,27 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { MessageDAO } from "./message-services"
-import { ClientDAO, getClientDAO } from "./client-services"
+import { ClientDAO, getClientDAO, getSessionTTL } from "./client-services"
 import { getMessagesDAO } from "./message-services"
 import { UserDAO } from "./user-services"
 import { createUsageRecord, UsageRecordDAO, UsageRecordFormValues } from "./usagerecord-services"
 import { getUsageTypeDAOByName } from "./usagetype-services"
+import { DocumentType } from "@prisma/client"
 
 export type ConversationDAO = {
 	id: string
 	phone: string
   name: string
   title: string
+  closed: boolean
+  type: DocumentType
 	createdAt: Date
 	updatedAt: Date
 	messages: MessageDAO[]
 	client: ClientDAO
 	clientId: string
-  user: UserDAO
-  userId: string
+  user: UserDAO | null
+  userId: string | null
   usageRecordId: string
 }
 
@@ -28,6 +31,7 @@ export const conversationSchema = z.object({
   title: z.string().min(1, "title is required."),
 	clientId: z.string().min(1, "clientId is required."),
   userId: z.string().min(1, "userId is required."),
+  type: z.nativeEnum(DocumentType),
 })
 
 export type ConversationFormValues = z.infer<typeof conversationSchema>
@@ -209,7 +213,7 @@ export async function getFullConversationDAO(id: string) {
   return found as ConversationDAO
 }
 
-export async function getFullConversationsBySlugs(agencySlug: string, clientSlug: string) {
+export async function getFullConversationsBySlugs(agencySlug: string, clientSlug: string, type: DocumentType) {
   const found = await prisma.conversation.findMany({
     where: {
       client: {
@@ -218,6 +222,7 @@ export async function getFullConversationsBySlugs(agencySlug: string, clientSlug
           slug: agencySlug
         }
       },      
+      type
     },
     include: {
 			client: true,
@@ -289,4 +294,67 @@ export async function updateConversationUsage(id: string, tokens: number) {
     }
   })
   return updatedUsage
+}
+
+export async function closeConversation(conversationId: string) {
+  const updated= await prisma.conversation.update({
+    where: {
+      id: conversationId
+    },
+    data: {
+      closed: true
+    },
+    include: {
+      client: true
+    }
+  })
+
+  return updated
+}
+
+
+// an active conversation is one that has a message in the last x minutes
+export async function getActiveConversation(phone: string, clientId: string) {
+
+  let sessionTimeInMinutes= await getSessionTTL(clientId) || 10
+    
+  const found = await prisma.conversation.findFirst({
+    where: {
+      phone,
+      clientId,
+      closed: false,
+      messages: {
+        some: {
+          createdAt: {
+            gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
+          }
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      client: true
+    }
+  })
+
+  return found;
+}
+
+export async function getActiveMessages(phone: string, clientId: string) {
+
+  const activeConversation= await getActiveConversation(phone, clientId)
+  if (!activeConversation) return null
+
+  const messages= await prisma.message.findMany({
+    where: {
+      conversationId: activeConversation.id
+    },
+    orderBy: {
+      createdAt: 'asc',
+    }
+  })
+
+  return messages
 }

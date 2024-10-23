@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DocumentDAO } from "@/services/document-services"
+import { DocumentType } from "@prisma/client"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import { Briefcase, CalendarIcon, WholeWord } from "lucide-react"
@@ -10,10 +11,11 @@ import { useParams } from "next/navigation"
 
 type Props= {
   document: DocumentDAO
+  type: DocumentType
 }
 
 
-export function DocumentCard({ document }: Props) {
+export function DocumentCard({ document, type }: Props) {
 
   const params= useParams()
   const agencySlug= params.agencySlug as string
@@ -22,9 +24,11 @@ export function DocumentCard({ document }: Props) {
   const color = document.color
 //  const color = "#000000"
   const clientesStr= document.wordsCount
+
+  const documentUrl= type === DocumentType.LEAD ? `/${agencySlug}/${clientSlug}/leads/documentos/${document.id}` : `/${agencySlug}/${clientSlug}/copy-lab/documents/${document.id}`
   
   return (
-    <Link href={`/${agencySlug}/${clientSlug}/copy-lab/documents/${document.id}`} prefetch={false} className="w-full max-w-lg">
+    <Link href={documentUrl} prefetch={false} className="w-full max-w-lg">
       <Card className="w-full max-w-lg">
         <CardHeader
           className={`flex flex-col items-start gap-2 p-4 rounded-t-lg h-[130px]`}
