@@ -1,5 +1,5 @@
 import { Message } from "ai";
-import { cn } from "@/lib/utils";
+import { cn, getRoleColor } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { User, Terminal, Bot } from "lucide-react";
@@ -23,7 +23,7 @@ export default function MessageBox({ message }: Props) {
       >
         <div className="flex items-start w-full max-w-screen-md px-5 space-x-4 sm:px-0">
           {
-            <div className={cn("p-1.5 text-white", getColor(message.role))} >
+            <div className={cn("p-1.5 text-white", getRoleColor(message.role))} >
               {message.role === "user" && message.content ? (
               <User width={20} />
               ) : message.role === "system" && message.content ? (
@@ -58,7 +58,6 @@ export default function MessageBox({ message }: Props) {
             <FunctionData toolResultStr={message.toolInvocations.toString()} />
           }
 
-
         </div>                         
 
       </div>
@@ -81,9 +80,3 @@ export function InitialBox({ clientName }: { clientName: string }) {
     )
 }
 
-function getColor(role: string) {
-  if (role === "assistant") return "bg-green-500"
-  if (role === "system") return "bg-orange-500"
-  if (role === "function") return "bg-blue-500"
-  return "bg-black"
-}

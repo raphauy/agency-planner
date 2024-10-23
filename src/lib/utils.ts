@@ -170,3 +170,10 @@ export function getFormatInTimezone(date: Date, timeZone: string) {
     return formatTZ(zonedDate, "yyyy/MM/dd", { timeZone, locale: es });
   }
 }
+
+export function getRoleColor(role: string) {
+  if (role === "assistant") return "bg-green-500"
+  if (role === "system") return "bg-orange-500"
+  if (role === "function") return "bg-blue-500"
+  return "bg-black"
+}

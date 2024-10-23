@@ -9,7 +9,7 @@ export async function deleteConversationAction(id: string): Promise<boolean> {
 
     if (!deleted) return false
 
-    revalidatePath(`/[agencySlug]/[clientSlug]/leads`, "page")
+    revalidatePath(`/[agencySlug]/[clientSlug]/leads`, "layout")
 
     return true
 }

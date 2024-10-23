@@ -24,11 +24,7 @@ export function DeleteConversationForm({ id, redirectUri, closeDialog }: DeleteP
     deleteConversationAction(id)
     .then(() => {
       toast({title: "Conversación eliminada"})
-      if (redirectUri.includes("/")){
-        router.push(redirectUri)
-      } else {
-        router.push("conversaciones")
-      }
+      router.push(redirectUri)
     })
     .catch((error) => {
       toast({title: "Error", description: error.message, variant: "destructive"})

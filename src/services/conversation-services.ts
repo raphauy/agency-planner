@@ -11,7 +11,7 @@ import { DocumentType } from "@prisma/client"
 export type ConversationDAO = {
 	id: string
 	phone: string
-  name: string
+  name: string | null
   title: string
   closed: boolean
   type: DocumentType
@@ -358,3 +358,28 @@ export async function getActiveMessages(phone: string, clientId: string) {
 
   return messages
 }
+
+export async function getLastConversation(agencySlug: string, clientSlug: string, type: DocumentType) {
+    
+  const found = await prisma.conversation.findFirst({
+    where: {
+      type,
+      client: {
+        slug: clientSlug,
+        agency: {
+          slug: agencySlug
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      client: true,
+      messages: true,
+    }
+  })
+
+  return found as ConversationDAO
+}
+

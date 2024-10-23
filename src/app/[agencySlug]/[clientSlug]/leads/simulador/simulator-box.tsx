@@ -14,7 +14,7 @@ import remarkGfm from "remark-gfm";
 import MessageBox, { InitialBox } from "./message-box";
 import ChatHeader from "./chat-header";
 import { MessageDAO } from "@/services/message-services";
-import { getActiveConversationIdAction } from "./actions";
+import { getActiveConversationIdAction } from "../conversaciones/actions";
 
 type Props = {
   client: ClientDAO
