@@ -1,20 +1,26 @@
-import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { MessageDAO } from "./message-services"
-import { ClientDAO, getClientDAO, getSessionTTL } from "./client-services"
-import { getMessagesDAO } from "./message-services"
-import { UserDAO } from "./user-services"
-import { createUsageRecord, UsageRecordDAO, UsageRecordFormValues } from "./usagerecord-services"
-import { getUsageTypeDAOByName } from "./usagetype-services"
 import { DocumentType } from "@prisma/client"
+import * as z from "zod"
+import { ClientDAO, getChatwootAccountId, getClientDAO, getSessionTTL } from "./client-services"
+import { getMessagesDAO, MessageDAO } from "./message-services"
+import { createUsageRecord, UsageRecordFormValues } from "./usagerecord-services"
+import { getUsageTypeDAOByName } from "./usagetype-services"
+import { UserDAO } from "./user-services"
+import { getLeadsContext, saveLLMResponse, saveToolCallResponse } from "./function-call-services"
+import { convertToCoreMessages, generateText, Message } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { leadTools } from "./tools"
+import { sendTextToConversation } from "./chatwoot"
 
 export type ConversationDAO = {
 	id: string
 	phone: string
   name: string | null
   title: string
+  context: string
   closed: boolean
   type: DocumentType
+  chatwootConversationId: number | null
 	createdAt: Date
 	updatedAt: Date
 	messages: MessageDAO[]
@@ -59,7 +65,11 @@ export async function getConversationDAO(id: string) {
     },
     include: {
       client: true,
-      messages: true,
+      messages: {
+        orderBy: {
+          createdAt: 'asc'
+        }
+      }
     }
   })
   return found as ConversationDAO
@@ -111,6 +121,13 @@ export async function updateConversation(id: string, data: ConversationFormValue
     data
   })
   return updated
+}
+
+async function updateContext(conversationId: string, context: string) {
+  await prisma.conversation.update({
+      where: { id: conversationId },
+      data: { context }
+  })
 }
 
 export async function deleteConversation(id: string) {
@@ -230,7 +247,8 @@ export async function getFullConversationsBySlugs(agencySlug: string, clientSlug
 		},
     orderBy: {
       createdAt: 'desc'
-    }
+    },
+    take: 100
   })
   return found as ConversationDAO[]
 }
@@ -376,10 +394,133 @@ export async function getLastConversation(agencySlug: string, clientSlug: string
     },
     include: {
       client: true,
-      messages: true,
+      messages: {
+        orderBy: {
+          createdAt: 'asc'
+        }
+      },
     }
   })
 
   return found as ConversationDAO
+}
+
+// find an active conversation or create a new one to connect the messages
+export async function messageArrived(phone: string, text: string, clientId: string, role: string, tokens?: number, chatwootConversationId?: number) {
+
+  if (!clientId) throw new Error("clientId is required")
+
+  console.log("phone: ", phone)
+  console.log("clientId: ", clientId)  
+
+  const activeConversation= await getActiveConversation(phone, clientId)
+  if (activeConversation) {
+    const message= await createMessage(activeConversation.id, role, text, tokens)
+    return message    
+  } else {
+    const llmUsageType= await getUsageTypeDAOByName("LLM")
+    if (!llmUsageType) throw new Error("No se encontró UsageType LLM")
+  
+    const client= await getClientDAO(clientId)
+    if (!client) throw new Error("No se encontró Cliente")
+  
+    const llmUsage: UsageRecordFormValues= {
+      agencyId: client.agencyId,
+      clientId: client.id,
+      usageTypeId: llmUsageType.id,
+      credits: 0,
+      description: "Créditos de Conversación"    
+    }
+    const createdUsage= await createUsageRecord(llmUsage)
+  
+    const created= await prisma.conversation.create({
+      data: {
+        title: "Lead",
+        type: DocumentType.LEAD,        
+        phone,
+        clientId,
+        usageRecordId: createdUsage.id,
+        chatwootConversationId
+      }
+    })
+    const message= await createMessage(created.id, role, text, tokens)
+    return message   
+  }
+}
+
+function createMessage(conversationId: string, role: string, content: string, tokens?: number) {
+  const created= prisma.message.create({
+    data: {
+      role,
+      content,
+      conversationId,      
+      tokens,
+    }
+  })
+
+  return created
+}
+
+export async function processMessage(id: string) {
+  const message= await prisma.message.findUnique({
+    where: {
+      id
+    },
+    include: {
+      conversation: {
+        include: {
+          messages: {
+            orderBy: {
+              createdAt: 'asc',
+            },
+          },
+          client: true
+        }
+      }
+    }
+  })
+  if (!message) throw new Error("Message not found")
+
+  const conversation= message.conversation
+
+  const client= conversation.client
+
+  if (!client.leadPrompt) throw new Error("Client prompt not found")
+
+  const context= await getLeadsContext(client.id, client.leadPrompt)
+  await updateContext(conversation.id, context)
+
+  const dbMessages= conversation.messages
+  const messages= dbMessages.map(message => ({
+    role: message.role as "user" | "assistant" | "system" | "function",
+    content: message.content
+  }))
+
+  console.log("messages.count: " + messages.length)
+  console.log(messages)
+  
+  const result= await generateText({
+    model: openai('gpt-4o-mini'),
+    messages: convertToCoreMessages(messages),
+    tools: leadTools,
+    system: context,
+    onStepFinish: async (event) => {
+      console.log("onStepFinish");
+      await saveToolCallResponse(event, conversation.id);
+    },
+    maxSteps: 5
+  })
+
+  const usage= result.usage
+  const text= result.text
+
+  await saveLLMResponse(text, result.finishReason, usage, conversation.id)
+
+  const chatwootAccountId= await getChatwootAccountId(client.id)
+  if (!chatwootAccountId) throw new Error("Chatwoot accountId not found")
+  if (!conversation.chatwootConversationId) throw new Error("Chatwoot conversationId not found")
+  await sendTextToConversation(chatwootAccountId, conversation.chatwootConversationId, text)
+
+
 }
 

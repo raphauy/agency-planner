@@ -1,17 +1,15 @@
 "use client"
 
+import { toast } from "@/components/ui/use-toast"
+import { ConversationDAO } from "@/services/conversation-services"
+import { DocumentType, UserRole } from "@prisma/client"
 import { Loader } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
+import { getConversationDAOAction, getFullConversationsBySlugsAction, getLastConversationAction } from "./actions"
 import { columns } from "./columns"
-import { DataTable } from "./data-table"
-import { toast } from "@/components/ui/use-toast"
-import { ConversationDAO } from "@/services/conversation-services"
-import { ClientDAO } from "@/services/client-services"
-import { getFullConversationDAOBySlugsAction, getLastConversationAction, getConversationDAOAction, getFullConversationsBySlugsAction } from "./actions"
-import { getClientDAOBySlugAction } from "@/app/[agencySlug]/clients/client-actions"
-import { DocumentType, UserRole } from "@prisma/client"
 import ConversationBox from "./conversation-box"
+import { DataTable } from "./data-table"
 
 type Props= {
   params: {
@@ -31,7 +29,6 @@ export default function ChatPage({ searchParams: { id }, params: { agencySlug, c
   const [showSystem, setShowSystem] = useState(false)
 
   const [conversation, setConversation] = useState<ConversationDAO>()
-//  const [client, setClient] = useState<ClientDAO>()
   const [conversations, setConversations] = useState<ConversationDAO[]>([])
 
   useEffect(() => {
@@ -83,9 +80,6 @@ export default function ChatPage({ searchParams: { id }, params: { agencySlug, c
   const user= session.data?.user
 
   const isAdmin= user?.role === UserRole.ADMIN
-
-  // if (!client) 
-  //   return <Loader className="w-6 h-6 mx-auto animate-spin" />
 
   return (
     <div className="flex flex-grow w-full">

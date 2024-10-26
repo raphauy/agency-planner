@@ -3,7 +3,7 @@ import { Switch } from "@/components/ui/switch"
 import { getFormatInTimezone } from "@/lib/utils"
 import { ConversationDAO } from "@/services/conversation-services"
 import { useState } from "react"
-import { DeleteConversationDialog } from "./(delete-conversation)/delete-dialogs"
+import { CloseConversationDialog, DeleteConversationDialog } from "./(delete-conversation)/delete-dialogs"
 import ConversationMessageBox from "./conversation-message-box"
 
 type Props = {
@@ -38,7 +38,7 @@ export default function ConversationBox({ conversation, isAdmin, showSystem, set
           <div className="flex items-center gap-2">
             {isAdmin && 
               <>
-                <p>Prompt:</p><Switch checked={showSystem} onCheckedChange={setShowSystem} />
+                <CloseConversationDialog id={conversation.id} description={`Seguro que desea cerrar la conversación de ${conversation.phone}`} redirectUri={`conversaciones`} closed={conversation.closed} />
                 <DeleteConversationDialog id={conversation.id} description={`Seguro que desea eliminar la conversación de ${conversation.phone}`} redirectUri={`conversaciones`} />
               </>
             }

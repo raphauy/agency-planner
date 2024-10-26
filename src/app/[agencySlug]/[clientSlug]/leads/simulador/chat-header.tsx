@@ -26,7 +26,7 @@ export default function ChatHeader({ conversationId: initialConversationId, emai
                 <p>{date && "(" + getFormatInTimezone(date, "America/Montevideo") + ")"}</p>
             </div>
             <div className="flex items-center justify-end w-full my-5">        
-                <CloseConversationDialog id={conversationId} description={`Seguro que desea cerrar la conversación de ${email}?`} redirectUri={`simulator?r=${new Date().getMilliseconds()}`} />
+                <CloseConversationDialog id={conversationId} description={`Seguro que desea cerrar la conversación de ${email}?`} redirectUri={`simulator?r=${new Date().getMilliseconds()}`} closed={false} />
             </div>
         </div>
     )

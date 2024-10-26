@@ -37,15 +37,16 @@ type CloseProps= {
   id: string
   description: string
   redirectUri: string
+  closed: boolean
 }
 
-export function CloseConversationDialog({ id, description, redirectUri }: CloseProps) {
+export function CloseConversationDialog({ id, description, redirectUri, closed }: CloseProps) {
   const [open, setOpen] = useState(false)
   
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" disabled={id === "new"}>
+        <Button variant="ghost" disabled={id === "new" || closed}>
           <Minimize2 className="hover:cursor-pointer"/>
         </Button>
         

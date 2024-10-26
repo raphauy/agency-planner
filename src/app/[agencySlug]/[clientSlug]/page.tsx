@@ -27,7 +27,7 @@ export default async function ClientPage({ params }: Props) {
     redirect("/auth/404")
   }
 
-  const channels= await getChannelsByClientSlug(clientSlug)
+  const channels= await getChannelsByClientSlug(agencySlug, clientSlug)
 
   const stats= await getInstagramStats(client.id)
   let monthlyPosts: GraphData[] = []

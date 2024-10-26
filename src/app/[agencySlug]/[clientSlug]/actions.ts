@@ -5,9 +5,9 @@ import { getChannelsByClientSlug } from "@/services/channel-services";
 import { getFunctionalitiesByClientSlug } from "@/services/functionality-services";
 
 
-export async function getChannelSelectorsOfCurrentClientAction(clientSlug: string): Promise<ChannelSelectorData[]> {
+export async function getChannelSelectorsOfCurrentClientAction(agencySlug: string, clientSlug: string): Promise<ChannelSelectorData[]> {
 
-    const channels= await getChannelsByClientSlug(clientSlug)
+    const channels= await getChannelsByClientSlug(agencySlug, clientSlug)
     const selectors= channels.map(f => {
         return {
             name: f.name,

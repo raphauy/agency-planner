@@ -35,7 +35,6 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
 
   const { messages, setMessages, input, setInput, handleSubmit, isLoading, error } = useChat({
     api: '/api/chat-lead',
-    maxSteps: 5,
     body: {
       clientId: client.id,
       conversationId: conversationId,

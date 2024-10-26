@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/lib/utils';
 import { getClientDAO } from '@/services/client-services';
 import { createConversation, getConversationDAO } from '@/services/conversation-services';
-import { getLeadsContext, saveLLMResponse } from '@/services/function-call-services';
+import { getLeadsContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
 import { createMessage, MessageFormValues } from '@/services/message-services';
 import { copyLabTools, leadTools } from '@/services/tools';
 import { openai } from '@ai-sdk/openai';
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       clientId: client.id,      
       phone: phone,
       name: currentUser.name,
-      title: "Conversación tipo LEADS",
+      title: "Simulador Lead",
       userId: currentUser.id,
       type: "LEAD",
     })
@@ -66,22 +66,23 @@ export async function POST(req: Request) {
   }
   
 
-  const context= await getLeadsContext(client)
+  const context= await getLeadsContext(client.id, client.prompt)
   console.log("context", context)
-
-  // add context to messages
-  messages.push({
-    role: "system",
-    content: context
-  })
 
   const result = await streamText({
     model: openai('gpt-4o-mini'),
-    messages: convertToCoreMessages(messages),
+    messages: convertToCoreMessages(last20),
     tools: leadTools,
-    onFinish: async ({text, toolCalls, toolResults, finishReason, usage,}) => {
-      await saveLLMResponse(text, toolCalls, toolResults, finishReason, usage, conversation.id)
+    system: context,
+    onFinish: async ({text, finishReason, usage,}) => {
+      console.log("onFinish", text)
+      await saveLLMResponse(text, finishReason, usage, conversation.id)
     },
+    onStepFinish: async (event) => {
+      console.log("onStepFinish");
+      await saveToolCallResponse(event, conversation.id);
+    },
+    maxSteps: 5
   })
 
   return result.toDataStreamResponse()

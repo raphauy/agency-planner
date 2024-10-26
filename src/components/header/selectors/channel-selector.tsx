@@ -35,7 +35,7 @@ export default function ChannelSelector() {
 
       if (!clientSlug) return
 
-      getChannelSelectorsOfCurrentClientAction(clientSlug)
+      getChannelSelectorsOfCurrentClientAction(agencySlug, clientSlug)
       .then((data) => {
         // if (path.endsWith(clientSlug))
         //   setName("Seleccionar canal")

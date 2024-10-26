@@ -114,40 +114,43 @@ model Agency {
 }
 
 model Client {
-    id                String    @id @default(cuid())
-    name              String                    // gennext: show.column
-    slug              String                    // gennext: show.column 
-    image             String?                   // gennext: show.column
-    description       String?                   // gennext: show.column
-    igHandle          String?                   // gennext: show.column
-    brandVoice        String?
-    prompt            String? @default("Eres un experto copywriter que ayuda al usuario copys para publicaciones de redes sociales...")
-    copyPrompt        String? @default("Escribe el copy basado en el título...")
-    defaultHashtags   String? @default("")
-    includeBrandVoice Boolean? @default(false)
-    includeLastCopys  Boolean? @default(false)
+  id                String    @id @default(cuid())
+  name              String                    // gennext: show.column
+  slug              String                    // gennext: show.column 
+  image             String?                   // gennext: show.column
+  description       String?                   // gennext: show.column
+  igHandle          String?                   // gennext: show.column
+  brandVoice        String?
+  prompt            String? @default("Eres un experto copywriter que ayuda al usuario copys para publicaciones de redes sociales...")
+  copyPrompt        String? @default("Escribe el copy basado en el título...")
+  defaultHashtags   String? @default("")
+  includeBrandVoice Boolean? @default(false)
+  includeLastCopys  Boolean? @default(false)
 
-    sessionTTL            Int       @default(5)
+  messageArrivedDelay   Int       @default(5)
+  sessionTTL            Int       @default(5)
+  timezone              String @default("America/Montevideo")
 
-    leadPrompt        String? @default("¡Eres es un asistente virtual de...!\n\nTu respuesta debe estar en formato whatsapp.")
+  leadPrompt        String? @default("¡Eres es un asistente virtual de...!\n\nTu respuesta debe estar en formato whatsapp.")
 
-    createdAt         DateTime  @default(now()) // gennext: skip.zod
-    updatedAt         DateTime  @updatedAt      // gennext: skip.zod
+  createdAt         DateTime  @default(now()) // gennext: skip.zod
+  updatedAt         DateTime  @updatedAt      // gennext: skip.zod
 
-    users             User[]
-    agency            Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)  
-    agencyId          String
+  users             User[]
+  agency            Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)  
+  agencyId          String
 
-    functionalities   Functionality[]
-    publications      Publication[]
-    pilars            Pilar[]
-    channels          Channel[]
-    invitations       Invitation[]
-    documents         Document[]
-    conversations     Conversation[]
-    usageRecords      UsageRecord[]
-    monthlyUsages     MonthlyUsage[]    
-    promptVersions    PromptVersion[]
+  functionalities   Functionality[]
+  publications      Publication[]
+  pilars            Pilar[]
+  channels          Channel[]
+  invitations       Invitation[]
+  documents         Document[]
+  conversations     Conversation[]
+  usageRecords      UsageRecord[]
+  monthlyUsages     MonthlyUsage[]    
+  promptVersions    PromptVersion[]
+  whatsappInstances WhatsappInstance[]
 }
 
 model Functionality {
@@ -297,10 +300,13 @@ model Conversation {
   phone          String                                           // gennext: skip.zod show.column
   name           String?  @default("")                            // gennext: skip.zod show.column
   title          String                                           // gennext: show.column
+  context        String @default("")
 
   closed         Boolean  @default(false)
 
-  type           DocumentType @default(COPY_LAB)      // gennext: skip.zod
+  type           DocumentType @default(COPY_LAB)                  // gennext: skip.zod
+  
+  chatwootConversationId Int?
 
   createdAt      DateTime @default(now())                          // gennext: skip.zod
   updatedAt      DateTime @updatedAt                              // gennext: skip.zod
@@ -487,4 +493,21 @@ model PromptVersion {
 
   client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId            String
+}
+
+model WhatsappInstance {
+  id                  String @id @default(cuid())
+  externalId          String
+  name                String @unique
+  number              String?
+
+  chatwootAccountId   Int?
+  chatwootUrl         String?
+  chatwootAccessToken String?
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
+
+  createdAt           DateTime     @default(now())       // gennext: skip.zod
+  updatedAt           DateTime     @updatedAt            // gennext: skip.zod
 }

@@ -100,12 +100,15 @@ export async function getFullChannelDAO(id: string) {
   return found as ChannelDAO
 }
     
-export async function getChannelsByClientSlug(clientSlug: string) {
+export async function getChannelsByClientSlug(agencySlug: string, clientSlug: string) {
   const found = await prisma.channel.findMany({
     where: {
       clients: {
         some: {
-          slug: clientSlug
+          slug: clientSlug,
+          agency: {
+            slug: agencySlug
+          }
         }
       }
     },

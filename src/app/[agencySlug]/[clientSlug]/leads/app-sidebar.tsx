@@ -1,7 +1,7 @@
 "use client"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { BookOpen, Bot, ChevronRightSquare, LayoutDashboard, MessageCircle } from "lucide-react";
+import { BookOpen, Bot, ChevronRightSquare, LayoutDashboard, MessageCircle, MessagesSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -36,6 +36,18 @@ const items = [
     url: `leads/conversaciones`,
     icon: MessageCircle,
     group: "conversaciones",
+  },
+  {
+    title: "Chatwoot",
+    url: `leads/chatwoot`,
+    icon: MessagesSquare,
+    group: "admin",
+  },
+  {
+    title: "Whatsapp",
+    url: `leads/whatsapp`,
+    icon: MessageCircle,
+    group: "admin",
   },
 ]
 
@@ -96,6 +108,23 @@ export function AppSidebar() {
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                  <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                        {items.filter((item) => item.group === "admin").map((item) => (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton asChild isActive={finalPath === item.url}>
+                                    <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
+                                        <item.icon />
+                                        <span>{item.title}</span>
+                                    </a>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>

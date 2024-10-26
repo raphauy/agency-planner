@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: Props) {
             <div className='flex-1'>
               {children}
             </div>
-            <Analytics />
+            { !isDevMode && <Analytics /> }
             <TailwindIndicator />
             <Toaster />
           </ThemeProvider>

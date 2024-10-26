@@ -177,3 +177,15 @@ export function getRoleColor(role: string) {
   if (role === "function") return "bg-blue-500"
   return "bg-black"
 }
+
+export function getStatusColorAndLabel(status: string) {
+  if (status === 'open') {
+    return "Conectado"
+  } else if (status === 'close') {
+    return "Desconectado"
+  } else if (status === 'connecting') {
+    return "Conectando"
+  } else {
+    return "Desconocido"
+  }
+}

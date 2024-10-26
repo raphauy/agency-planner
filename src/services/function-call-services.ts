@@ -4,7 +4,7 @@ import { Client, DocumentType } from "@prisma/client";
 import { getDocumentsDAOByClient } from "./document-services";
 import { ClientDAO } from "./client-services";
 import { createMessage, MessageFormValues } from "./message-services";
-import { CoreTool, CoreToolCall, CoreToolResult } from "ai";
+import { CoreTool, CoreToolCall, CoreToolResult, StepResult } from "ai";
 import { ToolCall } from "openai/resources/beta/threads/runs/steps.mjs";
 
 
@@ -108,14 +108,14 @@ documentDescription: "${doc.description}",
 }
 
 
-export async function getLeadsContext(client: ClientDAO) {
+export async function getLeadsContext(clientId: string, prompt: string) {
   let contextString= ""
-  const prompt= client.leadPrompt || "Eres un asistente virtual"
   contextString+= prompt
 
   contextString+= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
+  contextString+= "Tu respuesta debe estar en formato whatsapp.\n"
 
-  const documents= await getDocumentsDAOByClient(client.id, DocumentType.LEAD)
+  const documents= await getDocumentsDAOByClient(clientId, DocumentType.LEAD)
   contextString+= "\n**** Documentos ****\n"
   if (documents.length === 0) {
     contextString+= "No hay documentos disponibles.\n"
@@ -136,10 +136,8 @@ documentDescription: "${doc.description}",
   return contextString
 }
 
-export async function saveLLMResponse(text: string, toolCalls: any, toolResults: CoreToolResult<any, any, any>[], finishReason: string, usage: any, conversationId: string) {
-  console.log("onFinish")
-  console.log("text", text)
-  
+export async function saveLLMResponse(text: string, finishReason: string, usage: any, conversationId: string) {
+ 
   if (text) {
     const messageForm: MessageFormValues= {
       role: "assistant",
@@ -150,13 +148,25 @@ export async function saveLLMResponse(text: string, toolCalls: any, toolResults:
     await createMessage(messageForm)
   }
 
-  console.log("finishReason", finishReason)
-  console.log("toolCalls", toolCalls)
-  console.log("usage", usage)
+  console.log("saveLLMResponse finishReason", finishReason)
+  console.log("saveLLMResponse usage", usage)
+
+  return
+}
+
+export async function saveToolCallResponse(event: StepResult<any>, conversationId: string) {
+
+  const toolResults= event.toolResults
+  if (!toolResults) {
+    console.log("saveToolCallResponse toolResults is null")
+    return
+  }
+  console.log("finishReason", event.finishReason)
   console.log("toolResults", toolResults)
+  console.log("usage", event.usage)
   
   
-  if (!toolResults) return
+  const usage= event.usage
 
   // Handle tool results
   for (const toolResult of toolResults) {

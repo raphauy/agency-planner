@@ -5,6 +5,7 @@ import { AgencyDAO } from "./agency-services"
 import { ChannelDAO, getChannelDAOBySlug } from "./channel-services"
 import { PilarDAO } from "./pilar-services"
 import { UserDAO, getUsersDAO } from "./user-services"
+import { WhatsappInstanceDAO } from "./wrc-sdk-types"
 
 export type ClientDAO = {
 	id: string
@@ -20,14 +21,16 @@ export type ClientDAO = {
   includeBrandVoice: boolean
   includeLastCopys: boolean
   leadPrompt: string | undefined
+  messageArrivedDelay: number
   sessionTTL: number
+  timezone: string
 	createdAt: Date
 	updatedAt: Date
 	users: UserDAO[]
 	agency: AgencyDAO
   channels: ChannelDAO[]
   pilars: PilarDAO[]
-	agencyId: string
+	agencyId: string  
 }
 
 export const clientSchema = z.object({
@@ -502,4 +505,144 @@ export async function getSessionTTL(clientId: string) {
   if (!client) return null
   
   return client.sessionTTL
+}
+
+export async function getChatwootAccountId(clientId: string) {
+  const client = await prisma.whatsappInstance.findFirst({
+    where: {
+      clientId
+    },
+    select: {
+      chatwootAccountId: true
+    }
+  })
+
+  if (!client) return null
+
+  return client.chatwootAccountId
+} 
+
+
+export async function getClientIdByChatwootAccountId(chatwootAccountId: number) {
+  const client= await prisma.whatsappInstance.findFirst({
+    where: {
+      chatwootAccountId
+    },
+    select: {
+      clientId: true
+    }
+  })
+
+  if (!client) return null
+
+  return client.clientId
+}
+
+export async function setWhatsappInstance(whatsappInstanceData: WhatsappInstanceDAO) {
+  const whatsappInstance = await prisma.whatsappInstance.findFirst({
+    where: {
+      clientId: whatsappInstanceData.clientId
+    }
+  })
+
+  if (!whatsappInstance) {
+    const newWhatsappInstance = await prisma.whatsappInstance.create({
+      data: {
+        ...whatsappInstanceData,
+        clientId: whatsappInstanceData.clientId
+      }
+    })
+    return newWhatsappInstance
+  } else {
+    const updatedWhatsappInstance = await prisma.whatsappInstance.update({
+      where: {
+        id: whatsappInstance.id
+      },
+      data: whatsappInstanceData
+    })
+    return updatedWhatsappInstance
+  }  
+
+}
+
+export async function deleteWhatsappInstance(instanceName: string) {
+  const deleted = await prisma.whatsappInstance.delete({
+    where: {
+      name: instanceName
+    }
+  })
+
+  return deleted
+}
+
+export async function checkNameAvailability(instanceName: string) {
+  const exists= await prisma.whatsappInstance.findUnique({
+    where: {
+      name: instanceName
+    }
+  })
+  return !exists
+}
+
+export async function getWhatsappInstance(clientId: string) {
+  const client = await prisma.client.findUnique({
+    where: {
+      id: clientId
+    },
+    select: {
+      whatsappInstances: true
+    }
+  })
+  if (!client) return null
+  if (client.whatsappInstances.length === 0) return null
+
+  return client.whatsappInstances[0]
+}
+
+export async function setChatwootData(clientId: string, chatwootAccountId: number, chatwootAccessToken: string, chatwootUrl: string) {
+  const whatsappInstance = await prisma.whatsappInstance.findFirst({
+    where: {
+      clientId
+    }
+  })
+
+  if (!whatsappInstance) {
+    throw new Error('Whatsapp instance not found')
+  }
+
+  const updatedInstance = await prisma.whatsappInstance.update({
+    where: {
+      id: whatsappInstance.id
+    },
+    data: {
+      chatwootAccountId,
+      chatwootAccessToken,
+      chatwootUrl
+    }
+  })
+
+  return updatedInstance
+}
+
+export async function getMessageArrivedDelayByMessageId(messageId: string) {
+  const message = await prisma.message.findUnique({
+    where: {
+      id: messageId
+    },
+    select: {
+      conversation: {
+        select: {
+          client: {
+            select: {
+              messageArrivedDelay: true
+            }
+          }
+        }
+      }
+    }
+  })
+  if (!message) 
+    throw new Error("Message not found or conversation not found or messageArrivedDelay not found")
+
+  return message.conversation?.client?.messageArrivedDelay
 }

@@ -17,7 +17,7 @@ export default auth((req) => {
     let subdomain = hostname.get('host')?.split(`${publicDomain}`).filter(Boolean)[0]
     subdomain= subdomain?.split(".").slice(0, -1).join(".")
     const isSubdomainHomepage= subdomain && nextUrl.pathname === "/"
-    if (isSubdomainHomepage) {
+    if (isSubdomainHomepage && !subdomain?.startsWith("local")) {
         return NextResponse.rewrite(new URL(`/${subdomain}`, req.url))
     }    
 

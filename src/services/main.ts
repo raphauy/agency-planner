@@ -1,15 +1,46 @@
-import { duplicateClient } from "./client-duplication-service"
+import { connectionState, createInstanceBasic, deleteInstance, enableChatwoot, fetchInstances } from "./wrc-sdk"
+import { ChatwootParams } from "./wrc-sdk-types"
+import { config } from "dotenv"
+config()
 
 async function main() {
     console.log('main')
+//    const duplicatedClient= await duplicateClient(clientId, agencyId)
 
-    const clientId= "cm0b7kd33000113xrkbsegqnu"
-//    const agencyId= "cm0f5a3sv0000p539g0pz7wxf" // zegnio
-    const agencyId= "clwjieiz40000salv81gc7ky1" // Test Agency
-    
+//    const instanceName= "cantina-barreiro"
+    const instanceName= "test"
+    // const instance= await createInstanceBasic(instanceName)
+    // console.log(instance)
+    // const res= await deleteInstance(instanceName)
+    // console.log("fetching instances:")
+    // const data= await fetchInstances()
+    // console.log(data)
 
-    const duplicatedClient= await duplicateClient(clientId, agencyId)
-    console.log(duplicatedClient)
+    // check status of instance
+    // const status= await connectionState(instanceName)
+    // console.log(status)
+
+    const params: ChatwootParams = {
+        enabled: true,
+        accountId: String(2),
+        token: process.env.CHATWOOT_ACCESS_TOKEN!,
+        url: process.env.CHATWOOT_URL!,
+        signMsg: true,
+        reopenConversation: false,
+        conversationPending: true,
+        nameInbox: instanceName,
+        importContacts: false,        
+        importMessages: false,
+        daysLimitImportMessages: 7,
+        signDelimiter: '\n',
+        autoCreate: true,
+        organization: 'WRC',
+        logo: '',
+    }
+
+    const res= await enableChatwoot(instanceName, params)
+    console.log(res)
+
 }
 
-//main()
+main()
