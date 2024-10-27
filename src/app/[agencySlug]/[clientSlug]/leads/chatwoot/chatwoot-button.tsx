@@ -55,7 +55,7 @@ export default function ChatwootButton({ clientId, instanceName }: ChatwootButto
                   checked={signMsg}
                   onCheckedChange={setSignMsg}
               />
-              <p>Responer con nombre del agente</p>
+              <p>Responder con nombre del agente</p>
             </div>
             <Button onClick={handleEnableChatwoot} className="col-span-2 mt-2">
             { loadingSetChatwoot ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <MessageSquare className="w-4 h-4 mr-2" /> }
