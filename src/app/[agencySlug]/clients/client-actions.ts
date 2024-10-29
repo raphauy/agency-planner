@@ -1,6 +1,6 @@
 "use server"
   
-import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAOBySlugs, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, setLeadPrompt, updateClient } from "@/services/client-services"
+import { ClientDAO, ClientFormValues, createClient, deleteClient, getClientDAOBySlugs, getClientsDAOByAgencyId, getClientsDAOByAgencySlug, getClientsOfCurrentUser, getFullClientDAO, setIgnoredNumbers, setLeadPrompt, updateClient } from "@/services/client-services"
 import { revalidatePath } from "next/cache"
 
 import { SelectorData } from "@/components/header/selectors/selectors"
@@ -160,6 +160,12 @@ export async function updateLeadPromptAndCreateVersionAction(versionPrompt: Prom
 
 export async function updateLeadPromptAction(clientId: string, leadPrompt: string) {
     await setLeadPrompt(clientId, leadPrompt)
+    revalidatePath(`/[agencySlug]`, "page")
+    return true
+}
+
+export async function setIgnoredNumbersAction(clientId: string, ignoredNumbers: string) {
+    await setIgnoredNumbers(clientId, ignoredNumbers)
     revalidatePath(`/[agencySlug]`, "page")
     return true
 }

@@ -21,6 +21,7 @@ export type ClientDAO = {
   includeBrandVoice: boolean
   includeLastCopys: boolean
   leadPrompt: string | undefined
+  ignoredNumbers: string | undefined
   messageArrivedDelay: number
   sessionTTL: number
   timezone: string
@@ -645,4 +646,15 @@ export async function getMessageArrivedDelayByMessageId(messageId: string) {
     throw new Error("Message not found or conversation not found or messageArrivedDelay not found")
 
   return message.conversation?.client?.messageArrivedDelay
+}
+
+export async function setIgnoredNumbers(clientId: string, ignoredNumbers: string) {
+  const updated = await prisma.client.update({
+    where: {
+      id: clientId
+    },
+    data: {
+      ignoredNumbers
+    }
+  })
 }

@@ -131,7 +131,8 @@ model Client {
   sessionTTL            Int       @default(5)
   timezone              String @default("America/Montevideo")
 
-  leadPrompt        String? @default("¡Eres es un asistente virtual de...!\n\nTu respuesta debe estar en formato whatsapp.")
+  leadPrompt        String? @default("¡Eres es un asistente virtual de...!\n")
+  ignoredNumbers    String? @default("")
 
   createdAt         DateTime  @default(now()) // gennext: skip.zod
   updatedAt         DateTime  @updatedAt      // gennext: skip.zod

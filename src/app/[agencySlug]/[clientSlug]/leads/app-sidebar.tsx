@@ -1,7 +1,7 @@
 "use client"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { BookOpen, Bot, ChevronRightSquare, LayoutDashboard, MessageCircle, MessagesSquare } from "lucide-react";
+import { BookOpen, Bot, ChevronRightSquare, LayoutDashboard, MessageCircle, MessagesSquare, Phone } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -47,6 +47,12 @@ const items = [
     title: "Whatsapp",
     url: `leads/whatsapp`,
     icon: MessageCircle,
+    group: "admin",
+  },
+  {
+    title: "Ignorados",
+    url: `leads/ignorados`,
+    icon: Phone,
     group: "admin",
   },
 ]
@@ -128,7 +134,7 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <div>hola</div>
+                <div></div>
             </SidebarFooter>
         </Sidebar>
     )
