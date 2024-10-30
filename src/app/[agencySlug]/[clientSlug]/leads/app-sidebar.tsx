@@ -1,6 +1,6 @@
 "use client"
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { BookOpen, Bot, ChevronRightSquare, LayoutDashboard, MessageCircle, MessagesSquare, Phone } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -77,15 +77,57 @@ export function AppSidebar() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path])
 
+    if (finalPath === "leads/agentes") {
+      return null
+    }
+
   
     return (
-        <Sidebar className="pt-[90px] z-0 h-full" collapsible="icon">
-            <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Leads</SidebarGroupLabel>
+        <div>
+            <Sidebar className="pt-[90px] z-0 h-full" collapsible="icon">
+                <SidebarContent>
+                    <SidebarGroup>
+                        <div className="flex items-center justify-between">
+                            <SidebarGroupLabel>Leads</SidebarGroupLabel>
+                            <SidebarTrigger />
+                        </div>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {items.filter((item) => item.group === "leads").map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild isActive={finalPath === item.url}>
+                                            <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Conversaciones</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {items.filter((item) => item.group === "conversaciones").map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild isActive={finalPath === item.url}>
+                                            <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                    <SidebarGroup>
+                    <SidebarGroupLabel>Admin</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {items.filter((item) => item.group === "leads").map((item) => (
+                            {items.filter((item) => item.group === "admin").map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild isActive={finalPath === item.url}>
                                         <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
@@ -97,46 +139,13 @@ export function AppSidebar() {
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Conversaciones</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {items.filter((item) => item.group === "conversaciones").map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild isActive={finalPath === item.url}>
-                                        <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup>
-                  <SidebarGroupLabel>Admin</SidebarGroupLabel>
-                  <SidebarGroupContent>
-                    <SidebarMenu>
-                        {items.filter((item) => item.group === "admin").map((item) => (
-                            <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton asChild isActive={finalPath === item.url}>
-                                    <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
-                                        <item.icon />
-                                        <span>{item.title}</span>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                  </SidebarGroupContent>
-                </SidebarGroup>
-            </SidebarContent>
-            <SidebarFooter>
-                <div></div>
-            </SidebarFooter>
-        </Sidebar>
+                    </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter>
+                    <div></div>
+                </SidebarFooter>
+            </Sidebar>
+        </div>
     )
 }
 
