@@ -5,8 +5,6 @@ import { getChatwootAccountId, getClientDAO } from './client-services'
 export async function sendTextToConversation(accountId: number, conversationId: number, message: string) {
     const chatwootUrl= process.env.CHATWOOT_URL!
     const chatwootToken= process.env.CHATWOOT_AGENT_BOT_ACCESS_TOKEN!
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl || !chatwootToken) {
         console.error("CHATWOOT_URL or CHATWOOT_AGENT_BOT_ACCESS_TOKEN is not set")
         return
@@ -33,8 +31,6 @@ export async function sendTextToConversation(accountId: number, conversationId: 
 export async function addLabelToConversation(accountId: number, conversationId: number, labels: string[]) {
     const chatwootUrl= process.env.CHATWOOT_URL!
     const chatwootToken= process.env.CHATWOOT_ACCESS_TOKEN!
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl || !chatwootToken) {
         console.error("CHATWOOT_URL or CHATWOOT_ACCESS_TOKEN is not set")
         return
@@ -66,8 +62,6 @@ export async function addLabelToConversationByPhone(accountId: number, phone: st
     const chatwootUrl= process.env.CHATWOOT_URL!
 //    const chatwootToken= process.env.CHATWOOT_ACCESS_TOKEN!
     const chatwootToken = process.env.CHATWOOT_AGENT_BOT_ACCESS_TOKEN!
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl || !chatwootToken) {
         console.error("CHATWOOT_URL or CHATWOOT_AGENT_BOT_ACCESS_TOKEN is not set")
         return
@@ -103,7 +97,6 @@ export async function addLabelToConversationByPhone(accountId: number, phone: st
 
     // @ts-ignore
     const conversationId = conversations.payload[0]?.id
-    console.log("conversationId:", conversationId)
 
         const addTagResponse = await client.conversationLabels.add({
             accountId: accountId,
@@ -134,7 +127,6 @@ export async function createAgentBotToClient(clientId: string) {
 
     const chatwootUrl = process.env.CHATWOOT_URL!
     const chatwootToken = process.env.CHATWOOT_PLATFORM_APP_API_KEY!
-    console.log("chatwootToken:", chatwootToken)
     const baseUrl = process.env.NEXTAUTH_URL
 
 
@@ -176,8 +168,6 @@ export async function removeAgentBotFromClient(botId: string) {
 
     const chatwootUrl = process.env.CHATWOOT_URL!
     const chatwootToken = process.env.CHATWOOT_PLATFORM_APP_API_KEY!
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl || !chatwootToken) {
         console.error("CHATWOOT_URL or CHATWOOT_ACCESS_TOKEN is not set")
         return
@@ -206,8 +196,6 @@ function getChatwootConfig(chatwootToken: string | undefined) {
     }
     const chatwootUrl = process.env.CHATWOOT_URL!
     
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl) {
         console.error("CHATWOOT_URL is not set")
         throw new Error("CHATWOOT_URL is not set")
@@ -223,8 +211,6 @@ async function getChatwootClient(token: string | undefined) {
     }
     const chatwootUrl = process.env.CHATWOOT_URL!
     
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", token)
     if (!chatwootUrl || !token) {
         console.error("CHATWOOT_URL or CHATWOOT_ACCESS_TOKEN is not set")
         throw new Error("CHATWOOT_URL or CHATWOOT_ACCESS_TOKEN is not set")
@@ -248,8 +234,6 @@ async function getChatwootClient(token: string | undefined) {
 export async function toggleConversationStatus(accountId: number, conversationId: number, status: "open" | "resolved" | "pending") {
     const chatwootUrl = process.env.CHATWOOT_URL!
     const chatwootToken= process.env.CHATWOOT_AGENT_BOT_ACCESS_TOKEN!
-    console.log("chatwootUrl:", chatwootUrl)
-    console.log("chatwootToken:", chatwootToken)
     if (!chatwootUrl || !chatwootToken) {
         console.error("CHATWOOT_URL or CHATWOOT_AGENT_BOT_ACCESS_TOKEN is not set")
         return
@@ -267,4 +251,5 @@ export async function toggleConversationStatus(accountId: number, conversationId
 
     console.log("Conversation status updated to:", status)
 }
+
 

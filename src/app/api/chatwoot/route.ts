@@ -1,4 +1,4 @@
-import { sendTextToConversation } from "@/services/chatwoot";
+import { sendTextToConversation, toggleConversationStatus } from "@/services/chatwoot";
 import { getClientDAO, getClientIdByChatwootAccountId } from "@/services/client-services";
 import { MessageDelayResponse, onMessageReceived, processDelayedMessage } from "@/services/messageDelayService";
 import { NextResponse } from "next/server";
@@ -42,7 +42,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ data: "ACK" }, { status: 200 })
         }
 
-
         if (!accountId || !conversationId || !contentType) {
             console.log("error: ", "accountId, conversationId or contentType is missing")
             return NextResponse.json({ data: "ACK" }, { status: 200 })
@@ -58,11 +57,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ data: "ACK" }, { status: 200 })
         }
 
-        if (inboxId === 10 && phone !== "+59892265737") {
-            console.log("phone is not allowed for this account")
-            return NextResponse.json({ data: "ACK" }, { status: 200 })
-        }
-
         const clientId= await getClientIdByChatwootAccountId(accountId)
         if (!clientId) {
             console.log("error: ", "clientId not found")
@@ -71,6 +65,20 @@ export async function POST(request: Request) {
 
         const client= await getClientDAO(clientId)
 
+        const ignoredNumbers= client.ignoredNumbers
+        if (ignoredNumbers && ignoredNumbers.includes(phone)) {
+            console.log("[IGNORED] phone is in ignoredNumbers, skipping message")
+            if (conversationStatus === "pending") {
+                // TODO: change conversation status to open
+                await toggleConversationStatus(accountId, conversationId, "open")
+            }
+            return NextResponse.json({ data: "ACK" }, { status: 200 })
+        }
+
+        if (inboxId === 10 && phone !== "+59892265737") {
+            console.log("phone is not allowed for this account")
+            return NextResponse.json({ data: "ACK" }, { status: 200 })
+        }
 
         if (contentType !== "text" || !content) {
             console.log("error: ", "contentType is not text or content is missing")
