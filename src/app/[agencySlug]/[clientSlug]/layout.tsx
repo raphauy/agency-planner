@@ -30,7 +30,7 @@ export default async function ClientLayout({ children, params }: Props) {
 
 
   return (
-    <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1350px]">
+    <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1600px]">
       <TooltipProvider delayDuration={0}>
         {children}
       </TooltipProvider>
