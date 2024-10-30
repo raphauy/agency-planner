@@ -49,7 +49,7 @@ export default async function AgencyLayout({ children, params }: Props) {
       </div>
 
       <div className="mt-[90px] px-3 sm:px-4 md:px-5 xl:px-3 flex flex-col items-center flex-1 w-full bg-slate-50 dark:bg-black">
-        <div className="flex flex-col items-center flex-grow p-1 w-full max-w-[1350px]">
+        <div className="flex flex-col items-center flex-grow p-1 w-full">
           <TooltipProvider delayDuration={0}>
           {children}
           </TooltipProvider>
