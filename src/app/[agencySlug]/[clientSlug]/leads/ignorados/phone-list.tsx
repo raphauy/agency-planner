@@ -26,7 +26,7 @@ export function PhoneList({ clientId, initialPhones }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validatePhone = (phone: string): boolean => {
-    const phoneRegex = /^\+598\d{8}$/
+    const phoneRegex = /^\+\d{10}$/
     return phoneRegex.test(phone)
   }
 
@@ -53,7 +53,7 @@ export function PhoneList({ clientId, initialPhones }: Props) {
   const finishEdit = (index: number) => {
     const phone = phones[index]
     if (!validatePhone(phone)) {
-      setErrorMessage("El número debe tener el formato +598 seguido de 8 dígitos.")
+      setErrorMessage("El número debe tener el formato +xxx... (con mínimo 8 dígitos).")
       return
     }
     if (phones.filter((p, i) => i !== index).includes(phone)) {
@@ -105,10 +105,10 @@ export function PhoneList({ clientId, initialPhones }: Props) {
         .map(phone => {
           if (phone.startsWith('0')) {
             return `+598${phone.slice(1)}`
-          } else if (phone.startsWith('+598')) {
+          } else if (phone.startsWith('+')) {
             return phone
           } else {
-            return `+598${phone}`
+            return `+${phone}`
           }
         })
 
