@@ -26,7 +26,7 @@ export function PhoneList({ clientId, initialPhones }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validatePhone = (phone: string): boolean => {
-    const phoneRegex = /^\+\d{10}$/
+    const phoneRegex = /^\+\d{10,}$/
     return phoneRegex.test(phone)
   }
 
