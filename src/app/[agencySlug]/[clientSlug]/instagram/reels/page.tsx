@@ -48,7 +48,7 @@ export default async function ReelsPage({ params, searchParams }: Props) {
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
 
-    const cloudinaryPreset= agency.storageCloudName ? agency.storageCloudName : process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+    const cloudinaryPreset= agency.publicPreset ? agency.publicPreset : process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
     const cloudName= agency.storageCloudName ? agency.storageCloudName : process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!
 
     return (
