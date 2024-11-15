@@ -31,6 +31,7 @@ export function AgencyForm({ id, closeDialog }: Props) {
       storageCloudName: "",
       storageApiKey: "",
       storageApiSecret: "",
+      publicPreset: "",
     },
     mode: "onChange",
   })
@@ -190,7 +191,7 @@ export function AgencyForm({ id, closeDialog }: Props) {
             />
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
               name="storageCloudName"
@@ -227,6 +228,20 @@ export function AgencyForm({ id, closeDialog }: Props) {
                   <FormLabel>Api Secret</FormLabel>
                   <FormControl>
                     <Input placeholder="Storage Api Secret" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="publicPreset"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Public Preset</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Public Preset" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

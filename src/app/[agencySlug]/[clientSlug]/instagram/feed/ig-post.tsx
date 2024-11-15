@@ -4,10 +4,13 @@ import { useState } from "react"
 import IgCarousel from "./ig-carousel"
 
 type Props = {
-  initialImages: string[] // initialImages ahora es un array de strings
+  initialImages: string[]
+  cloudinaryPreset: string
+  cloudName: string
+  clientSlug: string
 }
 
-export default function IgPost({ initialImages }: Props) {
+export default function IgPost({ initialImages, cloudinaryPreset, cloudName, clientSlug }: Props) {
   // Ahora images es un array de strings (URLs)
   const [images, setImages] = useState<string[]>(initialImages)
 
@@ -22,7 +25,7 @@ export default function IgPost({ initialImages }: Props) {
   return (
     <div className="border p-4 min-w-[500px] bg-white rounded-lg max-w-[550px]">
 
-        <IgCarousel initialImages={images} addImage={addImage} removeImage={removeImage} />
+        <IgCarousel initialImages={images} addImage={addImage} removeImage={removeImage} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} clientSlug={clientSlug} />
 
         {images.length > 0 &&
           <p>Images count: {images.length}</p>

@@ -1,20 +1,24 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { cn } from "@/lib/utils"
 import { Trash2, Upload } from "lucide-react"
-import { CldUploadButton } from 'next-cloudinary'
+import { CldUploadButton, CldUploadWidget } from 'next-cloudinary'
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
-const CLOUDINARY_PRESET= process.env.NEXT_PUBLIC_CLOUDINARY_PRESET
+//const CLOUDINARY_PRESET= process.env.NEXT_PUBLIC_CLOUDINARY_PRESET
 
 type Props = {
   initialImages: string[]
   addImage?: (imageUrl: string) => void
   removeImage?: (imageUrl: string) => void
+  cloudinaryPreset: string
+  cloudName: string
+  clientSlug: string
 }
-export default function IgCarousel({ initialImages, addImage, removeImage }: Props) {
+export default function IgCarousel({ initialImages, addImage, removeImage, cloudinaryPreset, cloudName, clientSlug }: Props) {
 
   // string whith images urls separated by comma
   const [images, setImages] = useState<string[]>([])
@@ -107,23 +111,36 @@ export default function IgCarousel({ initialImages, addImage, removeImage }: Pro
       }
       {
         addImage ?
-          <CldUploadButton
-          className="flex flex-col items-center w-full mt-1 gap-2"
-          options={ { maxFiles: 1, tags: ["cambiar"], folder: "agency/dev" } }
+        <CldUploadWidget
+          // className="flex flex-col items-center w-full mt-1 gap-2"
+          options={ { maxFiles: 1, tags: [`${clientSlug}`], folder: `agency-planner/${clientSlug}` } }
           onSuccess={handleUpload}
-          uploadPreset={CLOUDINARY_PRESET}
-        >
-          <div>
-          {
-            showPlaceholder &&
-            <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
-              className="object-cover w-full rounded-lg"
-            />
+          uploadPreset={cloudinaryPreset}
+          config={
+            {
+              cloud: {
+                cloudName: cloudName,
+              }
+            }
           }
-          </div>
+        >
+          {({ cloudinary, widget, open, results, error }) => (
+            <>
+              <div>
+                {
+                  showPlaceholder &&
+                  <Image src="/image-placeholder.png" alt="carousel image" width={600} height={600} 
+                    className="object-cover w-full rounded-lg"
+                  />
+              }
+              </div>
 
-          <Upload className='w-32 h-10 p-2 bg-gray-200 border border-gray-500 rounded-md hover:bg-gray-300' />
-        </CldUploadButton>
+              <button onClick={() => open()}>
+                <Upload className='w-32 h-10 p-2 bg-gray-200 border border-gray-500 rounded-md hover:bg-gray-300' />
+              </button>
+            </>
+          )}
+        </CldUploadWidget>
         :
         <div>
           {

@@ -22,9 +22,12 @@ type Props= {
     clientImage?: string
     clientHandle?: string
     agencySlug: string
+    cloudinaryPreset: string
+    cloudName: string
+    clientSlug: string
   }
   
-export default async function IgBox({ post, clientImage, clientHandle, agencySlug }: Props) {
+export default async function IgBox({ post, clientImage, clientHandle, agencySlug, cloudinaryPreset, cloudName, clientSlug }: Props) {
 
     const images= post.images ? post.images.split(",") : []
 
@@ -65,7 +68,7 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
           </div>
     
           {/* Carousel */}
-          <IgCarousel initialImages={images} />
+          <IgCarousel initialImages={images} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} clientSlug={clientSlug} />
 
           {/* Buttons */}
           <div className="flex justify-between pl-2 pt-4">

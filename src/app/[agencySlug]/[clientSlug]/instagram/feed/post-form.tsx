@@ -36,9 +36,11 @@ type Props= {
   id?: string
   type?: PublicationType
   defaultHashtags: string
+  cloudinaryPreset: string
+  cloudName: string
 }
 
-export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
+export function PostForm({ id, type: typeProp, defaultHashtags, cloudinaryPreset, cloudName }: Props) {
   
   const router= useRouter()
 
@@ -207,7 +209,7 @@ export function PostForm({ id, type: typeProp, defaultHashtags }: Props) {
 
 
       {/* Carousel */}
-      <IgCarousel initialImages={images} addImage={addImage} removeImage={removeImage} />
+      <IgCarousel initialImages={images} addImage={addImage} removeImage={removeImage} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} clientSlug={clientSlug} />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">

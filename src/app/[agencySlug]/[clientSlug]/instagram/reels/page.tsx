@@ -48,6 +48,8 @@ export default async function ReelsPage({ params, searchParams }: Props) {
     const edit= searchParams.edit === "true"
     const type= searchParams.type as PublicationType || undefined
 
+    const cloudinaryPreset= agency.storageCloudName ? agency.storageCloudName : process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+    const cloudName= agency.storageCloudName ? agency.storageCloudName : process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!
 
     return (
       <div className="w-full md:max-w-5xl max-w-[500px]">
@@ -70,11 +72,11 @@ export default async function ReelsPage({ params, searchParams }: Props) {
           <Feed posts={posts} title="Reels" />
           
 
-          {newPost &&<PostForm type={type} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
+          {newPost &&<PostForm type={type} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} />}
 
-          {post && !newPost && edit && <PostForm id={post.id} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} />}
+          {post && !newPost && edit && <PostForm id={post.id} defaultHashtags={client.defaultHashtags || "#"+client.igHandle} type={type} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} />}
 
-          {post && !newPost && !edit && <IgBox post={post} clientImage={client.image} clientHandle={client.igHandle} agencySlug={agencySlug} />}
+          {post && !newPost && !edit && <IgBox post={post} clientImage={client.image} clientHandle={client.igHandle} agencySlug={agencySlug} cloudinaryPreset={cloudinaryPreset} cloudName={cloudName} clientSlug={clientSlug} />}
 
         </div>
 

@@ -1,7 +1,7 @@
 import { connectionState, createInstanceBasic, deleteInstance, enableChatwoot, fetchInstances } from "./wrc-sdk"
 import { ChatwootParams } from "./wrc-sdk-types"
-import { config } from "dotenv"
-config()
+//import { config } from "dotenv"
+//config()
 
 async function main() {
     console.log('main')
@@ -43,4 +43,4 @@ async function main() {
 
 }
 
-main()
+//main()
