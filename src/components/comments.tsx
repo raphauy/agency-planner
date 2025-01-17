@@ -55,7 +55,7 @@ export async function Comments({ publication }: Props) {
                     }
                   </div>
                   <div className="flex justify-between">
-                    <p className="break-all whitespace-normal">{comment.text}</p>
+                    <p className="break-words whitespace-pre-wrap">{comment.text}</p>
                     <p className="text-[10px]">{comment.edited ? "Editado" : ""}</p>
                   </div>
                 </div>
