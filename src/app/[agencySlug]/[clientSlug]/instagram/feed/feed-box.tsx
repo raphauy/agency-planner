@@ -64,7 +64,7 @@ export default function FeedBox({ post }: Props) {
             
             {/* <Link href={`/${agencySlug}/${clientSlug}/instagram/feed?post=${post.id}`}> */}
             <Link href={`?post=${post.id}`} prefetch={false}>
-              <Image src={portada} alt={post.title} width={200} height={200} className='overflow-hidden aspect-square object-cover'/>
+              <Image src={portada} alt={post.title} width={200} height={200} className='overflow-hidden aspect-[4/5] object-cover'/>
             </Link>
           </div>
       </div>
