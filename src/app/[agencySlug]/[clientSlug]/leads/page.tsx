@@ -1,9 +1,9 @@
+import { EnDesarrollo } from "@/components/en-desarrollo";
+
 export default function LeadsPage() {
 
   return (
-    <div>
-      <p>Leads page</p>
-    </div>
+    <EnDesarrollo title="Leads Dashboard" />
   )
 }
 

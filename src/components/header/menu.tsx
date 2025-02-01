@@ -1,16 +1,14 @@
 "use client"
 
+import { UserRole } from "@prisma/client"
 import { useSession } from "next-auth/react"
-import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import MenuAdmin from "./menu-admin"
 import MenuAgency from "./menu-agency"
 import MenuClient from "./menu-client"
 import MenuInstagram from "./menu-instagram"
-import { cn } from "@/lib/utils"
-import { UserRole } from "@prisma/client"
 import MenuLeads from "./menu-leads"
+import MenuNewsletter from "./menu-newsletter"
 
 export default function Menu() {
 
@@ -31,6 +29,8 @@ export default function Menu() {
         menu= <MenuInstagram />
     } else if (channel === "leads") {
         menu= <MenuLeads />
+    } else if (channel === "newsletter") {
+        menu= <MenuNewsletter />
     } else if (clientSlug) {
         menu= <MenuClient />
     } else if (agencySlug) {
