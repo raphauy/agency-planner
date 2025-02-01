@@ -658,3 +658,15 @@ export async function setIgnoredNumbers(clientId: string, ignoredNumbers: string
     }
   })
 }
+
+export async function getClientIdBySlugs(agencySlug: string, clientSlug: string) {
+  const client= await prisma.client.findFirst({
+    where: {
+      agency: {
+        slug: agencySlug
+      },
+      slug: clientSlug
+    }
+  })
+  return client?.id
+}

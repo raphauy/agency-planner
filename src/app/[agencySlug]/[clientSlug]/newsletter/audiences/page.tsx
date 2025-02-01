@@ -1,8 +1,33 @@
-import { EnDesarrollo } from "@/components/en-desarrollo";
+import { getAudiencesDAO } from "@/services/audience-services"
+import { AudienceDialog } from "./audience-dialogs"
+import { DataTable } from "./audience-table"
+import { columns } from "./audience-columns"
+import { getClientIdBySlugs } from "@/services/client-services"
 
-export default function AudiencesPage() {
-
-    return (
-        <EnDesarrollo title="Audiencias" />
-    )
+type Props= {
+  params: {
+    agencySlug: string
+    clientSlug: string
+  }
 }
+export default async function AudiencePage({ params }: Props) {
+  const clientId= await getClientIdBySlugs(params.agencySlug, params.clientSlug)
+  if (!clientId)
+    return <div>Cliente no encontrado</div>
+  
+  const data= await getAudiencesDAO(clientId)
+
+  return (
+    <div className="w-full">      
+
+      <div className="flex justify-end mx-auto my-2">
+        <AudienceDialog clientId={clientId} />
+      </div>
+
+      <div className="container bg-white p-3 py-4 mx-auto border rounded-md text-muted-foreground dark:text-white dark:bg-black">
+        <DataTable columns={columns} data={data} subject="Audience"/>      
+      </div>
+    </div>
+  )
+}
+  

@@ -153,6 +153,7 @@ model Client {
   monthlyUsages     MonthlyUsage[]    
   promptVersions    PromptVersion[]
   whatsappInstances WhatsappInstance[]
+  audiences         Audience[]
 }
 
 model Functionality {
@@ -512,4 +513,30 @@ model WhatsappInstance {
 
   createdAt           DateTime     @default(now())       // gennext: skip.zod
   updatedAt           DateTime     @updatedAt            // gennext: skip.zod
+}
+
+model Audience {
+  id                  String @id @default(cuid())
+  name                String                             // gennext: show.column
+
+  createdAt           DateTime     @default(now())       // gennext: skip.zod
+  updatedAt           DateTime     @updatedAt            // gennext: skip.zod
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
+
+  contacts            EmailContact[]                     // gennext: skip.list
+}
+
+model EmailContact {
+  id                  String @id @default(cuid())
+  name                String?                            // gennext: show.column
+  email               String                             // gennext: show.column
+  unsubscribed        Boolean @default(false)            // gennext: show.column
+  
+  createdAt           DateTime @default(now())           // gennext: skip.zod
+  updatedAt           DateTime @updatedAt                // gennext: skip.zod
+
+  audience            Audience @relation(fields: [audienceId], references: [id], onDelete: Cascade)
+  audienceId          String
 }
