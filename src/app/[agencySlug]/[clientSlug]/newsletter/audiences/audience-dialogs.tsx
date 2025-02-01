@@ -11,7 +11,7 @@ type Props= {
   clientId: string
 }
 
-const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Create Audience</Button>
+const addTrigger= <Button><PlusCircle size={22} className="mr-2"/>Crear audiencia</Button>
 const updateTrigger= <Pencil size={30} className="pr-2 hover:cursor-pointer"/>
 
 export function AudienceDialog({ id, clientId }: Props) {
@@ -24,9 +24,9 @@ export function AudienceDialog({ id, clientId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{id ? 'Update' : 'Create'} Audience</DialogTitle>
+          <DialogTitle>{id ? 'Actualizar' : 'Crear'} audiencia</DialogTitle>
           <DialogDescription>
-            {id ? 'Update the Audience with the following fields:' : 'Create a new Audience with the following fields:'}
+            {id ? 'Actualiza la audiencia con los siguientes campos:' : 'Crea una nueva audiencia con los siguientes campos:'}
           </DialogDescription>
         </DialogHeader>
         <AudienceForm closeDialog={() => setOpen(false)} id={id} clientId={clientId} />
@@ -50,7 +50,7 @@ export function DeleteAudienceDialog({ id, description }: DeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Audience</DialogTitle>
+          <DialogTitle>Eliminar audiencia</DialogTitle>
           <DialogDescription className="py-8">{description}</DialogDescription>
         </DialogHeader>
         <DeleteAudienceForm closeDialog={() => setOpen(false)} id={id} />

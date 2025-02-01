@@ -36,7 +36,7 @@ export function AudienceForm({ id, clientId, closeDialog }: Props) {
     setLoading(true)
     try {
       await createOrUpdateAudienceAction(id ? id : null, data)
-      toast({ title: id ? "Audience updated" : "Audience created" })
+      toast({ title: id ? "Audiencia actualizada" : "Audiencia creada" })
       closeDialog()
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" })
@@ -71,7 +71,7 @@ export function AudienceForm({ id, clientId, closeDialog }: Props) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Audience's name" {...field} />
+                  <Input placeholder="Nombre de la audiencia" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,7 +81,7 @@ export function AudienceForm({ id, clientId, closeDialog }: Props) {
           <div className="flex justify-end">
             <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
             <Button type="submit" className="w-32 ml-2">
-              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Save</p>}
+              {loading ? <Loader className="h-4 w-4 animate-spin" /> : <p>Guardar</p>}
             </Button>
           </div>
         </form>
@@ -103,7 +103,7 @@ export function DeleteAudienceForm({ id, closeDialog }: DeleteProps) {
     setLoading(true)
     deleteAudienceAction(id)
     .then(() => {
-      toast({title: "Audience deleted" })
+      toast({title: "Audiencia eliminada" })
     })
     .catch((error) => {
       toast({title: "Error", description: error.message, variant: "destructive"})
@@ -116,10 +116,10 @@ export function DeleteAudienceForm({ id, closeDialog }: DeleteProps) {
   
   return (
     <div>
-      <Button onClick={() => closeDialog && closeDialog()} type="button" variant={"secondary"} className="w-32">Cancel</Button>
+      <Button onClick={() => closeDialog && closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
       <Button onClick={handleDelete} variant="destructive" className="w-32 ml-2 gap-1">
         { loading && <Loader className="h-4 w-4 animate-spin" /> }
-        Delete  
+        Eliminar  
       </Button>
     </div>
   )
