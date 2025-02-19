@@ -2,6 +2,12 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { ClientDAO } from "./client-services"
 
+export type CSVContact= {
+  name: string
+  email: string
+}
+
+
 export type AudienceDAO = {
 	id: string
 	name: string
@@ -68,3 +74,54 @@ export async function deleteAudience(id: string) {
   return deleted
 }
 
+export async function addContactsToAudience(audienceId: string, contacts: CSVContact[]): Promise<number> {
+  // first filter out contacts that already exist in the audience
+  // return the amount of contacts ignored
+  const existingContacts= await prisma.emailContact.findMany({
+    where: {
+      audienceId
+    }
+  })
+  const existingContactsEmails= existingContacts.map(contact => contact.email)
+  const newContacts= contacts.filter(contact => !existingContactsEmails.includes(contact.email))
+  const ignoredContacts= contacts.length - newContacts.length
+  const updated= await prisma.audience.update({
+    where: {
+      id: audienceId
+    },
+    data: {
+      contacts: {
+        create: newContacts.map(contact => ({
+          name: contact.name,
+          email: contact.email
+        }))
+      }
+    }
+  })
+  return ignoredContacts
+}
+
+export async function getDuplicateEmails(audienceId: string, contacts: string[]): Promise<string[]> {
+  const existingContacts= await prisma.emailContact.findMany({
+    where: {
+      audienceId
+    },
+    select: {
+      email: true
+    }
+  })
+  const existingContactsEmails= existingContacts.map(contact => contact.email)
+  const duplicateEmails= contacts.filter(email => existingContactsEmails.includes(email))
+  return duplicateEmails
+}
+
+export async function getOtherAudiencesDAO(id: string): Promise<AudienceDAO[]>{
+  const found= await prisma.audience.findMany({
+    where: {
+      id: {
+        not: id
+      }
+    }
+  })
+  return found
+}

@@ -119,6 +119,9 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.14
         version: 6.4.16
+      '@types/papaparse':
+        specifier: ^5.3.15
+        version: 5.3.15
       '@types/react-big-calendar':
         specifier: ^1.8.9
         version: 1.15.0
@@ -185,6 +188,9 @@ importers:
       openai:
         specifier: 4.52.4
         version: 4.52.4
+      papaparse:
+        specifier: ^5.5.2
+        version: 5.5.2
       prisma:
         specifier: ^5.20.0
         version: 5.22.0
@@ -3029,6 +3035,9 @@ packages:
   '@types/nodemailer@6.4.16':
     resolution: {integrity: sha512-uz6hN6Pp0upXMcilM61CoKyjT7sskBoOWpptkjjJp8jIMlTdc3xG01U7proKkXzruMS4hS0zqtHNkNPFB20rKQ==}
 
+  '@types/papaparse@5.3.15':
+    resolution: {integrity: sha512-JHe6vF6x/8Z85nCX4yFdDslN11d+1pr12E526X8WAfhadOeaOTx5AuIkvDKIBopfvlzpzkdMx4YyvSKCM9oqtw==}
+
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
 
@@ -5340,6 +5349,9 @@ packages:
 
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
+
+  papaparse@5.5.2:
+    resolution: {integrity: sha512-PZXg8UuAc4PcVwLosEEDYjPyfWnTEhOrUfdv+3Bx+NuAb+5NhDmXzg5fHWmdCh1mP5p7JAZfFr3IMQfcntNAdA==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -9577,6 +9589,10 @@ snapshots:
     dependencies:
       '@types/node': 20.17.6
 
+  '@types/papaparse@5.3.15':
+    dependencies:
+      '@types/node': 20.17.6
+
   '@types/pg-pool@2.0.6':
     dependencies:
       '@types/pg': 8.6.1
@@ -12491,6 +12507,8 @@ snapshots:
       p-limit: 3.1.0
 
   package-json-from-dist@1.0.1: {}
+
+  papaparse@5.5.2: {}
 
   parent-module@1.0.1:
     dependencies:

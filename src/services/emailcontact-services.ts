@@ -73,3 +73,17 @@ export async function deleteEmailContact(id: string) {
   return deleted
 }
 
+export type SimpleEmailContactDAO= {
+  id: string
+  name: string | undefined
+  email: string
+}
+
+export async function getAudienceContactsDAO(audienceId: string): Promise<SimpleEmailContactDAO[]>{
+  const found= await prisma.emailContact.findMany({
+    where: {
+      audienceId
+    }
+  })
+  return found as SimpleEmailContactDAO[]
+}

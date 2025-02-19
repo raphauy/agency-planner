@@ -47,6 +47,7 @@ export function NotificationFeed() {
 
               return (
                 <NotificationCell
+                  key={item.id}
                   {...props}
                   item={item}
                   // @ts-ignore

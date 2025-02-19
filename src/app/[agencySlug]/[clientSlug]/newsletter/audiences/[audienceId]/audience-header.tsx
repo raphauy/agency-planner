@@ -3,6 +3,8 @@ import AudienceSelector from "./audience-selector"
 import { EmailContactDialog } from "../../emailcontacts/emailcontact-dialogs"
 import { Button } from "@/components/ui/button"
 import { File } from "lucide-react"
+import { CsvImporter } from "./csv-importer"
+import { OtherAudienceImporter } from "./other-audience-importer"
 
 type Props= {
   agencySlug: string
@@ -36,10 +38,8 @@ export function AudienceHeader({ agencySlug, clientSlug, audience, audiences }: 
       </div>
       <div className="flex items-center gap-2">
         <EmailContactDialog audienceId={audience.id} />
-        <Button className="gap-2">
-          <File className="w-5 h-5" />
-          <p>Importar CSV</p>
-        </Button>
+        <CsvImporter audienceId={audience.id} />
+        <OtherAudienceImporter audienceId={audience.id} />
       </div>
     </div>
   )
