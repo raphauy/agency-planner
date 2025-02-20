@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 250">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#001e3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004080;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rectangle -->
+  <rect width="1200" height="250" fill="url(#bgGradient)" />
+  
+  <!-- Abstract pattern overlay -->
+  <path d="M0,50 L1200,100 L1000,250 L200,200 Z" fill="#0066cc" opacity="0.1" />
+  <path d="M1200,0 L950,250 L700,150 L900,0 Z" fill="#00aaff" opacity="0.05" />
+  
+  <!-- Texture overlay -->
+  <rect width="1200" height="250" fill="#003366" fill-opacity="0.03" />
+  
+  <!-- Text "NEWSLETTER" positioned extremely close to the left -->
+  <text x="30" y="145" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#00ccff">NEWSLETTER</text>
+  
+  <!-- Open envelope icon positioned extremely close to the right -->
+  <g transform="translate(1100, 125) scale(1.2)">
+    <!-- Envelope base -->
+    <rect x="-60" y="-40" width="120" height="80" rx="5" ry="5" fill="#00ccff" />
+    
+    <!-- Envelope opening/flap (representing open envelope) -->
+    <path d="M-60,-40 L0,-10 L60,-40" fill="none" stroke="#003366" stroke-width="3" />
+    
+    <!-- Envelope inner fold lines -->
+    <path d="M-60,40 L0,0 L60,40" fill="#0088cc" />
+    
+    <!-- Letter peeking out -->
+    <rect x="-45" y="-25" width="90" height="50" fill="white" />
+    <line x1="-30" y1="-10" x2="30" y2="-10" stroke="#003366" stroke-width="1.5" />
+    <line x1="-30" y1="0" x2="30" y2="0" stroke="#003366" stroke-width="1.5" />
+    <line x1="-30" y1="10" x2="20" y2="10" stroke="#003366" stroke-width="1.5" />
+    
+    <!-- @ Symbol on the letter -->
+    <text x="-10" y="-15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#003366">@</text>
+  </g>
+  
+  <!-- Subtle glow effect around email icon -->
+  <circle cx="1100" cy="125" r="80" fill="#00ccff" opacity="0.1" />
+</svg>

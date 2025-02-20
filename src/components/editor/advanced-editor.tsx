@@ -21,14 +21,16 @@ import { slashCommand, suggestionItems } from "./slash-command";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
 import { Separator } from "../ui/separator";
+import { cn } from "@/lib/utils";
 
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProp {
   initialValue?: JSONContent;
   onChange: (jsonValue: JSONContent, textValue: string) => void;
+  className?: string;
 }
-const Editor = ({ initialValue, onChange }: EditorProp) => {
+const Editor = ({ initialValue, onChange, className }: EditorProp) => {
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -36,7 +38,7 @@ const Editor = ({ initialValue, onChange }: EditorProp) => {
   return (
     <EditorRoot>
       <EditorContent
-        className="border p-4 rounded-xl bg-white dark:bg-black dark:text-white"
+        className={cn(className)}
         {...(initialValue && { initialContent: initialValue })}
         extensions={extensions}
         editorProps={{
@@ -54,6 +56,7 @@ const Editor = ({ initialValue, onChange }: EditorProp) => {
           onChange(editor.getJSON(), editor.getText());
         }}
         slotAfter={<ImageResizer />}
+        immediatelyRender={false}
       >
         <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
           <EditorCommandEmpty className="px-2 text-muted-foreground">

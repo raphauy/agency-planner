@@ -1,29 +1,29 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { DocumentDAO } from "@/services/document-services";
-import { Loader, Save } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { updateContentAction } from "../document-actions";
-import { ToastAction } from "@/components/ui/toast";
-import LinkBox from "./link-box";
-import { JSONContent } from "novel";
 import Editor from "@/components/editor/advanced-editor";
+import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
+import { NewsletterDAO } from "@/services/newsletter-services";
+import { Eye, Loader, Save } from "lucide-react";
+import { JSONContent } from "novel";
+import { useEffect, useRef, useState } from "react";
+import { updateContentAction } from "../newsletter-actions";
+import Link from "next/link";
 
 type Props = {
-    document: DocumentDAO
+    newsletter: NewsletterDAO
     initialContent: JSONContent
 }
 
-export default function NovelOnClient({ document, initialContent }: Props) {
+export default function NovelOnClient({ newsletter, initialContent }: Props) {
 
     const [loading, setLoading] = useState(false);
-    const [textContent, setTextContent] = useState<string>(document.textContent || "")
-    const [jsonContent, setJsonContent] = useState<JSONContent>(document.jsonContent || initialContent)
-    const [wordCount, setWordCount] = useState(document.textContent?.split(" ").length || 0)
-    const [charCount, setCharCount] = useState(document.textContent?.length || 0)
-    const [charCountSaved, setCharCountSaved] = useState(document.textContent?.length || 0)
+    const [textContent, setTextContent] = useState<string>(newsletter.contentHtml || "")
+    const [jsonContent, setJsonContent] = useState<JSONContent>(initialContent)
+    const [wordCount, setWordCount] = useState(newsletter.contentHtml?.split(" ").length || 0)
+    const [charCount, setCharCount] = useState(newsletter.contentHtml?.length || 0)
+    const [charCountSaved, setCharCountSaved] = useState(newsletter.contentHtml?.length || 0)
 
     // Referencia para mantener actualizada la función de desmontaje
     const onBeforeUnmountRef = useRef<() => void>();
@@ -68,7 +68,7 @@ export default function NovelOnClient({ document, initialContent }: Props) {
     function save() {
        
         setLoading(true);
-        updateContentAction(document.id, textContent, JSON.stringify(jsonContent))
+        updateContentAction(newsletter.id, textContent, JSON.stringify(jsonContent))
         .then(() => {
             toast({ title: "Texto guardado"})
             setCharCountSaved(charCount)
@@ -85,34 +85,24 @@ export default function NovelOnClient({ document, initialContent }: Props) {
 
     return (
         <div className="relative flex h-full xl:min-w-[1000px] flex-col items-center gap-4 justify-between">
-            <div className="fixed z-20 flex flex-col gap-1 bottom-20 right-10">
-                <Button onClick={save} className="w-10 p-2" disabled={charCount === charCountSaved}>
+            <div className="fixed z-20 flex flex-col gap-1 bottom-50 right-10">
+                <Button onClick={save} className="p-2">
                 {loading ? (
                     <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                     <Save />
                 )}
                 </Button>
-            </div>
-
-            <div className="flex items-center justify-between w-full px-7">
-
-                <div className="flex items-center w-1/3 gap-2">
-                    <p><span className="font-bold">{wordCount}</span>/1000</p> <p>palabras</p>
-                </div>
-                
-                <p className="font-bold">
-                {loading ? (
-                    <Loader className="w-4 h-4 animate-spin" />
-                ) : (
-                    <Button variant={charCount === charCountSaved ? "ghost" : "default"} disabled={charCount === charCountSaved} onClick={save} className="p-2">
-                        Guardar
+                <Link href={`newsletters/${newsletter.id}/preview`} target="_blank">
+                    <Button className="p-2">
+                        <Eye />
                     </Button>
-                )}
-                </p>
-                  
+                </Link>
+
             </div>
-            <Editor initialValue={jsonContent} onChange={onUpdate} className="border p-4 rounded-xl bg-background" />           
+
+
+            <Editor initialValue={jsonContent} onChange={onUpdate} className="border p-5 bg-background w-full" />           
 
         </div>
     )

@@ -154,6 +154,8 @@ model Client {
   promptVersions    PromptVersion[]
   whatsappInstances WhatsappInstance[]
   audiences         Audience[]
+  newsletters       Newsletter[]
+  domains           Domain[]
 }
 
 model Functionality {
@@ -539,4 +541,68 @@ model EmailContact {
 
   audience            Audience @relation(fields: [audienceId], references: [id], onDelete: Cascade)
   audienceId          String
+}
+
+enum EmailSendStatus {
+  DRAFT
+  PENDING
+  SENDING
+  SENT
+  CANCELLED
+}
+
+model EmailSend {
+  id            String    @id @default(cuid())
+  status        EmailSendStatus @default(DRAFT)       // gennext: show.column
+  to            String                            // gennext: show.column
+  subject       String                            // gennext: show.column
+
+  createdAt     DateTime  @default(now())         // gennext: skip.zod
+  sentAt        DateTime?                         // gennext: show.column skip.zod
+
+  newsletter    Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  newsletterId  String
+}
+
+model Domain {
+  id                  String @id @default(cuid())
+  name                String                              // gennext: show.column
+
+  createdAt           DateTime @default(now())            // gennext: skip.zod
+  updatedAt           DateTime @updatedAt                 // gennext: skip.zod
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
+}
+
+enum NewsletterStatus {
+  DRAFT
+  PENDING
+  SENDING
+  SENT
+  CANCELLED
+}
+
+model Newsletter {
+  id                  String    @id @default(cuid())
+  subject             String                              // gennext: show.column
+  status              NewsletterStatus @default(DRAFT)    // gennext: show.column
+  sentByName          String?                             // gennext: show.column
+  emailFrom           String?                             // gennext: show.column
+
+  contentHtml         String?
+  contentJson         String?
+  banner              String?
+  footerText          String?
+  footerLinkHref      String?
+  footerLinkText      String?
+
+  createdAt           DateTime @default(now())            // gennext: skip.zod
+  updatedAt           DateTime @updatedAt                 // gennext: skip.zod
+  startedAt           DateTime?                           // gennext: show.column
+
+  emails              EmailSend[]                         // gennext: skip.list
+
+  client              Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
 }
