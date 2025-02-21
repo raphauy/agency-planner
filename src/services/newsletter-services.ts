@@ -71,6 +71,9 @@ export async function getNewsletterDAO(id: string) {
 export async function createNewsletter(data: NewsletterFormValues) {
   // get last newsletter and use its banner and footer as default, if there is no newsletter, use the default values
   const lastNewsletter= await prisma.newsletter.findFirst({
+    where: {
+      clientId: data.clientId
+    },
     orderBy: {
       id: 'desc'
     }
