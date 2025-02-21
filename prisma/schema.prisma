@@ -543,20 +543,27 @@ model EmailContact {
   audience            Audience @relation(fields: [audienceId], references: [id], onDelete: Cascade)
   audienceId          String
 }
-
+// "delivered" | "opened" | "clicked" | "bounced" | "complained" | "delivery_delayed"
 enum EmailSendStatus {
-  DRAFT
   PENDING
-  SENDING
+  OPENED
+  CLICKED
   SENT
+  DELIVERED
+  DELIVERED_DELAYED
+  COMPLAINED
+  BOUNCED
   CANCELLED
 }
 
 model EmailSend {
   id            String    @id @default(cuid())
-  status        EmailSendStatus @default(DRAFT)       // gennext: show.column
+  status        EmailSendStatus @default(PENDING) // gennext: show.column
+  name          String?                           // gennext: show.column
   to            String                            // gennext: show.column
   subject       String                            // gennext: show.column
+
+  resendId        String?
 
   createdAt     DateTime  @default(now())         // gennext: skip.zod
   sentAt        DateTime?                         // gennext: show.column skip.zod
@@ -579,7 +586,6 @@ model Domain {
 enum NewsletterStatus {
   DRAFT
   PENDING
-  SENDING
   SENT
   CANCELLED
 }
@@ -589,6 +595,7 @@ model Newsletter {
   subject             String                              // gennext: show.column
   status              NewsletterStatus @default(DRAFT)    // gennext: show.column
   sentByName          String?                             // gennext: show.column
+  nameFrom            String?                             // gennext: show.column
   emailFrom           String?                             // gennext: show.column
   replyTo             String?                             // gennext: show.column
 

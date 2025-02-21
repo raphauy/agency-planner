@@ -7,6 +7,8 @@ import PreviewTab from "./preview-tab";
 import { getDomainsDAO } from "@/services/domain-services";
 import { getClientIdBySlugs } from "@/services/client-services";
 import { getAudiencesDAO } from "@/services/audience-services";
+import { TestEmail } from "./test-email";
+import { Broadcast } from "./broadcast";
 
 type Props= {
   params: {
@@ -38,12 +40,15 @@ export default async function NewsletterPage({ params }: Props) {
   const domains= await getDomainsDAO(clientId)
   const audiences= await getAudiencesDAO(clientId)
 
+  const noDomains= domains.length === 0
+
   return (
     <Tabs defaultValue={"content"}>
       <TabsList>
         <TabsTrigger value="content">Contenido</TabsTrigger>
         <TabsTrigger value="preview">Preview</TabsTrigger>
         <TabsTrigger value="config">Configuración</TabsTrigger>
+        <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
       </TabsList>
       <TabsContent value="content">
         <ContentTab newsletter={newsletter} clientSlug={params.clientSlug} cloudinaryPreset={cloudinaryPreset} initialContent={initialValue} />
@@ -51,8 +56,12 @@ export default async function NewsletterPage({ params }: Props) {
       <TabsContent value="preview">
         <PreviewTab newsletter={newsletter} />
       </TabsContent>
-      <TabsContent value="config">
+      <TabsContent value="config" className="space-y-4 max-w-xl">
         <ConfigTab newsletter={newsletter} domains={domains} audiences={audiences} />
+        <TestEmail newsletter={newsletter} noDomains={noDomains} />
+      </TabsContent>
+      <TabsContent value="broadcast">
+        <Broadcast newsletter={newsletter} noDomains={noDomains} />
       </TabsContent>
     </Tabs>
   )

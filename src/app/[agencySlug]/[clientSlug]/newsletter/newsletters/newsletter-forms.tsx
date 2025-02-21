@@ -3,13 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/hooks/use-toast"
 import { NewsletterFormValues, NewsletterSchema } from '@/services/newsletter-services'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { createOrUpdateNewsletterAction, deleteNewsletterAction, getNewsletterDAOAction } from "./newsletter-actions"
+import { createOrUpdateNewsletterAction, deleteNewsletterAction, getNewsletterDAOAction, sendTestEmailAction } from "./newsletter-actions"
+import { z } from "zod"
+import { toast } from "@/components/ui/use-toast"
 
 
 
@@ -123,5 +124,71 @@ export function DeleteNewsletterForm({ id, closeDialog }: DeleteProps) {
         Eliminar  
       </Button>
     </div>
+  )
+}
+
+type TestProps= {
+  newsletterId: string
+  emailFromConfigured: boolean
+  closeDialog: () => void
+}
+
+export function TestEmailForm({ newsletterId, emailFromConfigured, closeDialog }: TestProps) {
+  const testEnvioSchema = z.object({
+    mailTo: z.string().email({ message: "Invalid email" }),
+  })
+  
+  type TestEnvioFormValues = z.infer<typeof testEnvioSchema>
+  
+  const form = useForm<TestEnvioFormValues>({
+    resolver: zodResolver(testEnvioSchema),
+    defaultValues: {},
+    mode: "onChange",
+  })
+  const [loading, setLoading] = useState(false)
+
+
+  const onSubmit = async (data: TestEnvioFormValues) => {
+    setLoading(true)
+    try {
+      await sendTestEmailAction(newsletterId, data.mailTo)
+      toast({ title: "Test Email sent" })
+      closeDialog()
+    } catch (error: any) {
+      toast({ title: "Error", description: "Verifica que el Newsletter hasya sido guardado.", variant: "destructive" })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
+  return (
+    <div className="p-4 bg-white rounded-md">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          
+          <FormField
+            control={form.control}
+            name="mailTo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email To</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email To" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+        <div className="flex justify-end">
+            <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>
+            <Button type="submit" className="w-32 ml-2">
+              {loading ? <Loader className="w-4 h-4 animate-spin" /> : <p>Enviar Email</p>}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>     
   )
 }

@@ -9,7 +9,11 @@ import { X, Search } from "lucide-react"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { EmailSendStatus } from "@prisma/client"
   
+const statuses= Object.values(EmailSendStatus)
+
 interface DataTableToolbarProps<TData> {
   table: TanstackTable<TData>;
 }
@@ -27,13 +31,13 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         />
         <Search className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2" />
       </div>
-      {/* {table.getColumn("role") && roles && (
+      {table.getColumn("status") && (
         <DataTableFacetedFilter
-          column={table.getColumn("role")}
-          title="Rol"
-          options={roles}
+          column={table.getColumn("status")}
+          title="Estado"
+          options={statuses}
         />
-      )} */}
+      )}
       {isFiltered && (
         <Button
           variant="ghost"
@@ -44,9 +48,6 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           <X className="w-4 h-4 ml-2" />
         </Button>
       )}
-      {/* <div className="flex-1 ">
-        <DataTableViewOptions table={table}/>
-      </div> */}
     </div>
   )
 }

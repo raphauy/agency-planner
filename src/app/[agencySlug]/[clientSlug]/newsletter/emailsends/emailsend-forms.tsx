@@ -24,7 +24,7 @@ export function EmailSendForm({ id, closeDialog }: Props) {
   const form = useForm<EmailSendFormValues>({
     resolver: zodResolver(EmailSendSchema),
     defaultValues: {
-      status: EmailSendStatus.DRAFT,
+      status: "PENDING",
       to: "",
       subject: ""
     },
@@ -50,7 +50,9 @@ export function EmailSendForm({ id, closeDialog }: Props) {
     if (id) {
       getEmailSendDAOAction(id).then((data) => {
         if (data) {
-          form.reset(data)
+          form.setValue("status", data.status)
+          form.setValue("to", data.to)
+          form.setValue("subject", data.subject)
         }
         Object.keys(form.getValues()).forEach((key: any) => {
           if (form.getValues(key) === null) {

@@ -125,3 +125,12 @@ export async function getOtherAudiencesDAO(id: string): Promise<AudienceDAO[]>{
   })
   return found
 }
+
+export async function getContactsCount(audienceId: string): Promise<number> {
+  const contacts= await prisma.emailContact.count({
+    where: {
+      audienceId
+    }
+  })
+  return contacts
+}

@@ -53,6 +53,7 @@ export function AppSidebar() {
     const [agencySlug, setAgencySlug] = useState("")
     const [clientSlug, setClientSlug] = useState("")
     const [finalPath, setFinalPath] = useState("")
+    const { open }= useSidebar()
 
     useEffect(() => {
         const { agencySlug, clientSlug, channelPath } = parsePath(path)
@@ -65,8 +66,9 @@ export function AppSidebar() {
     return (
         <div>
             <Sidebar className="pt-[90px] z-0 h-full" collapsible="icon">
-                <SidebarContent>
-                    <SidebarGroup>
+            { !open && <SidebarTrigger className="h-5 w-5 ml-3"/>}
+            <SidebarContent>
+                <SidebarGroup>
                         <div className="flex items-center justify-between">
                             <SidebarGroupLabel>Newsletter</SidebarGroupLabel>
                             <SidebarTrigger />

@@ -1,7 +1,7 @@
 "use server"
   
 import { revalidatePath } from "next/cache"
-import { NewsletterDAO, NewsletterFormValues, createNewsletter, updateNewsletter, getNewsletterDAO, deleteNewsletter, updateContent, updateBanner, setFooter, setEmailFrom, setAudience, setReplyTo } from "@/services/newsletter-services"
+import { NewsletterDAO, NewsletterFormValues, createNewsletter, updateNewsletter, getNewsletterDAO, deleteNewsletter, updateContent, updateBanner, setFooter, setEmailFrom, setAudience, setReplyTo, sendTestEmail, setNameFrom, broadcastNewsletter, processPendingEmailsends, checkResendStatus } from "@/services/newsletter-services"
 
 
 export async function getNewsletterDAOAction(id: string): Promise<NewsletterDAO | null> {
@@ -29,8 +29,8 @@ export async function deleteNewsletterAction(id: string): Promise<NewsletterDAO 
     return deleted as NewsletterDAO
 }
 
-export async function updateContentAction(id: string, textContent: string, jsonContent: string)  {
-    const updated= await updateContent(id, textContent, jsonContent)
+export async function updateContentAction(id: string, contentHtml: string, contentJson: string)  {
+    const updated= await updateContent(id, contentHtml, contentJson)
 
     revalidatePath("/newsletter/newsletters")
 
@@ -47,6 +47,14 @@ export async function updateBannerAction(id: string, banner: string) {
 
 export async function setFooterAction(newsletterId: string, footerText: string, footerLinkHref: string, footerLinkText: string) {
     const updated= await setFooter(newsletterId, footerText, footerLinkHref, footerLinkText)
+
+    revalidatePath("/newsletter/newsletters")
+
+    return updated
+}
+
+export async function setNameFromAction(newsletterId: string, nameFrom: string) {
+    const updated= await setNameFrom(newsletterId, nameFrom)
 
     revalidatePath("/newsletter/newsletters")
 
@@ -75,4 +83,29 @@ export async function setAudienceAction(newsletterId: string, audienceId: string
     revalidatePath("/newsletter/newsletters")
 
     return updated
+}
+
+export async function sendTestEmailAction(newsletterId: string, emailTo: string): Promise<boolean> {    
+  
+    const res= await sendTestEmail(newsletterId, emailTo)
+    revalidatePath("/newsletter/newsletters")
+    return res
+}
+
+export async function broadcastNewsletterAction(newsletterId: string) {
+    const res= await broadcastNewsletter(newsletterId)
+    revalidatePath("/newsletter/newsletters")
+    return res
+}
+
+export async function processPendingEmailsendsAction() {
+    const res= await processPendingEmailsends()
+    revalidatePath("/newsletter/newsletters")
+    return res
+}
+
+export async function checkResendStatusAction() {
+    const res= await checkResendStatus()
+    revalidatePath("/newsletter/newsletters")
+    return res
 }

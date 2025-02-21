@@ -30,7 +30,7 @@ export async function getEmailContactsDAO(audienceId: string) {
     },
     orderBy: {
       id: 'asc'
-    },
+    }
   })
   return found as EmailContactDAO[]
 }

@@ -7,6 +7,7 @@ import { ArrowUpDown } from "lucide-react"
 import { format } from "date-fns"
 import { DeleteNewsletterDialog, NewsletterDialog } from "./newsletter-dialogs"
 import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
 
 
 export const columns: ColumnDef<NewsletterDAO>[] = [
@@ -52,6 +53,11 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      const badgeVariant= data.status === "SENT" ? "delivered" : data.status === "PENDING" ? "pending" : "draft"
+      return (<Badge variant={badgeVariant}>{data.status}</Badge>)
+    }
   },
 
   {
@@ -124,6 +130,8 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
     id: "actions",
     cell: ({ row }) => {
       const data= row.original
+      const status= data.status
+      if (status !== "DRAFT") return null      
 
       const deleteDescription= `Seguro que quieres eliminar el Newsletter ${data.subject}?`
  

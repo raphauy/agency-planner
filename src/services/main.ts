@@ -1,3 +1,4 @@
+import { getResendEmail } from "./newsletter-services"
 import { connectionState, createInstanceBasic, deleteInstance, enableChatwoot, fetchInstances } from "./wrc-sdk"
 import { ChatwootParams } from "./wrc-sdk-types"
 //import { config } from "dotenv"
@@ -20,27 +21,31 @@ async function main() {
     // const status= await connectionState(instanceName)
     // console.log(status)
 
-    const params: ChatwootParams = {
-        enabled: true,
-        accountId: String(2),
-        token: process.env.CHATWOOT_ACCESS_TOKEN!,
-        url: process.env.CHATWOOT_URL!,
-        signMsg: true,
-        reopenConversation: false,
-        conversationPending: true,
-        nameInbox: instanceName,
-        importContacts: false,        
-        importMessages: false,
-        daysLimitImportMessages: 7,
-        signDelimiter: '\n',
-        autoCreate: true,
-        organization: 'WRC',
-        logo: '',
-    }
+    // const params: ChatwootParams = {
+    //     enabled: true,
+    //     accountId: String(2),
+    //     token: process.env.CHATWOOT_ACCESS_TOKEN!,
+    //     url: process.env.CHATWOOT_URL!,
+    //     signMsg: true,
+    //     reopenConversation: false,
+    //     conversationPending: true,
+    //     nameInbox: instanceName,
+    //     importContacts: false,        
+    //     importMessages: false,
+    //     daysLimitImportMessages: 7,
+    //     signDelimiter: '\n',
+    //     autoCreate: true,
+    //     organization: 'WRC',
+    //     logo: '',
+    // }
 
-    const res= await enableChatwoot(instanceName, params)
-    console.log(res)
+    // const res= await enableChatwoot(instanceName, params)
+    // console.log(res)
+
+    const resendId= "55914735-58c1-486a-ae33-742c40c82960"
+    const resendEmail= await getResendEmail(resendId)
+    console.log(resendEmail)    
 
 }
 
-//main()
+main()

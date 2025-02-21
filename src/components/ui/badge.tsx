@@ -3,6 +3,16 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// PENDING
+// OPENED
+// CLICKED
+// SENT
+// DELIVERED
+// DELIVERED_DELAYED
+// COMPLAINED
+// BOUNCED
+// CANCELLED
+
 const badgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
@@ -21,6 +31,18 @@ const badgeVariants = cva(
         ended: "bg-orange-500 text-white rounded-2xl border-orange-800",
         archived: "bg-gray-500 text-white rounded-2xl border-gray-800",
         active: "bg-green-500 text-white rounded-2xl border-green-800",
+
+        draft: "bg-gray-100 text-gray-600 rounded-md border-gray-600",
+
+        pending: "bg-yellow-100 text-yellow-600 rounded-md border-yellow-600",        
+        opened: "bg-green-100 text-green-600 rounded-md border-green-600",
+        clicked: "bg-blue-100 text-blue-600 rounded-md border-blue-600",
+        sent: "bg-gray-100 text-gray-600 rounded-md border-gray-600",
+        delivered: "bg-green-100 text-green-600 rounded-md border-green-600",
+        delivered_delayed: "bg-yellow-100 text-yellow-600 rounded-md border-yellow-600",
+        complained: "bg-red-100 text-red-600 rounded-md border-red-600",
+        bounced: "bg-red-100 text-red-600 rounded-md border-red-600",
+        cancelled: "bg-gray-100 text-gray-600 rounded-md border-gray-600",
       },
     },
     defaultVariants: {

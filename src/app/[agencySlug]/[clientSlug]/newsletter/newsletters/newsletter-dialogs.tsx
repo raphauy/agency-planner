@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { NewsletterForm, DeleteNewsletterForm } from "./newsletter-forms"
+import { NewsletterForm, DeleteNewsletterForm, TestEmailForm } from "./newsletter-forms"
 import { PlusCircle, Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 
@@ -59,5 +59,28 @@ export function DeleteNewsletterDialog({ id, description }: DeleteProps) {
   )
 }
 
+type TestProps= {
+  newsletterId: string
+  emailFromConfigured: boolean
+}
 
+export function TestEmailDialog({ newsletterId, emailFromConfigured }: TestProps) {
+  const [open, setOpen] = useState(false);
 
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div className="flex items-center gap-2">
+          <Button className="whitespace-nowrap" disabled={!emailFromConfigured}>Email de Prueba</Button>
+          {!emailFromConfigured && <p className="text-sm text-muted-foreground">* El From Email del newsletter debe estar configurado</p>}
+        </div>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Enviar Email de Prueba</DialogTitle>
+        </DialogHeader>
+        <TestEmailForm closeDialog={() => setOpen(false)} newsletterId={newsletterId} emailFromConfigured={emailFromConfigured} />
+      </DialogContent>
+    </Dialog>
+  )
+}

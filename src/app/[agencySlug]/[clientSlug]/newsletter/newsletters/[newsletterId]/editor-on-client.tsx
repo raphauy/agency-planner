@@ -17,7 +17,7 @@ type Props = {
 
 export default function NovelOnClient({ newsletter, initialContent }: Props) {
     const [loading, setLoading] = useState(false);
-    const [textContent, setTextContent] = useState<string>(newsletter.contentHtml || "")
+    const [htmlContent, setHtmlContent] = useState<string>(newsletter.contentHtml || "")
     const [jsonContent, setJsonContent] = useState<JSONContent>(initialContent)
     const [charCount, setCharCount] = useState(newsletter.contentHtml?.length || 0)
     const [charCountSaved, setCharCountSaved] = useState(newsletter.contentHtml?.length || 0)
@@ -53,20 +53,19 @@ export default function NovelOnClient({ newsletter, initialContent }: Props) {
         };
     }, []);
     
-    function onUpdate(jsonValue: JSONContent, textValue: string) {
+    function onUpdate(jsonValue: JSONContent, htmlValue: string) {
         console.log("guardando");
         
         setJsonContent(jsonValue)
-        setTextContent(textValue)
+        setHtmlContent(htmlValue)
 
-        const wordCount = textValue.split(" ").length
-        setCharCount(textValue.length)
+        setCharCount(htmlValue.length)
     }
 
     function save() {
        
         setLoading(true);
-        updateContentAction(newsletter.id, textContent, JSON.stringify(jsonContent))
+        updateContentAction(newsletter.id, htmlContent, JSON.stringify(jsonContent))
         .then(() => {
             toast({ title: "Cambios guardados"})
             setCharCountSaved(charCount)
