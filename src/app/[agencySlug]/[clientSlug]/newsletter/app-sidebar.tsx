@@ -27,12 +27,6 @@ const items = [
         group: "newsletter",
     },
     {
-        title: "Histórico",
-        url: `newsletter/history`,
-        icon: FileStack,
-        group: "newsletter",
-    },
-    {
         title: "Widgets",
         url: `newsletter/widgets`,
         icon: CodeXml,
