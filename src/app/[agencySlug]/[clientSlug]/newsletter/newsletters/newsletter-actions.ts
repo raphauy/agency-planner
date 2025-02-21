@@ -1,7 +1,7 @@
 "use server"
   
 import { revalidatePath } from "next/cache"
-import { NewsletterDAO, NewsletterFormValues, createNewsletter, updateNewsletter, getNewsletterDAO, deleteNewsletter, updateContent, updateBanner, setFooter } from "@/services/newsletter-services"
+import { NewsletterDAO, NewsletterFormValues, createNewsletter, updateNewsletter, getNewsletterDAO, deleteNewsletter, updateContent, updateBanner, setFooter, setEmailFrom, setAudience, setReplyTo } from "@/services/newsletter-services"
 
 
 export async function getNewsletterDAOAction(id: string): Promise<NewsletterDAO | null> {
@@ -47,6 +47,30 @@ export async function updateBannerAction(id: string, banner: string) {
 
 export async function setFooterAction(newsletterId: string, footerText: string, footerLinkHref: string, footerLinkText: string) {
     const updated= await setFooter(newsletterId, footerText, footerLinkHref, footerLinkText)
+
+    revalidatePath("/newsletter/newsletters")
+
+    return updated
+}
+
+export async function setEmailFromAction(newsletterId: string, emailFrom: string) {
+    const updated= await setEmailFrom(newsletterId, emailFrom)
+
+    revalidatePath("/newsletter/newsletters")
+
+    return updated
+}
+
+export async function setReplyToAction(newsletterId: string, replyTo: string) {
+    const updated= await setReplyTo(newsletterId, replyTo)
+
+    revalidatePath("/newsletter/newsletters")
+
+    return updated
+}
+
+export async function setAudienceAction(newsletterId: string, audienceId: string) {
+    const updated= await setAudience(newsletterId, audienceId)
 
     revalidatePath("/newsletter/newsletters")
 

@@ -528,6 +528,7 @@ model Audience {
   clientId            String
 
   contacts            EmailContact[]                     // gennext: skip.list
+  newsletters         Newsletter[]
 }
 
 model EmailContact {
@@ -589,6 +590,7 @@ model Newsletter {
   status              NewsletterStatus @default(DRAFT)    // gennext: show.column
   sentByName          String?                             // gennext: show.column
   emailFrom           String?                             // gennext: show.column
+  replyTo             String?                             // gennext: show.column
 
   contentHtml         String?
   contentJson         String?
@@ -602,6 +604,9 @@ model Newsletter {
   startedAt           DateTime?                           // gennext: show.column
 
   emails              EmailSend[]                         // gennext: skip.list
+
+  audience            Audience? @relation(fields: [audienceId], references: [id], onDelete: SetNull)
+  audienceId          String?
 
   client              Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId            String

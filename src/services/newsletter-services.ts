@@ -2,6 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { ClientDAO } from "./client-services"
 import { NewsletterStatus } from "@prisma/client"
+import { AudienceDAO } from "./audience-services"
 
 export type NewsletterDAO = {
 	id: string
@@ -9,6 +10,7 @@ export type NewsletterDAO = {
 	status: NewsletterStatus
 	sentByName: string | undefined
 	emailFrom: string | undefined
+	replyTo: string | undefined
 	contentHtml: string | undefined
 	contentJson: string | undefined
 	banner: string | undefined
@@ -18,6 +20,8 @@ export type NewsletterDAO = {
 	createdAt: Date
 	updatedAt: Date
 	startedAt: Date | undefined
+	audience: AudienceDAO | null
+	audienceId: string | undefined
 	client: ClientDAO
 	clientId: string
 }
@@ -38,6 +42,9 @@ export async function getNewslettersDAO(clientId: string) {
     orderBy: {
       createdAt: 'desc'
     },
+    include: {
+      audience: true
+    }
   })
   return found as NewsletterDAO[]
 }
@@ -46,6 +53,9 @@ export async function getNewsletterDAO(id: string) {
   const found = await prisma.newsletter.findUnique({
     where: {
       id
+    },
+    include: {
+      audience: true
     }
   })
   return found as NewsletterDAO
@@ -64,13 +74,17 @@ export async function createNewsletter(data: NewsletterFormValues) {
   const defaultFooterText= lastNewsletter?.footerText || "¡Gracias por leer!👋 ¿Te veo en el próximo? Si no querés recibir estos emails podés darte de baja (ver link más abajo)— Tu empresa (@tuempresahandle)"
   const defaultFooterLinkHref= lastNewsletter?.footerLinkHref || "https://tinta.wine"
   const defaultFooterLinkText= lastNewsletter?.footerLinkText || "Conocé más sobre nosotros"
+  const defaultEmailFrom= lastNewsletter?.emailFrom || null
+  const defaultReplyTo= lastNewsletter?.replyTo || null
   const created = await prisma.newsletter.create({
     data: {
       ...data,
       banner: defaultBanner,
       footerText: defaultFooterText,
       footerLinkHref: defaultFooterLinkHref,
-      footerLinkText: defaultFooterLinkText
+      footerLinkText: defaultFooterLinkText,
+      emailFrom: defaultEmailFrom,
+      replyTo: defaultReplyTo
     }
   })
   return created
@@ -129,6 +143,42 @@ export async function setFooter(newsletterId: string, footerText: string, footer
       footerText,
       footerLinkHref,
       footerLinkText
+    }
+  })
+  return updated
+}
+
+export async function setEmailFrom(newsletterId: string, emailFrom: string) {
+  const updated = await prisma.newsletter.update({
+    where: {
+      id: newsletterId
+    },
+    data: {
+      emailFrom
+    }
+  })
+  return updated
+}
+
+export async function setReplyTo(newsletterId: string, replyTo: string) {
+  const updated = await prisma.newsletter.update({
+    where: {
+      id: newsletterId
+    },
+    data: {
+      replyTo
+    }
+  })
+  return updated
+}
+
+export async function setAudience(newsletterId: string, audienceId: string) {
+  const updated = await prisma.newsletter.update({
+    where: {
+      id: newsletterId
+    },
+    data: {
+      audienceId
     }
   })
   return updated

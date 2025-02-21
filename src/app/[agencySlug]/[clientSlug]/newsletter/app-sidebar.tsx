@@ -2,6 +2,7 @@
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { BookOpen, Bot, ChevronRightSquare, CodeXml, FileStack, Globe, LayoutDashboard, MessageCircle, MessagesSquare, Newspaper, Phone, Users } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -75,10 +76,10 @@ export function AppSidebar() {
                                 {items.filter((item) => item.group === "newsletter").map((item) => (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton asChild isActive={finalPath === item.url}>
-                                            <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
+                                            <Link href={`/${agencySlug}/${clientSlug}/${item.url}`} prefetch={false}>
                                                 <item.icon />
                                                 <span>{item.title}</span>
-                                            </a>
+                                            </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 ))}
@@ -92,10 +93,10 @@ export function AppSidebar() {
                                 {items.filter((item) => item.group === "settings").map((item) => (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton asChild isActive={finalPath === item.url}>
-                                            <a href={`/${agencySlug}/${clientSlug}/${item.url}`}>
+                                            <Link href={`/${agencySlug}/${clientSlug}/${item.url}`} prefetch={false}>
                                                 <item.icon />
                                                 <span>{item.title}</span>
-                                            </a>
+                                            </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 ))}

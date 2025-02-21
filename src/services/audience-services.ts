@@ -24,7 +24,7 @@ export const AudienceSchema = z.object({
 export type AudienceFormValues = z.infer<typeof AudienceSchema>
 
 
-export async function getAudiencesDAO(clientId: string) {
+export async function getAudiencesDAO(clientId: string): Promise<AudienceDAO[]> {
   const found = await prisma.audience.findMany({
     where: {
       clientId

@@ -25,7 +25,7 @@ export default async function ArticlePreview({ params }: Props) {
 
             <p className="mb-4 text-3xl font-bold">{doc.name}</p>
 
-            <ContentViewer content={content} />
+            <ContentViewer content={content} className="w-full h-full p-4 bg-background"/>
 
         </div>
   )

@@ -1,18 +1,16 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react";
-import {
-  EditorRoot,
-  EditorContent,
-  type JSONContent,
-} from "novel";
+import { EditorRoot, EditorContent, type JSONContent } from "novel";
 import { defaultExtensions } from "@/components/editor/extensions";
+import { cn } from "@/lib/utils";
 
 type Props = {
     content: JSONContent
+    className: string
 }
 
-export default function ContentViewer({ content }: Props) {
+export default function ContentViewer({ content, className }: Props) {
     const editorContainerRef = useRef<HTMLDivElement>(null)
     const [isContentLoaded, setIsContentLoaded] = useState(false)
 
@@ -31,12 +29,11 @@ export default function ContentViewer({ content }: Props) {
     }, [editorContainerRef, isContentLoaded]);
 
     return (
-        <div ref={editorContainerRef} className="flex justify-center h-full border rounded-b-lg">
+        <div ref={editorContainerRef} className={className}>
             <div className="invisible-anchor" style={{ position: 'absolute', top: '0', left: '0', opacity: 0 }}/>
 
             <EditorRoot>
-                <EditorContent
-                    className="w-full h-full rounded-t-none rounded-b-md border p-4 bg-white dark:bg-black dark:text-white"
+                <EditorContent                    
                     initialContent={content}
                     extensions={defaultExtensions}
                     editorProps={{
@@ -45,6 +42,7 @@ export default function ContentViewer({ content }: Props) {
                             class: `prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full`,
                         },
                     }}
+                    immediatelyRender={false}
                 />
             </EditorRoot>
         </div>

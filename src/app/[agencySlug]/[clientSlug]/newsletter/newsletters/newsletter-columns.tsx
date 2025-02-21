@@ -16,7 +16,7 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
       return (
         <Button variant="ghost" className="pl-0 dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Subject
+          Asunto
           <ArrowUpDown className="w-4 h-4 ml-1" />
         </Button>
       )
@@ -35,7 +35,10 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
       const data = row.original
       const valueLower = value.toLowerCase()
       return !!(data.subject?.toLowerCase().includes(valueLower) ||
-        data.clientId?.toLowerCase().includes(valueLower))
+        data.clientId?.toLowerCase().includes(valueLower) ||
+        data.sentByName?.toLowerCase().includes(valueLower) ||
+        data.emailFrom?.toLowerCase().includes(valueLower) ||
+        data.audience?.name?.toLowerCase().includes(valueLower)) 
     },
   },
   
@@ -45,10 +48,26 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            Status
+            Estado
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+  },
+
+  {
+    accessorKey: "audience",
+    header: ({ column }) => {
+        return (
+          <Button variant="ghost" className="pl-0 dark:text-white"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            Audiencia
+            <ArrowUpDown className="w-4 h-4 ml-1" />
+          </Button>
+    )},
+    cell: ({ row }) => {
+      const data= row.original
+      return (<p>{data.audience?.name}</p>)
+    }
   },
 
   {
@@ -57,10 +76,21 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
         return (
           <Button variant="ghost" className="pl-0 dark:text-white"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            SentByName
+            Enviado por
             <ArrowUpDown className="w-4 h-4 ml-1" />
           </Button>
     )},
+    cell: ({ row }) => {
+      const data= row.original
+      const date= data.startedAt && format(new Date(data.startedAt), "yyyy-MM-dd")
+
+      return (
+        <div className="flex items-center gap-2">
+          <p>{data.sentByName}</p>
+          <p className="text-sm text-muted-foreground">{date}</p>
+        </div>
+      )
+    }
   },
 
   {
@@ -75,22 +105,6 @@ export const columns: ColumnDef<NewsletterDAO>[] = [
     )},
   },
 
-  {
-    accessorKey: "startedAt",
-    header: ({ column }) => {
-        return (
-          <Button variant="ghost" className="pl-0 dark:text-white"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-            StartedAt
-            <ArrowUpDown className="w-4 h-4 ml-1" />
-          </Button>
-    )},
-		cell: ({ row }) => {
-      const data= row.original
-      const date= data.startedAt && format(new Date(data.startedAt), "yyyy-MM-dd")
-      return (<p>{date}</p>)
-    }
-  },
   // {
   //   accessorKey: "role",
   //   header: ({ column }) => {

@@ -8,6 +8,8 @@ import {
   StarterKit,
   Placeholder,
   AIHighlight,
+  Twitter,
+  Youtube,
 } from "novel/extensions";
 import { UploadImagesPlugin } from "novel/plugins";
 
@@ -62,6 +64,20 @@ const horizontalRule = HorizontalRule.configure({
   },
 });
 
+const twitter = Twitter.configure({
+  HTMLAttributes: {
+    class: cx("not-prose"),
+  },
+  inline: false,
+});
+
+const youtube = Youtube.configure({
+  HTMLAttributes: {
+    class: cx("not-prose"),
+  },
+  inline: false,
+});
+
 const starterKit = StarterKit.configure({
   bulletList: {
     HTMLAttributes: {
@@ -89,7 +105,7 @@ const starterKit = StarterKit.configure({
         "rounded-md bg-muted text-muted-foreground border p-5 font-mono font-medium",
       ),
     },
-  },
+  },  
   code: {
     HTMLAttributes: {
       class: cx("rounded-md bg-muted  px-1.5 py-1 font-mono font-medium"),
@@ -109,9 +125,11 @@ export const defaultExtensions = [
   placeholder,
   tiptapLink,
   tiptapImage,
-  updatedImage,
+  // updatedImage,
   taskList,
   taskItem,
   horizontalRule,
   aiHighlight,
+  twitter,
+  youtube,
 ];

@@ -1,15 +1,14 @@
 "use client"
 
+import Editor from "@/components/editor/advanced-editor";
 import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import { DocumentDAO } from "@/services/document-services";
 import { Loader, Save } from "lucide-react";
+import { JSONContent } from "novel";
 import { useEffect, useRef, useState } from "react";
 import { updateContentAction } from "../document-actions";
-import { ToastAction } from "@/components/ui/toast";
-import LinkBox from "./link-box";
-import { JSONContent } from "novel";
-import Editor from "@/components/editor/advanced-editor";
 
 type Props = {
     document: DocumentDAO
@@ -37,6 +36,7 @@ export default function NovelOnClient({ document, initialContent }: Props) {
                     title: "Tienes cambios sin guardar.",
                     variant: "destructive",
                     action: <ToastAction altText="Try again" onClick={() => save()}>Guardar Cambios</ToastAction>,
+                    duration: 10000,
                   })
             }
         };
