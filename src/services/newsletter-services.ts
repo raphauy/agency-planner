@@ -5,7 +5,7 @@ import { Resend } from "resend"
 import * as z from "zod"
 import { AudienceDAO } from "./audience-services"
 import { ClientDAO } from "./client-services"
-import { getEmailContactsDAO } from "./emailcontact-services"
+import { getActiveEmailContactsDAO, getEmailContactsDAO } from "./emailcontact-services"
 import { createEmailSend, EmailSendFormValues, getNewsletterIdsWithPendingEmailsends, getPendingEmailSendsDAO, setResendId, setEmailSendStatus, getSentEmailSend, getPendingEmailSendsCount } from "./emailsend-services"
 
 export type NewsletterDAO = {
@@ -305,7 +305,7 @@ export async function broadcastNewsletter(newsletterId: string) {
     throw new Error("Error broadcasting newsletter, audience not found.")
   }
 
-  const contacts= await getEmailContactsDAO(audience.id)
+  const contacts= await getActiveEmailContactsDAO(audience.id)
   if (!contacts || contacts.length === 0) {
     console.log("Error broadcasting newsletter, contacts not found.")    
     throw new Error("Error broadcasting newsletter, contacts not found.")

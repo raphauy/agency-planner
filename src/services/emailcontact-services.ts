@@ -35,6 +35,16 @@ export async function getEmailContactsDAO(audienceId: string) {
   return found as EmailContactDAO[]
 }
 
+export async function getActiveEmailContactsDAO(audienceId: string) {
+  const found = await prisma.emailContact.findMany({
+    where: {
+      audienceId,
+      unsubscribed: false
+    }
+  })
+  return found as EmailContactDAO[]
+}
+
 export async function getEmailContactDAO(id: string) {
   const found = await prisma.emailContact.findUnique({
     where: {
