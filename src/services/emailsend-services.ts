@@ -2,6 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { NewsletterDAO } from "./newsletter-services"
 import { EmailSendStatus } from "@prisma/client"
+import { EmailEvent } from "@/app/api/resend/route"
 
 export type EmailSendDAO = {
 	id: string
@@ -125,20 +126,26 @@ export async function getNewsletterIdsWithPendingEmailsends() {
 }
 
 function mapStatus(resendStatus: string): EmailSendStatus | null {
-  if (resendStatus === "sent") {
-    return "SENT"
+  if (resendStatus === "bounced" || resendStatus === "email.bounced") {
+    return "BOUNCED"
   }
-  if (resendStatus === "delivered") {
-    return "DELIVERED"
+  if (resendStatus === "clicked" || resendStatus === "email.clicked") {
+    return "CLICKED"
   }
-  if (resendStatus === "delivery_delayed") {
-    return "DELIVERED_DELAYED"
-  }
-  if (resendStatus === "complained") {
+  if (resendStatus === "complained" || resendStatus === "email.complained") {
     return "COMPLAINED"
   }
-  if (resendStatus === "bounced") {
-    return "BOUNCED"
+  if (resendStatus === "delivered" || resendStatus === "email.delivered") {
+    return "DELIVERED"
+  }
+  if (resendStatus === "delivery_delayed" || resendStatus === "email.delivery_delayed") {
+    return "DELIVERED_DELAYED"
+  }
+  if (resendStatus === "opened" || resendStatus === "email.opened") {
+    return "OPENED"
+  }
+  if (resendStatus === "sent" || resendStatus === "email.sent") {
+    return "SENT"
   }
   return null
 }
@@ -161,4 +168,19 @@ export async function getPendingEmailSendsCount(newsletterId: string) {
     }
   })
   return count
+}
+
+export async function processResendEvent(event: EmailEvent) {
+  console.log("Processing resend event: ", event)
+  const emailSend= await prisma.emailSend.findUnique({
+    where: {
+      resendId: event.data.email_id
+    }
+  })
+  if (!emailSend) {
+    console.error("Email send not found: ", event.data.email_id)
+    return
+  }
+  console.log("Email send processed: ", emailSend.to)
+  await setEmailSendStatus(emailSend.id, event.type)
 }

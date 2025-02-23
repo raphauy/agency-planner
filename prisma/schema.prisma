@@ -563,7 +563,7 @@ model EmailSend {
   to            String                            // gennext: show.column
   subject       String                            // gennext: show.column
 
-  resendId        String?
+  resendId        String? @unique
 
   createdAt     DateTime  @default(now())         // gennext: skip.zod
   sentAt        DateTime?                         // gennext: show.column skip.zod

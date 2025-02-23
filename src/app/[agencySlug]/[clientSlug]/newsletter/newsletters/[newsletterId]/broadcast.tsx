@@ -102,7 +102,7 @@ export async function Broadcast({ newsletter, noDomains }: Props) {
           { newsletter.status === "DRAFT" ? <BroadcastButton newsletterId={newsletter.id} /> :
             <div className="flex gap-2">
               { isSuperAdmin && <ProcessPendingButton isSuperAdmin={isSuperAdmin} /> }
-              { isSuperAdmin && <CheckSentButton isSuperAdmin={isSuperAdmin} /> }
+              {/* { isSuperAdmin && <CheckSentButton isSuperAdmin={isSuperAdmin} /> } */}
             </div>
           }
         </CardContent>

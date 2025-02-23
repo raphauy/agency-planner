@@ -286,9 +286,7 @@ export async function broadcastNewsletter(newsletterId: string) {
     throw new Error("Error broadcasting newsletter, newsletter not found.")
   }
 
-  const nameFrom= newsletter.nameFrom
   const emailFrom= newsletter.emailFrom
-  const replyTo= newsletter.replyTo
   const subject= newsletter.subject
   const content= newsletter.contentHtml
   const banner= newsletter.banner
@@ -331,6 +329,7 @@ export async function broadcastNewsletter(newsletterId: string) {
 
   await setNewsletterStatus(newsletterId, "PENDING")
 
+  await processPendingEmailsends()
 }
 
 export async function getResendEmail(resendId: string) {
@@ -414,6 +413,7 @@ export async function processPendingEmailsends() {
   for (const newsletterId of newsletterIds) {
     await processPendingEmailsendsOfNewsletter(newsletterId)    
   }
+  await checkPendingNewsletters()
 }
 
 export async function checkResendStatus() {
