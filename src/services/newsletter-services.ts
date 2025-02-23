@@ -392,15 +392,15 @@ export async function processPendingEmailsendsOfNewsletter(newsletterId: string)
         console.log("Email sent: ", data)
         await setResendId(emailSend.id, data.id)
         // sleep 1 second
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const resendEmail= await getResendEmail(data.id)
-        const resendStatus= resendEmail.data?.last_event
-        if (resendStatus) {
-          console.log("Last event: ", resendStatus)
-          await setEmailSendStatus(emailSend.id, resendStatus)
-        } else {
-          console.log("No last event found")
-        }
+        // await new Promise(resolve => setTimeout(resolve, 1000));
+        // const resendEmail= await getResendEmail(data.id)
+        // const resendStatus= resendEmail.data?.last_event
+        // if (resendStatus) {
+        //   console.log("Last event: ", resendStatus)
+        //   await setEmailSendStatus(emailSend.id, resendStatus)
+        // } else {
+        //   console.log("No last event found")
+        // }
       }
     } catch (error) {
       console.log("Error sending email: ", error)
