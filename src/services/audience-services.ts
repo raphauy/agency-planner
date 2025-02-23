@@ -134,3 +134,21 @@ export async function getContactsCount(audienceId: string): Promise<number> {
   })
   return contacts
 }
+
+export async function unsubscribeEmail(audienceId: string, email: string): Promise<boolean> {
+  let unsubscribed= false
+  const emailContact= await prisma.emailContact.findFirst({
+    where: {
+      audienceId,
+      email
+    }
+  })
+  if (emailContact) {
+    await prisma.emailContact.update({
+      where: { id: emailContact.id },
+      data: { unsubscribed: true }
+    })
+    unsubscribed= true
+  }
+  return unsubscribed
+}

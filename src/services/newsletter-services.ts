@@ -377,7 +377,7 @@ export async function processPendingEmailsendsOfNewsletter(newsletterId: string)
   const emailsends= await getPendingEmailSendsDAO(newsletterId, MAX_EMAILS_TO_PROCESS)
   for (const emailSend of emailsends) {
     try {
-      const linkUnsubscribe = `${BASE_URL}/api/newsletter/${newsletter.audienceId}/unsuscribe/${emailSend.id}`
+      const linkUnsubscribe = `${BASE_URL}/api/newsletter/${newsletter.audienceId}/unsubscribe/${emailSend.id}`
       const { data, error } = await resend.emails.send({
         from,
         to: [emailSend.to],
@@ -391,16 +391,6 @@ export async function processPendingEmailsendsOfNewsletter(newsletterId: string)
       if (data) {
         console.log("Email sent: ", data)
         await setResendId(emailSend.id, data.id)
-        // sleep 1 second
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-        // const resendEmail= await getResendEmail(data.id)
-        // const resendStatus= resendEmail.data?.last_event
-        // if (resendStatus) {
-        //   console.log("Last event: ", resendStatus)
-        //   await setEmailSendStatus(emailSend.id, resendStatus)
-        // } else {
-        //   console.log("No last event found")
-        // }
       }
     } catch (error) {
       console.log("Error sending email: ", error)
