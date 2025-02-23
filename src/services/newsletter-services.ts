@@ -253,7 +253,7 @@ export async function sendTestEmail(newsletterId: string, emailTo: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const mailId= "only-image"
-  const BASE_URL = process.env.NEXTAUTH_URL || "http://localhost:3000"
+  const BASE_URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
   const linkUnsubscribe = `${BASE_URL}/api/newsletter/${newsletter.audienceId}/unsuscribe/${mailId}`
 
   const from= nameFrom ? `${nameFrom} <${emailFrom}>` : emailFrom
@@ -371,7 +371,7 @@ export async function processPendingEmailsendsOfNewsletter(newsletterId: string)
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const BASE_URL = process.env.NEXTAUTH_URL || "http://localhost:3000"
+  const BASE_URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
   const from= nameFrom ? `${nameFrom} <${emailFrom}>` : emailFrom
 
   const emailsends= await getPendingEmailSendsDAO(newsletterId, MAX_EMAILS_TO_PROCESS)

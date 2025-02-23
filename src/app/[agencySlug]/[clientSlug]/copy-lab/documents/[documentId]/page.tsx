@@ -27,8 +27,6 @@ export default async function Page({ params }: Props) {
         redirect(`/${agencySlug}/${clientSlug}/copy-lab/documents`)
     }
 
-    const BASE_PATH= process.env.NEXTAUTH_URL
-
     return (
         <div className="flex flex-col w-full p-1 md:p-4 xl:p-8">
                         

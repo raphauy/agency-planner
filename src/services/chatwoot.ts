@@ -127,7 +127,7 @@ export async function createAgentBotToClient(clientId: string) {
 
     const chatwootUrl = process.env.CHATWOOT_URL!
     const chatwootToken = process.env.CHATWOOT_PLATFORM_APP_API_KEY!
-    const baseUrl = process.env.NEXTAUTH_URL
+    const baseUrl = process.env.NEXT_PUBLIC_URL
 
 
     if (!chatwootUrl || !chatwootToken) {
