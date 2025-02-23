@@ -36,7 +36,7 @@ const badgeVariants = cva(
 
         pending: "bg-yellow-100 text-yellow-600 rounded-md border-yellow-600",        
         opened: "bg-green-100 text-green-600 rounded-md border-green-600",
-        clicked: "bg-blue-100 text-blue-600 rounded-md border-blue-600",
+        clicked: "bg-purple-100 text-purple-600 rounded-md border-purple-600",
         sent: "bg-gray-100 text-gray-600 rounded-md border-gray-600",
         delivered: "bg-green-100 text-green-600 rounded-md border-green-600",
         delivered_delayed: "bg-yellow-100 text-yellow-600 rounded-md border-yellow-600",
