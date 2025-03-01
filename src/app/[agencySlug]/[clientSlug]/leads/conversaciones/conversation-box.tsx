@@ -1,8 +1,6 @@
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
 import { getFormatInTimezone } from "@/lib/utils"
 import { ConversationDAO } from "@/services/conversation-services"
-import { useState } from "react"
 import { CloseConversationDialog, DeleteConversationDialog } from "./(delete-conversation)/delete-dialogs"
 import ConversationMessageBox from "./conversation-message-box"
 

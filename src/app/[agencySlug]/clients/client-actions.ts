@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache"
 import { SelectorData } from "@/components/header/selectors/selectors"
 import { generateSlug, getCurrentAgencySlug, getCurrentUser } from "@/lib/utils"
 import { getComplentaryUsers, setUsers } from "@/services/client-services"
-import { getIgProfile } from "@/services/instagram-services"
+import { getIgProfile, getIgProfileBulkScrapper } from "@/services/instagram-services"
 import { uploadFileWithUrl } from "@/services/upload-file-service"
 import { UserDAO } from "@/services/user-services"
 import { redirect } from "next/navigation"
@@ -57,7 +57,8 @@ export async function setUsersAction(id: string, users: UserDAO[]): Promise<bool
 
 
 export async function createClientWithIgHandleAction(agencyId: string, igHandle: string): Promise<ClientDAO | null> {
-    const igProfile= await getIgProfile(igHandle)
+    //const igProfile= await getIgProfile(igHandle)
+    const igProfile= await getIgProfileBulkScrapper(igHandle)
     if (!igProfile?.profile_pic_url) {
       throw new Error("Instagram profile not found")
     }

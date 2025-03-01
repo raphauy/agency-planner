@@ -74,6 +74,7 @@ export async function createInstanceBasic(instanceName: string): Promise<CreateI
         const response = await axios.post<CreateInstanceResponse>(`${baseURL}/instance/create`, 
         { 
             instanceName,
+            qrcode: false,
             integration: "WHATSAPP-BAILEYS",
         }, 
         {
