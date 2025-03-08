@@ -3,11 +3,12 @@ import { LoginForm } from "./login-form";
 import { redirect } from "next/navigation";
 
 type Props = {
-  searchParams: {
+  searchParams: Promise<{
     email: string
-  }
+  }>
 }
-export default async function LoginPage({ searchParams }: Props) {
+export default async function LoginPage(props: Props) {
+  const searchParams = await props.searchParams;
   const requestEmail= searchParams.email
 
   console.log("email", requestEmail)

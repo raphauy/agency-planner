@@ -38,18 +38,20 @@ export function BannerForm({ newsletterId, clientSlug, cloudinaryPreset }: Props
   return (
     <div>
       <CldUploadButton
-        className="flex flex-col items-center w-full mt-1 gap-2"
         options={ { maxFiles: 1, tags: [`${clientSlug}`,"banner"], folder: `agency-planner/${clientSlug}` } }
         onSuccess={handleUpload}
         uploadPreset={cloudinaryPreset}
       >
-        
-        <Button variant="link" className="self-end gap-2 p-1">
-        {loading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-        <p>Cambiar banner</p>
+        <Button asChild variant="link" className="self-end gap-2 p-1">
+          <div className="flex flex-col items-center w-full mt-1 gap-2">
+            <div className="flex items-center gap-2">
+              {loading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              <p>Cambiar banner</p>
+            </div>
+          </div>
         </Button>
       </CldUploadButton>
     </div>
-)
+  )
 }
 

@@ -13,13 +13,14 @@ import React from "react"
 import { ClientDashboard, GraphData } from "./client-dashboard"
 
 type Props = {
-    params: {
+    params: Promise<{
         agencySlug: string
         clientSlug: string
-    }
+    }>
 }
 
-export default async function ClientPage({ params }: Props) {
+export default async function ClientPage(props: Props) {
+  const params = await props.params;
   const { agencySlug, clientSlug } = params
   const agency= await getAgencyDAOBySlug(agencySlug)
   const client= await getClientDAOBySlugs(agencySlug, clientSlug)

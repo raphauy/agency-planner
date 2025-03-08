@@ -5,23 +5,36 @@ import { ConversationDAO } from "@/services/conversation-services"
 import { DocumentType, UserRole } from "@prisma/client"
 import { Loader } from "lucide-react"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react";
 import { getConversationDAOAction, getFullConversationsBySlugsAction, getLastConversationAction } from "./actions"
 import { columns } from "./columns"
 import ConversationBox from "./conversation-box"
 import { DataTable } from "./data-table"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     id: string
-  }
+  }>
 }
   
-export default function ChatPage({ searchParams: { id }, params: { agencySlug, clientSlug } }: Props) {
+export default function ChatPage(props: Props) {
+  const params = use(props.params);
+
+  const {
+    agencySlug,
+    clientSlug
+  } = params;
+
+  const searchParams = use(props.searchParams);
+
+  const {
+    id
+  } = searchParams;
+
   const session= useSession()
 
   const [loadingConversations, setLoadingConversations] = useState(false)
@@ -55,7 +68,7 @@ export default function ChatPage({ searchParams: { id }, params: { agencySlug, c
     
 
   }, [id, agencySlug, clientSlug])
-  
+
 
   useEffect(() => {   
     setLoadingConversations(true)
@@ -72,7 +85,7 @@ export default function ChatPage({ searchParams: { id }, params: { agencySlug, c
     
 
   }, [agencySlug, clientSlug, id])
-  
+
 
 
   if (!conversation) return <div></div>
@@ -113,5 +126,5 @@ export default function ChatPage({ searchParams: { id }, params: { agencySlug, c
     </div>
 
     );
-  }
+}
     

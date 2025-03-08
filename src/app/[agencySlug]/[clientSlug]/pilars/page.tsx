@@ -4,16 +4,17 @@ import { DataTable } from "./pilar-table"
 import { columns } from "./pilar-columns"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
-export default async function PilarsPage({ params }: Props) {
+export default async function PilarsPage(props: Props) {
+  const params = await props.params;
 
   const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
-  
+
   const data= await getPilarsDAOBySlugs(agencySlug, clientSlug)
 
   return (

@@ -7,12 +7,13 @@ import { getActiveMessages } from '@/services/conversation-services';
 import { Message } from 'ai';
 
 type Props = {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
-export default async function Chat({ params }: Props) {
+export default async function Chat(props: Props) {
+  const params = await props.params;
 
   const agencySlug= params.agencySlug
   const clientSlug= params.clientSlug
@@ -21,12 +22,12 @@ export default async function Chat({ params }: Props) {
 
   const user= await getCurrentUser()
   if (!user || !user.email) return redirect("/sign-in")
-    
+
   const userEmail= user.email as string
   const isAdmin= user.role === "ADMIN"
 
   const phone= user.email
-  const initialMessages= await getActiveMessages(phone, client.id) || []
+  const initialMessages= (await getActiveMessages(phone, client.id)) || []
 
   return (
     <SimulatorBox client={client} userEmail={userEmail} isAdmin={isAdmin} initialMessages={initialMessages} />

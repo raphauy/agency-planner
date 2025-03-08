@@ -15,11 +15,12 @@ import { DetailsInfo } from "../credits/details-card"
 import { Badge } from "@/components/ui/badge"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
-export default async function SubscriptionsPage({ params }: Props) {
+export default async function SubscriptionsPage(props: Props) {
+    const params = await props.params;
     const agencySlug= params.agencySlug as string
     const agency= await getAgencyDAOBySlug(agencySlug)
     if (!agency) {
@@ -27,10 +28,10 @@ export default async function SubscriptionsPage({ params }: Props) {
     }
 
     const user= await getCurrentUser()
-    
+
     const allPlans= await getPlansDAO()
     const stripePlans= allPlans.filter(plan => plan.priceId && plan.priceId.startsWith("price_"))
-    
+
     let plans
     if (user?.email === "rapha.uy@rapha.uy") {
       plans= allPlans
@@ -43,8 +44,8 @@ export default async function SubscriptionsPage({ params }: Props) {
 
     let month= now.getMonth()
     let year= now.getFullYear()
-    
-  
+
+
     let info: DetailsInfo | undefined
     if (bestSubscription) {
         const agencyInfo= await getMonthlyUsagesDAOByAgency(agency.id, bestSubscription, year, month)

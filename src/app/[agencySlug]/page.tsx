@@ -5,19 +5,20 @@ import { notFound, redirect } from "next/navigation"
 import ClientsTabs from "./clients-tabs"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
-export default async function AgencyPage({ params }: Props) {
+export default async function AgencyPage(props: Props) {
+  const params = await props.params;
 
   const agency= await getAgencyDAOBySlug(params.agencySlug)
 
   if (!agency) {
     notFound()
-  }  
+  }
 
-  const agencySlug= agency.slug  
+  const agencySlug= agency.slug
   const currentRole= await getCurrentRole()
   if (currentRole?.startsWith("CLIENT")){
     const clients= await getClientsOfCurrentUser()

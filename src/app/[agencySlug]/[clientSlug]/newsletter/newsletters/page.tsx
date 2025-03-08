@@ -5,19 +5,20 @@ import { columns } from "./newsletter-columns"
 import { getClientDAOBySlugs } from "@/services/client-services"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
 
-export default async function NewsletterPage({ params }: Props) {
+export default async function NewsletterPage(props: Props) {
+  const params = await props.params;
 
   const client= await getClientDAOBySlugs(params.agencySlug, params.clientSlug)
   if (!client) {
     return <div>Client not found</div>
   }
-  
+
   const data= await getNewslettersDAO(client.id)
 
   return (

@@ -13,7 +13,7 @@ type Props= {
 export async function Comments({ publication }: Props) {
 
   const currentUser= await getCurrentUser()
-  if (!currentUser) return <div>Para enviar comentarios, debes estar logueado</div>
+  if (!currentUser || !currentUser.id) return <div>Para enviar comentarios, debes estar logueado</div>
 
   const comments= await getFullCommentsDAO(publication.id)
 

@@ -6,13 +6,14 @@ import { getAgencyDAOBySlug } from "@/services/agency-services"
 import { getCurrentRole } from "@/lib/utils"
  
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
 
-export default async function ClientsPage({ params }: Props) {
-  
+export default async function ClientsPage(props: Props) {
+  const params = await props.params;
+
   const agencySlug= params.agencySlug
   const agency= await getAgencyDAOBySlug(agencySlug)
   const currentRole= await getCurrentRole()

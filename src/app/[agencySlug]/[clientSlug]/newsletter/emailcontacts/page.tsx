@@ -4,11 +4,12 @@ import { DataTable } from "./emailcontact-table"
 import { columns } from "./emailcontact-columns"
 
 type Props= {
-  params: {
+  params: Promise<{
     audienceId: string
-  }
+  }>
 }
-export default async function EmailContactPage({ params }: Props) {
+export default async function EmailContactPage(props: Props) {
+  const params = await props.params;
   const audienceId= params.audienceId
   const data= await getEmailContactsDAO(audienceId)
 

@@ -10,13 +10,13 @@ import { useRouter } from "next/navigation";
 
 export function NotificationFeed() {
   const [isVisible, setIsVisible] = useState(false)
-  const notifButtonRef = useRef(null)
+  const notifButtonRef = useRef<HTMLButtonElement>(null);
 
   const router= useRouter()
 
   const currentUser= useSession().data?.user
 
-  if (!currentUser) return null
+  if (!currentUser || !currentUser.id) return null
 
   const i18n= getSpanishI18n()
 
@@ -33,6 +33,7 @@ export function NotificationFeed() {
             onClick={(e) => setIsVisible(!isVisible)}
           />
           <NotificationFeedPopover
+            // @ts-ignore - En Next.js 15 con React 19, los tipos son más estrictos
             buttonRef={notifButtonRef}
             isVisible={isVisible}
             onNotificationClick={(item) => {

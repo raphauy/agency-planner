@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   console.log("client", client.name)
 
   const currentUser= await getCurrentUser()
-  if (!currentUser || !currentUser.email) return new Response("No se encontró un usuario logueado", { status: 404 })
+  if (!currentUser || !currentUser.email || !currentUser.id) return new Response("No se encontró un usuario logueado", { status: 404 })
 
   const phone= currentUser.email
 

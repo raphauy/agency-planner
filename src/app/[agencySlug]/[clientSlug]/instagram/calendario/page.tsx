@@ -6,15 +6,17 @@ import PublicationTypeFilter from "./pub-type-filter";
 import { getCurrentUser } from "@/lib/utils";
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string;
     clientSlug: string;
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     filter: string;
-  }
+  }>
 }
-export default async function CalendarPage({ params, searchParams }: Props) {
+export default async function CalendarPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
 
   const filter= searchParams.filter
 

@@ -6,12 +6,13 @@ import { WhatsappDetails } from "./whatsapp-details"
 import { Button } from "@/components/ui/button"
 
 type Props= {
-    params: {
+    params: Promise<{
         agencySlug: string
         clientSlug: string
-    }
+    }>
 }
-export default async function ChatwootPage({ params }: Props) {
+export default async function ChatwootPage(props: Props) {
+  const params = await props.params;
   const { agencySlug, clientSlug } = params
   const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   if (!client) {
@@ -35,7 +36,7 @@ export default async function ChatwootPage({ params }: Props) {
       )
       }
     }
-  }  
+  }
 
   return (
     <div className="flex flex-col space-y-4 items-center justify-center w-full mt-10 border rounded-md border-dashed h-40">

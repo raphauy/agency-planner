@@ -6,11 +6,12 @@ import { columns } from "./user-columns"
 import { getPendingInvitationsOfAgency } from "@/services/invitation-services"
 
 type Props = {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
-export default async function UsersPage({ params }: Props) {
+export default async function UsersPage(props: Props) {
+  const params = await props.params;
   const agencySlug= params.agencySlug
   const agency= await getAgencyDAOBySlug(agencySlug)
   const data= await getUsersOfAgency(agency.id)

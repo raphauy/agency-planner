@@ -1,14 +1,15 @@
 
 type Props = {
-  params: {
+  params: Promise<{
     storeSlug: string
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     collection_status: string
     external_reference: string
-  }
+  }>
 }
-export default async function PagoConfirmadoPage({ params, searchParams }: Props) {
+export default async function PagoConfirmadoPage(props: Props) {
+  const searchParams = await props.searchParams;
 
   // log searchParams
   console.log(searchParams)

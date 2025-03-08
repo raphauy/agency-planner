@@ -4,13 +4,14 @@ import { DocumentDialog } from "../document-dialogs";
 import NovelOnClient from "./editor-on-client";
 
 type Props = {
-    params: {
+    params: Promise<{
         agencySlug: string
         clientSlug: string
         documentId: string
-    }
+    }>
 }
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+    const params = await props.params;
     const agencySlug= params.agencySlug
     const clientSlug= params.clientSlug
     const documentId= params.documentId

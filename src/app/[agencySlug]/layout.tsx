@@ -10,12 +10,18 @@ import { NotificationFeed } from "@/components/notifications-feed";
 
 interface Props {
   children: React.ReactNode
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
 
-export default async function AgencyLayout({ children, params }: Props) {
+export default async function AgencyLayout(props: Props) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const currentUser = await getCurrentUser()
 
   if (!currentUser) {

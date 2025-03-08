@@ -11,60 +11,61 @@ import { TestEmail } from "./test-email";
 import { Broadcast } from "./broadcast";
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
     newsletterId: string
-  }
+  }>
 }
 
-export default async function NewsletterPage({ params }: Props) {
+export default async function NewsletterPage(props: Props) {
+    const params = await props.params;
 
-  const agency= await getAgencyDAOBySlug(params.agencySlug)
-  if (!agency) {
-    return <div>Agency not found</div>
-  }
-  const newsletter= await getNewsletterDAO(params.newsletterId)
+    const agency= await getAgencyDAOBySlug(params.agencySlug)
+    if (!agency) {
+      return <div>Agency not found</div>
+    }
+    const newsletter= await getNewsletterDAO(params.newsletterId)
 
-  let initialValue= newsletter.contentJson && JSON.parse(newsletter.contentJson)
-  if (!initialValue) {
-    initialValue= defaultContent
-  }
+    let initialValue= newsletter.contentJson && JSON.parse(newsletter.contentJson)
+    if (!initialValue) {
+      initialValue= defaultContent
+    }
 
-  const cloudinaryPreset= agency.publicPreset ? agency.publicPreset : process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+    const cloudinaryPreset= agency.publicPreset ? agency.publicPreset : process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
 
-  const clientId= await getClientIdBySlugs(params.agencySlug, params.clientSlug)
-  if (!clientId) {
-    return <div>Client not found</div>
-  }
-  const domains= await getDomainsDAO(clientId)
-  const audiences= await getAudiencesDAO(clientId)
+    const clientId= await getClientIdBySlugs(params.agencySlug, params.clientSlug)
+    if (!clientId) {
+      return <div>Client not found</div>
+    }
+    const domains= await getDomainsDAO(clientId)
+    const audiences= await getAudiencesDAO(clientId)
 
-  const noDomains= domains.length === 0
+    const noDomains= domains.length === 0
 
-  return (
-    <Tabs defaultValue={"content"}>
-      <TabsList>
-        <TabsTrigger value="content">Contenido</TabsTrigger>
-        <TabsTrigger value="preview">Preview</TabsTrigger>
-        <TabsTrigger value="config">Configuración</TabsTrigger>
-        <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
-      </TabsList>
-      <TabsContent value="content">
-        <ContentTab newsletter={newsletter} clientSlug={params.clientSlug} cloudinaryPreset={cloudinaryPreset} initialContent={initialValue} />
-      </TabsContent>
-      <TabsContent value="preview">
-        <PreviewTab newsletter={newsletter} />
-      </TabsContent>
-      <TabsContent value="config" className="space-y-4 max-w-xl">
-        <ConfigTab newsletter={newsletter} domains={domains} audiences={audiences} />
-        <TestEmail newsletter={newsletter} noDomains={noDomains} />
-      </TabsContent>
-      <TabsContent value="broadcast">
-        <Broadcast newsletter={newsletter} noDomains={noDomains} />
-      </TabsContent>
-    </Tabs>
-  )
+    return (
+      <Tabs defaultValue={"content"}>
+        <TabsList>
+          <TabsTrigger value="content">Contenido</TabsTrigger>
+          <TabsTrigger value="preview">Preview</TabsTrigger>
+          <TabsTrigger value="config">Configuración</TabsTrigger>
+          <TabsTrigger value="broadcast">Broadcast</TabsTrigger>
+        </TabsList>
+        <TabsContent value="content">
+          <ContentTab newsletter={newsletter} clientSlug={params.clientSlug} cloudinaryPreset={cloudinaryPreset} initialContent={initialValue} />
+        </TabsContent>
+        <TabsContent value="preview">
+          <PreviewTab newsletter={newsletter} />
+        </TabsContent>
+        <TabsContent value="config" className="space-y-4 max-w-xl">
+          <ConfigTab newsletter={newsletter} domains={domains} audiences={audiences} />
+          <TestEmail newsletter={newsletter} noDomains={noDomains} />
+        </TabsContent>
+        <TabsContent value="broadcast">
+          <Broadcast newsletter={newsletter} noDomains={noDomains} />
+        </TabsContent>
+      </Tabs>
+    )
 }
 
 const defaultContent = {

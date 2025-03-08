@@ -5,16 +5,17 @@ import { columns } from "./audience-columns"
 import { getClientIdBySlugs } from "@/services/client-services"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
-export default async function AudiencePage({ params }: Props) {
+export default async function AudiencePage(props: Props) {
+  const params = await props.params;
   const clientId= await getClientIdBySlugs(params.agencySlug, params.clientSlug)
   if (!clientId)
     return <div>Cliente no encontrado</div>
-  
+
   const data= await getAudiencesDAO(clientId)
 
   return (

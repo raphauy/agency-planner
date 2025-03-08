@@ -142,7 +142,9 @@ export function TestEmailForm({ newsletterId, emailFromConfigured, closeDialog }
   
   const form = useForm<TestEnvioFormValues>({
     resolver: zodResolver(testEnvioSchema),
-    defaultValues: {},
+    defaultValues: {
+      mailTo: ""
+    },
     mode: "onChange",
   })
   const [loading, setLoading] = useState(false)
@@ -155,7 +157,7 @@ export function TestEmailForm({ newsletterId, emailFromConfigured, closeDialog }
       toast({ title: "Test Email sent" })
       closeDialog()
     } catch (error: any) {
-      toast({ title: "Error", description: "Verifica que el Newsletter hasya sido guardado.", variant: "destructive" })
+      toast({ title: "Error", description: "Verifica que el Newsletter haya sido guardado.", variant: "destructive" })
     } finally {
       setLoading(false)
     }

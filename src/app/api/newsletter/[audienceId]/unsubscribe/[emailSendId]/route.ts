@@ -9,7 +9,8 @@ type Params = {
   audienceId: string
   emailSendId: string
 }
-export async function GET(request: NextRequest, { params }: { params: Params }) {
+export async function GET(request: NextRequest, props: { params: Promise<Params> }) {
+  const params = await props.params;
   const { audienceId, emailSendId } = params
   let unsubscribeSuccess = false
   let email = ""

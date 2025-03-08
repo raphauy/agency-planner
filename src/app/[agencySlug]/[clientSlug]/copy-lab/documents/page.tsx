@@ -4,19 +4,20 @@ import DocumentsTabs from "./documents-tabs"
 import { DocumentType } from "@prisma/client"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
-export default async function DocumentsPage({ params }: Props) {
+export default async function DocumentsPage(props: Props) {
+  const params = await props.params;
   const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
   const client= await getClientDAOBySlugs(agencySlug, clientSlug)
   if (!client) {
     return <div>Cliente no encontrado</div>
   }
-  
+
   const data= await getDocumentsDAOByClient(client.id, DocumentType.COPY_LAB)
 
   return (

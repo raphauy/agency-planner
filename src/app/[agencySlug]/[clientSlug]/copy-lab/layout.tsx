@@ -8,13 +8,19 @@ import "./prosemirror.css";
 
 type Props= {
   children: React.ReactNode
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
 
-export default async function SlugLayout({ children, params }: Props) {
+export default async function SlugLayout(props: Props) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const currentUser = await getCurrentUser()
   const clientSlug = params.clientSlug
   const agencySlug = params.agencySlug

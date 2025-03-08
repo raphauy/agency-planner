@@ -11,11 +11,12 @@ import { getCurrentUser } from "@/lib/utils"
 import { redirect } from "next/navigation"
 
 type Props = {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
+  }>
 }
-export default async function PermissionsPage({ params }: Props) {
+export default async function PermissionsPage(props: Props) {
+  const params = await props.params;
   const agencySlug= params.agencySlug
   const agency= await getAgencyDAOBySlug(agencySlug)
   const dataUserPermissions= await getPermissionsOfAgency(agency.id)

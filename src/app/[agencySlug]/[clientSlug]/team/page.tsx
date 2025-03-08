@@ -6,12 +6,13 @@ import { columns } from "./user-columns"
 import { DataTable } from "./user-table"
 
 type Props = {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
-export default async function UsersPage({ params }: Props) {
+export default async function UsersPage(props: Props) {
+  const params = await props.params;
   const agencySlug= params.agencySlug as string
   const clientSlug= params.clientSlug
   const client= await getClientDAOBySlugs(agencySlug, clientSlug)

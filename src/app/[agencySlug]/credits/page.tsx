@@ -6,16 +6,18 @@ import { MonthSelector } from "./month-selector"
 import { getBestValidSubscription } from "@/services/subscription-services"
 
 type Props = {
-  params: {
+  params: Promise<{
     agencySlug: string
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     y: string
     m: string
     c: string
-  }
+  }>
 }
-export default async function CreditsPage({ params, searchParams }: Props) {
+export default async function CreditsPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const agencySlug= params.agencySlug
 
   const agency= await getAgencyDAOBySlug(agencySlug)
@@ -32,7 +34,7 @@ export default async function CreditsPage({ params, searchParams }: Props) {
   }
   console.log("year", year)
   console.log("month", month)
-  
+
   const bestSubscription= await getBestValidSubscription(agency.id)
 
   if (!bestSubscription) {

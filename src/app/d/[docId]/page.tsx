@@ -2,11 +2,12 @@ import { getDocumentDAO } from "@/services/document-services";
 import ContentViewer from "./content-viewer";
 
 type Props = {
-    params: {
+    params: Promise<{
         docId: string
-    }
+    }>
 }
-export default async function ArticlePreview({ params }: Props) {
+export default async function ArticlePreview(props: Props) {
+    const params = await props.params;
     const docId= params.docId
 
     const doc = await getDocumentDAO(docId)

@@ -5,12 +5,18 @@ import { getClientsOfCurrentUser } from "@/services/client-services";
 
 interface Props {
   children: React.ReactNode
-  params: {
+  params: Promise<{
     clientSlug: string
-  }
+  }>
 }
 
-export default async function ClientLayout({ children, params }: Props) {
+export default async function ClientLayout(props: Props) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const currentUser = await getCurrentUser()
 
   if (!currentUser) {

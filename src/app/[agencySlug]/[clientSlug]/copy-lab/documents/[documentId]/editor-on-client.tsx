@@ -25,7 +25,7 @@ export default function NovelOnClient({ document, initialContent }: Props) {
     const [charCountSaved, setCharCountSaved] = useState(document.textContent?.length || 0)
 
     // Referencia para mantener actualizada la función de desmontaje
-    const onBeforeUnmountRef = useRef<() => void>();
+    const onBeforeUnmountRef = useRef<() => void>(undefined);
 
     useEffect(() => {
         // Actualiza la referencia en cada renderizado para capturar el estado actual

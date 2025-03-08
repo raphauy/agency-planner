@@ -10,18 +10,19 @@ import { setPromptAction } from "./actions";
 import SwitchBox from "./switch-box";
 
 type Props = {
-    params: {
+    params: Promise<{
         agencySlug: string
         clientSlug: string
-    }
+    }>
 }
 
-export default async function SettingsPage({ params }: Props) {
+export default async function SettingsPage(props: Props) {
+    const params = await props.params;
     const agencySlug= params.agencySlug as string
     const clientSlug = params.clientSlug
     const client= await getClientDAOBySlugs(agencySlug, clientSlug)
     if (!client) return <div>Client not found</div>
-    
+
     const currentRole= await getCurrentRole()
     if (currentRole === UserRole.CLIENT_ADMIN || currentRole === UserRole.CLIENT_USER)
         return <div>No puedes acceder a esta página</div>

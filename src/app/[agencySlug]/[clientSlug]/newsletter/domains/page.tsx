@@ -6,13 +6,14 @@ import { getClientDAOBySlugs } from "@/services/client-services"
 import { getCurrentUser } from "@/lib/utils"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
-  }
+  }>
 }
 
-export default async function DomainPage({ params }: Props) {
+export default async function DomainPage(props: Props) {
+  const params = await props.params;
 
   const client= await getClientDAOBySlugs(params.agencySlug, params.clientSlug)
   const data= await getDomainsDAO(client.id)

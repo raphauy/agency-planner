@@ -6,13 +6,14 @@ import { DataTable } from "../../emailcontacts/emailcontact-table"
 import { columns } from "../../emailcontacts/emailcontact-columns"
 
 type Props= {
-  params: {
+  params: Promise<{
     agencySlug: string
     clientSlug: string
     audienceId: string
-  }
+  }>
 }
-export default async function AudiencePage({ params }: Props) {
+export default async function AudiencePage(props: Props) {
+  const params = await props.params;
   const agencySlug= params.agencySlug
   const clientSlug= params.clientSlug
   const audienceId= params.audienceId

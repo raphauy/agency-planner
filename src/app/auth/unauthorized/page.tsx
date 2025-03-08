@@ -4,11 +4,12 @@ import Link from 'next/link'
 import React from 'react'
 
 type Props = {
-  searchParams: {
+  searchParams: Promise<{
     message: string;
-  }
+  }>
 }
-export default async function NotAlowedPage({ searchParams }: Props) {
+export default async function NotAlowedPage(props: Props) {
+  const searchParams = await props.searchParams;
   const message= searchParams.message
 
   const user= await getCurrentUser()
