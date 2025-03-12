@@ -22,7 +22,7 @@ type Props = {
 export default function ConfigTab({ newsletter, domains, audiences }: Props) {
     const [loading, setLoading] = useState(false);
     const [isEditingFromName, setIsEditingFromName] = useState(false);
-    const [fromName, setFromName] = useState("");
+    const [fromName, setFromName] = useState(newsletter.nameFrom || "");
     const [isEditingFrom, setIsEditingFrom] = useState(false);
     const [fromLocalValue, setFromLocalValue] = useState("");
     const [selectedDomain, setSelectedDomain] = useState("");
@@ -113,7 +113,7 @@ export default function ConfigTab({ newsletter, domains, audiences }: Props) {
             <div>
                 <div className="flex items-center">
                     <label className="w-28">From Nombre:</label>
-                    { isEditable && (
+                    { isEditable ? (
                         isEditingFromName ? (
                             <Input
                                 value={fromName}
@@ -128,9 +128,11 @@ export default function ConfigTab({ newsletter, domains, audiences }: Props) {
                             />
                         ) : (
                             <Button variant="ghost" onClick={() => setIsEditingFromName(true)} className="font-bold text-lg">
-                                {fromName || "configurar"}
+                                {newsletter.nameFrom || "configurar"}
                             </Button>
                         )
+                    ) : (
+                        <p className="text-lg ml-2">{newsletter.nameFrom || ""}</p>
                     )}
                 </div>
                 <p className="text-sm text-muted-foreground ml-32">Nombre que se muestra en el email, este campo es opcional</p>
