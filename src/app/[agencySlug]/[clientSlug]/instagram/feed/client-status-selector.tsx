@@ -13,14 +13,15 @@ interface Props {
   status: PublicationStatus
   onPost?: (id: string) => void
 }
+
 export function ClientPubStatusSelector({ id, status, onPost }: Props) {
   const [node, setNode] = useState<React.ReactNode>()  
+  const isEditable = status !== PublicationStatus.PROGRAMADO && status !== PublicationStatus.PUBLICADO
 
   useEffect(() => {
     setNode(getNode(status))
   }, [status, id])
   
-
   function handleClick(status: PublicationStatus) {
     updatePublicationStatusAction(id, status)
     .then((res) => {
@@ -31,6 +32,12 @@ export function ClientPubStatusSelector({ id, status, onPost }: Props) {
       } else toast({ title: "Error al actualizar la publicación", variant: "destructive" })
     })    
   }
+
+  // Si no es editable, solo mostramos el indicador de estado
+  if (!isEditable) {
+    return <div>{node}</div>
+  }
+
   return (
     <Menubar className="p-0 m-0 bg-transparent border-none">
       <MenubarMenu>
