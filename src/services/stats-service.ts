@@ -172,30 +172,41 @@ export async function getContactStats(clientId: string): Promise<IndicatorStats>
 
 export async function getRepoDataStats(clientId: string): Promise<IndicatorStats> {
   const result = await prisma.$queryRaw<RawQueryResult[]>`
+    WITH monthly_counts AS (
+      SELECT 
+        COUNT(*) as count,
+        DATE_TRUNC('month', "createdAt") as month
+      FROM "RepoData"
+      WHERE 
+        "clientId" = ${clientId}
+        AND "createdAt" >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+      GROUP BY DATE_TRUNC('month', "createdAt")
+    )
     SELECT 
-      COUNT(*) as total,
-      (SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId}) as current_month_count,
+      (SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId}) as total,
+      (
+        SELECT COALESCE(count, 0) 
+        FROM monthly_counts 
+        WHERE month = DATE_TRUNC('month', CURRENT_DATE)
+      ) as current_month_count,
       COALESCE(
         ROUND(
           CASE 
-            WHEN (SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId}) = 0 
+            WHEN (SELECT count FROM monthly_counts WHERE month = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')) = 0 
             THEN 100
             ELSE (
-              ((SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId})::float - 
-               (SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId} AND "createdAt" >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month'))::float) /
-              (SELECT COUNT(*) FROM "RepoData" WHERE "clientId" = ${clientId} AND "createdAt" >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month'))::float * 100
+              ((SELECT COALESCE(count, 0) FROM monthly_counts WHERE month = DATE_TRUNC('month', CURRENT_DATE))::float - 
+               (SELECT COALESCE(count, 0) FROM monthly_counts WHERE month = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month'))::float) /
+              (SELECT COALESCE(count, 0) FROM monthly_counts WHERE month = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month'))::float * 100
             )
           END::numeric,
           2
         ),
         0
       ) as percentage_change
-    FROM "RepoData"
-    WHERE "clientId" = ${clientId}
-    GROUP BY DATE_TRUNC('month', "createdAt")
   `;
 
-  const stats = result[0];
+  const stats = result[0] || { total: BigInt(0), current_month_count: BigInt(0), percentage_change: 0 };
   
   return {
     total: Number(stats.total),
