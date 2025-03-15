@@ -23,12 +23,22 @@ export function TitleForm({ id, label, initialValue, update }: Props) {
   async function onSubmit() {
     setLoading(true)
     toggleEdit()
-    const ok= await update(id, title)
-    
-    if (ok) {
-      toast({title: "Título editado" })
-    } else {      
-      toast({title: "Error al editar el título", variant: "destructive"})
+    try {
+      const ok= await update(id, title)
+      
+      if (ok) {
+        toast({title: "Editado" })
+      } else {      
+        toast({title: "Error al editar", variant: "destructive"})
+        setIsEditing(true)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({title: "Error al editar",description: error.message, variant: "destructive"})
+      } else {
+        toast({title: "Error al editar",description: "Error desconocido", variant: "destructive"})
+      }
+      setIsEditing(true)
     }
 
     setLoading(false)
@@ -44,7 +54,7 @@ export function TitleForm({ id, label, initialValue, update }: Props) {
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4 dark:bg-black">
-      <div className="font-medium flex flex-col">
+      <div className="font-medium flex flex-col gap-1">
         {label ? <p>{label}:</p> : "Título:"}
             {
               isEditing ? (
@@ -64,7 +74,7 @@ export function TitleForm({ id, label, initialValue, update }: Props) {
 
               ) : 
               loading ? (
-                <div className="h-10">
+                <div className="h-10 mt-2">
                   <Loader className="animate-spin" />
                 </div>
               ) : (

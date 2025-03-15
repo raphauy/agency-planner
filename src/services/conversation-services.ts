@@ -1,16 +1,20 @@
 import { prisma } from "@/lib/db"
 import { DocumentType } from "@prisma/client"
 import * as z from "zod"
-import { ClientDAO, getChatwootAccountId, getClientDAO, getSessionTTL } from "./client-services"
+import { ClientDAO, getChatwootAccountId, getClientDAO, getSessionTTL, getWhatsappInstance } from "./client-services"
 import { getMessagesDAO, MessageDAO } from "./message-services"
 import { createUsageRecord, UsageRecordFormValues } from "./usagerecord-services"
 import { getUsageTypeDAOByName } from "./usagetype-services"
 import { UserDAO } from "./user-services"
-import { getLeadsContext, saveLLMResponse, saveToolCallResponse } from "./function-call-services"
+import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from "./function-call-services"
 import { convertToCoreMessages, generateText, Message } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { leadTools } from "./tools"
-import { sendTextToConversation } from "./chatwoot"
+import { createChatwootConversation, sendTextToConversation } from "./chatwoot"
+import { ContactFormValues, createContact, getContactByChatwootId, setNewStage } from "./contact-services"
+import { addTagsToContact, ContactDAO } from "./contact-services"
+import { getUserByEmail } from "./login-services"
+import { getRepositorysDAO, getToolFromDatabase } from "./repository-services"
 
 export type ConversationDAO = {
 	id: string
@@ -29,6 +33,7 @@ export type ConversationDAO = {
   user: UserDAO | null
   userId: string | null
   usageRecordId: string
+  contactId: string | null
 }
 
 export const conversationSchema = z.object({
@@ -110,6 +115,37 @@ export async function createConversation(data: ConversationFormValues) {
       url: `/${client.agency.slug}/${client.slug}/copy-lab/${created.id}`
     }
   })
+  return created
+}
+
+export async function createContactConversation(phone: string | null, clientId: string, contactId: string, chatwootConversationId: number) {
+  const client= await getClientDAO(clientId)
+  if (!client) throw new Error("No se encontró Cliente")
+
+  const llmUsageType= await getUsageTypeDAOByName("LLM")
+  if (!llmUsageType) throw new Error("No se encontró UsageType LLM")
+  
+  const llmUsage: UsageRecordFormValues= {
+    agencyId: client.agencyId,
+    clientId: client.id,
+    usageTypeId: llmUsageType.id,
+    credits: 0,
+    description: "Créditos para Conversación de Contacto"    
+  }
+  const createdUsage= await createUsageRecord(llmUsage)
+
+  const created= await prisma.conversation.create({
+    data: {
+      phone: phone || "",
+      title: "Contacto",
+      type: DocumentType.LEAD,
+      usageRecordId: createdUsage.id,
+      clientId,
+      contactId,
+      chatwootConversationId: chatwootConversationId
+    }
+  })
+
   return created
 }
 
@@ -377,6 +413,20 @@ export async function getActiveMessages(phone: string, clientId: string) {
   return messages
 }
 
+export async function getConversationMessages(conversationId: string, take: number = 20) {
+  const messages= await prisma.message.findMany({
+    where: {
+      conversationId
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+    take
+  })
+
+  return messages
+}
+
 export async function getLastConversation(agencySlug: string, clientSlug: string, type: DocumentType) {
     
   const found = await prisma.conversation.findFirst({
@@ -406,18 +456,62 @@ export async function getLastConversation(agencySlug: string, clientSlug: string
 }
 
 // find an active conversation or create a new one to connect the messages
-export async function messageArrived(phone: string, text: string, clientId: string, role: string, tokens?: number, chatwootConversationId?: number) {
+export async function messageArrived(phone: string, text: string, clientId: string, role: string, tokens?: number, chatwootConversationId?: number, chatwootContactId?: number) {
 
   if (!clientId) throw new Error("clientId is required")
 
   console.log("phone: ", phone)
   console.log("clientId: ", clientId)  
 
-  const activeConversation= await getActiveConversation(phone, clientId)
+  let activeConversation= null
+
+  if (chatwootConversationId) {
+    activeConversation= await getActiveConversationByChatwootConversationId(Number(chatwootConversationId), clientId)
+  } else {
+    activeConversation= await getActiveConversation(phone, clientId)
+  }
+
+
   if (activeConversation) {
     const message= await createMessage(activeConversation.id, role, text, tokens)
     return message    
   } else {
+    // sleep 1 second
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("chatwootContactId on create conversation: ", chatwootContactId)
+    let contact= await getContactByChatwootId(String(chatwootContactId), clientId)
+
+    let chatwootId= String(chatwootContactId)
+    if (!contact) {
+      const isSimulator= phone && phone.includes("@")
+      let src= isSimulator ? "simulador" : phone ? "whatsapp" : "chatwoot"
+      
+      let name= phone
+      if (isSimulator) {
+        const user= await getUserByEmail(phone)
+        if (user) {
+          name= user.name || phone
+        }
+        chatwootId= phone
+      }
+
+      if (chatwootId) {
+        const contactValues: ContactFormValues= {
+          name,
+          phone,
+          src,
+          clientId,
+          chatwootId
+        }
+        console.log("creating contact from messageArrived")
+        try {
+          contact= await createContact(contactValues)
+        } catch (error) {
+          console.log("error creating contact from messageArrived, probably already exists")
+          contact= await getContactByChatwootId(chatwootId, clientId)
+        }
+      }
+    }
     const llmUsageType= await getUsageTypeDAOByName("LLM")
     if (!llmUsageType) throw new Error("No se encontró UsageType LLM")
   
@@ -440,7 +534,8 @@ export async function messageArrived(phone: string, text: string, clientId: stri
         phone,
         clientId,
         usageRecordId: createdUsage.id,
-        chatwootConversationId
+        chatwootConversationId,
+        contactId: chatwootId ? contact?.id : undefined
       }
     })
     const message= await createMessage(created.id, role, text, tokens)
@@ -487,9 +582,24 @@ export async function processMessage(id: string) {
 
   if (!client.leadPrompt) throw new Error("Client prompt not found")
 
-  const context= await getLeadsContext(client.id, client.leadPrompt)
-  await updateContext(conversation.id, context)
+  const generalContext= await getGeneralContext(conversation.id)
+  const prompt= client.leadPrompt || ""
+  const documentsContext= await getDocumentsContext(client.id)
+  const context= generalContext + "\n\n" + prompt + "\n\n" + documentsContext
+  console.log("context", context)
 
+  const repositories= await getRepositorysDAO(client.id)
+  let tools= {}
+  for (const repository of repositories) {
+    const tool= await getToolFromDatabase(repository.id)
+    console.log("Tool of:", repository.name)
+    tools= {
+      ...tools,
+      ...tool
+    }
+  }
+  console.log("tools count:", Object.keys(tools).length)
+  
   const dbMessages= conversation.messages
   const messages= dbMessages.map(message => ({
     role: message.role as "user" | "assistant" | "system" | "function",
@@ -500,9 +610,12 @@ export async function processMessage(id: string) {
   console.log(messages)
   
   const result= await generateText({
-    model: openai('gpt-4o'),
+    model: openai('gpt-4o-mini'),
     messages: convertToCoreMessages(messages),
-    tools: leadTools,
+    tools: {
+      ...leadTools,
+      ...tools
+    },
     system: context,
     onStepFinish: async (event) => {
       console.log("onStepFinish");
@@ -524,3 +637,121 @@ export async function processMessage(id: string) {
 
 }
 
+export async function getLastConversationByContactId(contactId: string, clientId: string) {
+  const found= await prisma.conversation.findFirst({
+    where: {
+      contactId,
+      clientId
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+  return found
+}
+
+
+export async function sendMessageToContact(clientId: string, contact: ContactDAO, message: string, tags: string[], moveToStageId: string | null, by: string) {
+  const phone= contact.phone
+  if (!phone) throw new Error("Contacto no tiene teléfono")
+
+  console.log("phone: ", phone)
+  const chatwootAccountId= await getChatwootAccountId(clientId)
+  if (!chatwootAccountId) throw new Error("Chatwoot account not found")
+  console.log("chatwootAccountId: ", chatwootAccountId)
+
+  let chatwootConversationId= undefined
+  let conversation= await getLastConversationByContactId(contact.id, clientId)
+  if (!conversation) {
+    console.log("no conversation found, creating new one on chatwoot")
+    const whatsappInstance= await getWhatsappInstance(clientId)
+    if (!whatsappInstance) throw new Error("Whatsapp instance not found")
+    if (!whatsappInstance.whatsappInboxId) throw new Error("Whatsapp inbox not found")
+    if (!contact.chatwootId) throw new Error("Chatwoot contact not found")
+    chatwootConversationId= await createChatwootConversation(Number(chatwootAccountId), whatsappInstance.whatsappInboxId, contact.chatwootId)
+    if (!chatwootConversationId) throw new Error("Chatwoot conversation not found")
+  } else {
+    console.log("conversation found, using it")
+    chatwootConversationId= conversation.chatwootConversationId
+  }
+
+  console.log("chatwootConversationId: ", chatwootConversationId)
+  const assistantMessage= "Información del sistema: Se le ha enviado al usuario el siguiente mensaje:\n\n" + message
+  const messageCreated= await messageArrived(phone, assistantMessage, clientId, "assistant", undefined, chatwootConversationId || undefined, Number(contact.chatwootId))
+    
+  if (!chatwootConversationId) throw new Error("Chatwoot conversation not found")
+
+  await sendTextToConversation(Number(chatwootAccountId), chatwootConversationId, message)
+
+  if (tags.length > 0) {
+    await addTagsToContact(contact.id, tags, by)
+  }
+
+  if (moveToStageId) {
+    console.log("setting new stage to contact, by: " + by)
+    await setNewStage(contact.id, moveToStageId, by)
+  }
+
+  return messageCreated.conversationId
+}
+
+export async function removeContactFromAllConversations(contactId: string, clientId: string) {
+  await prisma.conversation.updateMany({
+    where: {
+      contactId,
+      clientId
+    },
+    data: {
+      contactId: null,
+      chatwootConversationId: null
+    }
+  })
+}
+
+export async function getLastChatwootConversationId(contactId: string) {
+  const conversation= await prisma.conversation.findFirst({
+    where: {
+      contactId,
+      chatwootConversationId: {
+        not: null
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+  return conversation?.chatwootConversationId
+}
+
+export async function getActiveConversationByChatwootConversationId(chatwootConversationId: number, clientId: string) {
+  // 24 hours
+  let sessionTimeInMinutes= 1440
+    
+  const found = await prisma.conversation.findFirst({
+    where: {
+      chatwootConversationId,
+      clientId,        
+      closed: false,
+      messages: {
+        some: {
+          createdAt: {
+            gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
+          }
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      client: true,
+      contact: {
+        include: {
+          stage: true
+        }
+      }
+    }
+  })
+
+  return found;
+}

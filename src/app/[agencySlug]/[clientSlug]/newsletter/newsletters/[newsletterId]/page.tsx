@@ -26,6 +26,7 @@ export default async function NewsletterPage(props: Props) {
       return <div>Agency not found</div>
     }
     const newsletter= await getNewsletterDAO(params.newsletterId)
+    console.log(newsletter)
 
     let initialValue= newsletter.contentJson && JSON.parse(newsletter.contentJson)
     if (!initialValue) {

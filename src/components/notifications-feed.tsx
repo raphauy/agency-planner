@@ -33,8 +33,7 @@ export function NotificationFeed() {
             onClick={(e) => setIsVisible(!isVisible)}
           />
           <NotificationFeedPopover
-            // @ts-ignore - En Next.js 15 con React 19, los tipos son más estrictos
-            buttonRef={notifButtonRef}
+            buttonRef={notifButtonRef as React.RefObject<HTMLElement>}
             isVisible={isVisible}
             onNotificationClick={(item) => {
               router.push(`${item.data ? item.data.publicationUrl : "/"}`)

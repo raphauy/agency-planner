@@ -25,7 +25,7 @@ export function DocumentCard({ document, type }: Props) {
 //  const color = "#000000"
   const clientesStr= document.wordsCount
 
-  const documentUrl= type === DocumentType.LEAD ? `/${agencySlug}/${clientSlug}/leads/documentos/${document.id}` : `/${agencySlug}/${clientSlug}/copy-lab/documents/${document.id}`
+  const documentUrl= type === DocumentType.LEAD ? `/${agencySlug}/${clientSlug}/whatsapp/documentos/${document.id}` : `/${agencySlug}/${clientSlug}/copy-lab/documents/${document.id}`
   
   return (
     <Link href={documentUrl} prefetch={false} className="w-full max-w-lg">

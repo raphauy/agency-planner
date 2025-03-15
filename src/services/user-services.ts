@@ -406,3 +406,18 @@ export async function inviteAgencyUser(data: UserFormValues, agencyId: string) {
 
   return true
 }
+
+export async function getNonComercialUsersDAO(clientId: string): Promise<UserDAO[]> {
+  const found= await prisma.user.findMany({
+    where: {
+      clients: {
+        some: {
+          id: clientId
+        }
+      },
+      comercial: null
+    }
+  })
+  return found as UserDAO[]
+}
+

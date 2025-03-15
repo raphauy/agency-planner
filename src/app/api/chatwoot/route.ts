@@ -25,6 +25,7 @@ export async function POST(request: Request) {
         const inboxName= json.inbox.name
         const conversationStatus= json.conversation.status
         const senderName= json.sender.name
+        const senderId= json.sender.id
         let phone= json.sender.phone_number
         console.log("accountId: ", accountId)
         console.log("conversationId: ", conversationId)
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
         console.log("inboxName: ", inboxName)
         console.log("conversationStatus: ", conversationStatus)
         console.log("senderName: ", senderName)
+        console.log("senderId: ", senderId)
         console.log("phone: ", phone)
 
         if (conversationStatus !== "pending") {
@@ -90,7 +92,7 @@ export async function POST(request: Request) {
             phone= json.sender.name
         }
 
-        const delayResponse: MessageDelayResponse= await onMessageReceived(phone, content, clientId, "user", undefined, conversationId)
+        const delayResponse: MessageDelayResponse= await onMessageReceived(phone, content, clientId, "user", undefined, conversationId, senderId)
         
         if (delayResponse.wasCreated ) {
             if (delayResponse.message) {
@@ -117,10 +119,4 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     const res= "API is working"
     return NextResponse.json( { "data": res }, { status: 200 })
-}
-
-
-function processConnectionUpdate(json: any) {
-    console.log("processing connection update")
-    console.log("json: ", json)
 }

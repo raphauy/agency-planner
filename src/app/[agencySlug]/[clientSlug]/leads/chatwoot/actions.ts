@@ -25,6 +25,7 @@ export async function createInstanceAction(clientId: string) {
         name: response.instance.instanceName,
         externalId: response.instance.instanceId,
         number: null,
+        whatsappInboxId: null,
         chatwootUrl: null,
         chatwootAccountId: null,
         chatwootAccessToken: null,
@@ -98,7 +99,10 @@ export async function enableChatwootAction(clientId: string, instanceName: strin
 
     await enableChatwoot(instanceName, params)
 
-    const chatwootUpdated= await setChatwootData(clientId, chatwootAccountId, token, url)
+    // ToDo: temporal inbox id
+    const whatsappInboxId= "15"
+
+    const chatwootUpdated= await setChatwootData(clientId, chatwootAccountId, token, url, whatsappInboxId)
 
     revalidatePath('/admin/config')
 

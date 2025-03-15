@@ -22,6 +22,8 @@ const badgeVariants = cva(
           "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
         secondary:
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        secondaryWithBorder:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 border-gray-300",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
@@ -43,6 +45,14 @@ const badgeVariants = cva(
         complained: "bg-red-100 text-red-600 rounded-md border-red-600",
         bounced: "bg-red-100 text-red-600 rounded-md border-red-600",
         cancelled: "bg-gray-100 text-gray-600 rounded-md border-gray-600",
+        stage: "bg-blue-500 text-white rounded-2xl border-blue-800 rounded-md justify-center",
+        statusEnviado: "bg-green-500 text-white rounded-2xl border-green-800 rounded-md justify-center",
+        statusError: "bg-red-500 text-white rounded-2xl border-red-800 rounded-md justify-center",
+        statusPendiente: "bg-yellow-500 text-white rounded-2xl border-yellow-800 rounded-md justify-center",
+        statusProgramado: "bg-orange-500 text-white rounded-2xl border-orange-800 rounded-md justify-center",
+        api: "bg-orange-500 text-white rounded-2xl border-orange-800 rounded-md justify-center",
+        csv: "bg-purple-500 text-white rounded-2xl border-purple-800 rounded-md justify-center",
+        manual: "bg-gray-500 text-white rounded-2xl border-gray-800 rounded-md justify-center",
       },
     },
     defaultVariants: {

@@ -3,6 +3,20 @@ import { StepResult } from "ai";
 import { getDocumentsDAOByClient } from "./document-services";
 import { createMessage, MessageFormValues } from "./message-services";
 
+export async function getGeneralContext(conversationId: string) {
+  let contextString= "\n"
+
+  contextString+= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
+  contextString+= "Tienes principalmente 2 objetivos:\n"
+  contextString+= "1. Informar al usuario, para esto utiliza los documentos disponibles.\n"
+  contextString+= "2. Recolectar información del usuario, para esto utiliza las herramientas disponibles.\n"
+  contextString+= "Tu respuesta debe estar en formato whatsapp.\n"
+
+  contextString+= "Para utilizar las herramientas, necesitarás el id de la conversación del usuario.\n"
+  contextString+= "El id de la conversación es: " + conversationId + ".\n"  
+
+  return contextString
+}
 
 export async function getCopyLabContext(clientId: string, phone: string, userInput: string, brandVoice?: string) {
   let contextString= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
@@ -36,12 +50,8 @@ documentDescription: "${doc.description}",
 }
 
 
-export async function getLeadsContext(clientId: string, prompt: string) {
-  let contextString= ""
-  contextString+= prompt
-
-  contextString+= "Hablas correctamente el español, incluyendo el uso adecuado de tildes y eñes.\n"
-  contextString+= "Tu respuesta debe estar en formato whatsapp.\n"
+export async function getDocumentsContext(clientId: string) {
+  let contextString= "\n"
 
   const documents= await getDocumentsDAOByClient(clientId, DocumentType.LEAD)
   contextString+= "\n**** Documentos ****\n"

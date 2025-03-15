@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
 import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
-import { format as formatTZ, toZonedTime } from "date-fns-tz";
+import { format as formatTZ, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale";
 import { format, isThisWeek, isToday, isYesterday, parseISO } from "date-fns";
 
@@ -104,15 +104,17 @@ export function getFormat(date: Date): string {
 
 export function formatWhatsAppStyle(date: Date | string): string {
   let parsedDate = typeof date === 'string' ? parseISO(date) : date;
+  const timeZone = "America/Montevideo";
+  const zonedDate = toZonedTime(parsedDate, timeZone);
 
-  if (isToday(parsedDate)) {
-    return format(parsedDate, 'HH:mm');
-  } else if (isYesterday(parsedDate)) {
+  if (isToday(zonedDate)) {
+    return formatTZ(zonedDate, 'HH:mm', { timeZone });
+  } else if (isYesterday(zonedDate)) {
     return 'Ayer';
-  } else if (isThisWeek(parsedDate)) {
-    return format(parsedDate, 'eeee', { locale: es });
+  } else if (isThisWeek(zonedDate)) {
+    return formatTZ(zonedDate, 'eeee', { timeZone, locale: es });
   } else {
-    return format(parsedDate, 'dd/MM/yyyy');
+    return formatTZ(zonedDate, 'dd/MM/yyyy', { timeZone });
   }
 }
 
@@ -189,3 +191,68 @@ export function getStatusColorAndLabel(status: string) {
     return "Desconocido"
   }
 }
+
+export function checkValidPhone(phone: string) {
+  const expReg = /^(\+)?[1-9]{1,3}[0-9]{7,13}$/
+  return expReg.test(phone)
+}
+
+// función que transforma camel case en texto normal con mayúsculas
+// ej nombreCompleto -> Nombre Completo 
+// función que transforma camel case en texto normal con mayúsculas
+// ej nombreCompleto -> Nombre Completo 
+export function camelCaseToNormal(str: string): string {
+  return str
+      .replace(/([A-Z])/g, ' $1')  // Inserta un espacio antes de cada mayúscula
+      .replace(/^./, function(str){ return str.toUpperCase(); })  // Capitaliza la primera letra
+      .trim();  // Elimina cualquier espacio inicial innecesario
+}
+
+export function putTildes(str: string): string {
+  switch (str) {
+      case "Operacion":
+          return "Operación"
+      case "Resumen Conversacion":
+          return "Resumen Conversación"
+      default:
+          return str
+  }
+}
+
+export function getDatesFromSearchParams(searchParams: { from: string, to: string, last: string }) {
+  let from= null
+  let to= null
+  const last= searchParams.last
+  const today= new Date()
+  if (last === "HOY") {
+      from= new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      to= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+  } else if (last === "7D") {
+      from= new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7)
+      to= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+  } else if (last === "30D") {
+      from= new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 30)
+      to= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+  } else if (last === "LAST_MONTH") {
+      from= new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+      console.log("from: ", from)
+      // the day should be the last day of the previous month
+      const firstDayOfCurrentMonth= new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      // substract one day to get the last day of the previous month
+      const lastDayOfPreviousMonth= new Date(firstDayOfCurrentMonth.getTime() - 24 * 60 * 60 * 1000)
+      to= new Date(new Date().getFullYear(), new Date().getMonth() - 1, lastDayOfPreviousMonth.getDate())
+      console.log("to: ", to)
+  } else if (last === "ALL") {
+      from= null
+      to= null
+  } else {
+      from= searchParams.from ? new Date(searchParams.from) : null
+      to= searchParams.to ? new Date(searchParams.to) : null
+  }
+
+  from= from ? fromZonedTime(from, "America/Montevideo") : null
+  to= to ? fromZonedTime(to, "America/Montevideo") : null
+
+  return { from, to }
+}
+

@@ -2,6 +2,7 @@ export type WhatsappInstanceDAO = {
   externalId: string
   name: string
   number: string | null
+  whatsappInboxId: string | null
   chatwootAccountId: number | null
   chatwootUrl: string | null
   chatwootAccessToken: string | null

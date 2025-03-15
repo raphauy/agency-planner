@@ -42,6 +42,7 @@ model User {
 
   publications    PublicationListener[]
 
+  comercial     Comercial?
 }
 
 model Account {
@@ -156,6 +157,12 @@ model Client {
   audiences         Audience[]
   newsletters       Newsletter[]
   domains           Domain[]
+  repositories      Repository[]
+  repoData          RepoData[]
+  contacts          Contact[]
+  stages            Stage[]
+  comercials        Comercial[]
+  importedContacts  ImportedContact[]
 }
 
 model Functionality {
@@ -316,8 +323,6 @@ model Conversation {
   createdAt      DateTime @default(now())                          // gennext: skip.zod
   updatedAt      DateTime @updatedAt                              // gennext: skip.zod
 
-  messages       Message[]
-
   client         Client  @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
   clientId       String
 
@@ -326,6 +331,12 @@ model Conversation {
 
   usageRecord    UsageRecord @relation("ConversationUsageRecord", fields: [usageRecordId], references: [id])
   usageRecordId  String @unique
+
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  contactId   String?
+
+  messages       Message[]
+  repoData       RepoData[]
 }
 
 model Message {
@@ -510,6 +521,8 @@ model WhatsappInstance {
   chatwootUrl         String?
   chatwootAccessToken String?
 
+  whatsappInboxId     String?
+
   client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId            String
 
@@ -617,4 +630,201 @@ model Newsletter {
 
   client              Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId            String
+}
+
+model Repository {
+  id                  String       @id @default(cuid())
+  name                String                             // gennext: show.column
+  color               String       @default("rgb(68, 190, 154)")
+  isActive            Boolean      @default(true)       // gennext: show.column
+  
+  functionName        String                             // gennext: show.column
+  functionDescription String       @default("")          // gennext: show.column
+  functionDefinition  String       @default("")          // gennext: show.column
+
+  executionResponse   String @default("Registro exitoso.")// gennext: show.column
+
+  webHookUrl          String?                             // gennext: show.column
+  uiLabel             String       @default("Registro")   // gennext: show.column
+  notifyPhones        String[]     @default([])           // gennext: show.column skip.zod skip.list
+  tags                String[]     @default([])           // gennext: show.column skip.zod skip.list
+
+  moveToStageId  String?
+  assignToComercial Boolean @default(false)
+
+  createdAt           DateTime     @default(now())       // gennext: skip.zod
+  updatedAt           DateTime     @updatedAt            // gennext: skip.zod
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
+
+  fields              Field[]                            // gennext: skip.list
+  repoData            RepoData[]                         // gennext: skip.list
+}
+
+enum FieldType {
+  string
+  number
+  boolean
+  list
+}
+
+model Field {
+  id                  String       @id @default(cuid())
+  name                String                             // gennext: show.column
+  type                FieldType                          // gennext: show.column
+  description         String                             // gennext: show.column
+  required            Boolean                            // gennext: show.column
+  order               Int       @default(0)
+  etiquetar           Boolean    @default(false)
+  listOptions         String[]                           // gennext: show.column
+  repository          Repository? @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  repositoryId        String?
+
+  createdAt           DateTime     @default(now())       // gennext: skip.zod
+  updatedAt           DateTime     @updatedAt            // gennext: skip.zod
+}
+
+model RepoData {
+  id                  String       @id @default(cuid())
+  repoName            String                              // gennext: show.column
+  phone               String                              // gennext: show.column
+  functionName        String                              // gennext: show.column
+
+  data                String                                // gennext: show.column
+
+  repository          Repository? @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
+  repositoryId        String?
+
+  client              Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId            String
+
+  conversation        Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId      String
+
+  createdAt           DateTime     @default(now())       // gennext: skip.zod
+  updatedAt           DateTime     @updatedAt            // gennext: skip.zod
+}
+
+model Contact {
+  id            String      @id @default(cuid())
+  chatwootId    String?
+  name          String                                      // gennext: show.column
+  phone         String?                                     // gennext: show.column
+  imageUrl      String?                                     // gennext: show.column
+  tags          String[]                                    // gennext: show.column
+
+  src           String                                      // gennext: show.column
+
+  order         Int         @default(0)
+
+  client        Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId      String
+
+  stage         Stage      @relation(fields: [stageId], references: [id], onDelete: Restrict)
+  stageId       String
+
+  comercial     Comercial? @relation(fields: [comercialId], references: [id], onDelete: SetNull)
+  comercialId   String?
+
+  conversations Conversation[]                         // gennext: skip.list
+  contactEvents ContactEvent[]                         // gennext: skip.list
+
+  createdAt     DateTime    @default(now())                 // gennext: skip.zod
+  updatedAt     DateTime    @updatedAt                      // gennext: skip.zod
+
+  @@unique([clientId, chatwootId])
+}
+
+model Stage {
+  id          String     @id @default(cuid())            
+  name        String                                      // gennext: show.column
+  description String?                                     // gennext: show.column
+  order       Int                                         // gennext: show.column
+  isFinal     Boolean    @default(false)                  // gennext: show.column
+  isBotEnabled Boolean    @default(false)                  // gennext: show.column
+  color       String?                                     // gennext: show.column
+
+  client      Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    String
+
+  contacts    Contact[]                                  // gennext: skip.list
+  
+  createdAt   DateTime   @default(now())                 // gennext: skip.zod
+  updatedAt   DateTime   @updatedAt                      // gennext: skip.zod
+}
+
+model Comercial {
+  id                 String    @id @default(cuid())
+  chatwootUserId     Int?                                          // gennext: show.column
+  chatwootUserName   String?                                       // gennext: show.column
+  activo             Boolean   @default(true)                      // gennext: show.column
+  lastAssignedAt     DateTime  @default(now())                     // gennext: show.column
+  notifyAssigned     Boolean   @default(true)                      // gennext: show.column
+  phone              String?                                       // gennext: show.column
+
+  user               User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userId             String    @unique
+
+  contacts           Contact[]                                     // gennext: skip.list
+  
+  client             Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId           String
+
+  createdAt          DateTime  @default(now())                     // gennext: skip.zod
+  updatedAt          DateTime  @updatedAt                          // gennext: skip.zod
+}
+
+enum ImportedContactStatus {
+  PENDIENTE
+  PROCESADO
+  ERROR
+}
+
+enum ImportedContactType {
+  API
+  CSV
+  MANUAL
+}
+
+model ImportedContact {
+  id                 String      @id @default(cuid())
+  name               String                                      // gennext: show.column
+  phone              String                                      // gennext: show.column
+  tags               String[]                                    // gennext: show.column
+  stageName          String?                                     // gennext: show.column
+
+  chatwootContactId  String?
+
+  status             ImportedContactStatus @default(PENDIENTE) // gennext: show.column
+  error              String?                                   // gennext: show.column
+
+  type               ImportedContactType @default(MANUAL)
+
+  client             Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId           String
+
+  createdAt          DateTime   @default(now())                 // gennext: skip.zod
+  updatedAt          DateTime   @updatedAt                      // gennext: skip.zod
+}
+
+enum ContactEventType {
+  CREATED
+  TAGGED
+  UNTAGGED
+  MOVED_TO_STAGE
+  EDITED
+  CUSTOM_FIELD_VALUE_UPDATED
+}
+
+model ContactEvent {
+  id            String     @id @default(cuid())       
+  type          ContactEventType                       // gennext: show.column
+  info          String?                                // gennext: show.column
+  by            String?                                // gennext: show.column
+
+  contact       Contact    @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId     String
+
+  createdAt     DateTime   @default(now())             // gennext: skip.zod
 }

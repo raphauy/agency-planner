@@ -1,8 +1,5 @@
-import CodeBlock from "@/components/code-block"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { ToolInvocation } from "ai"
-import { BookOpen, Database, SquareFunction } from "lucide-react"
+import { BookOpen } from "lucide-react"
 import Link from "next/link"
 
 interface Props {

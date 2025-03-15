@@ -9,6 +9,7 @@ import MenuClient from "./menu-client"
 import MenuInstagram from "./menu-instagram"
 import MenuLeads from "./menu-leads"
 import MenuNewsletter from "./menu-newsletter"
+import MenuWhatsapp from "./menu-whatsapp"
 
 export default function Menu() {
 
@@ -31,6 +32,8 @@ export default function Menu() {
         menu= <MenuLeads />
     } else if (channel === "newsletter") {
         menu= <MenuNewsletter />
+    } else if (channel === "whatsapp") {
+        menu= <MenuWhatsapp />
     } else if (clientSlug) {
         menu= <MenuClient />
     } else if (agencySlug) {
