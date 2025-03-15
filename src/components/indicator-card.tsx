@@ -20,21 +20,25 @@ type Props= {
 }
 
 function StatsContent({ stats }: { stats: IndicatorStats }) {
+  if (!stats) {
+    return <StatsLoading />
+  }
+
   const isPositive = stats.percentageFromLastMonth >= 0
   return (
     <div className="space-y-2">
       <div className="flex items-start justify-between">
         <div className="flex flex-col">
-          <span className="text-3xl font-bold">+{stats.currentMonthCount}</span>
+          <span className="text-3xl font-bold">+{stats.currentMonthCount || 0}</span>
           <span className="text-xs text-muted-foreground">este mes</span>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-3xl font-bold">{stats.total}</span>
+          <span className="text-3xl font-bold">{stats.total || 0}</span>
           <span className="text-xs text-muted-foreground">total</span>
         </div>
       </div>
       <div className={cn("text-sm", isPositive && "text-green-600")}>
-        {isPositive ? "+" : ""}{stats.percentageFromLastMonth.toFixed(1)}% desde el mes pasado
+        {isPositive ? "+" : ""}{(stats.percentageFromLastMonth || 0).toFixed(1)}% desde el mes pasado
       </div>
     </div>
   )
@@ -60,8 +64,16 @@ function StatsLoading() {
 
 async function StatsWrapper({ statsGetter, clientId }: { statsGetter: Props["statsGetter"], clientId?: string }) {
   if (!clientId) return <StatsLoading />
-  const stats = await statsGetter(clientId)
-  return <StatsContent stats={stats} />
+  
+  try {
+    const stats = await statsGetter(clientId)
+    if (!stats) return <StatsLoading />
+    
+    return <StatsContent stats={stats} />
+  } catch (error) {
+    console.error('Error fetching stats:', error)
+    return <StatsLoading />
+  }
 }
 
 export default function IndicatorCard({ title, icon, link, statsGetter, clientId }: Props) {
