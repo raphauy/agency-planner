@@ -569,7 +569,12 @@ export async function processMessage(id: string) {
               createdAt: 'asc',
             },
           },
-          client: true
+          client: true,
+          contact: {
+            include: {
+              stage: true
+            }
+          }
         }
       }
     }
@@ -577,6 +582,12 @@ export async function processMessage(id: string) {
   if (!message) throw new Error("Message not found")
 
   const conversation= message.conversation
+
+  const stage= conversation.contact?.stage
+  if (stage && !stage.isBotEnabled) {
+    console.log("stage is not bot enabled, skipping")
+    return
+  }
 
   const client= conversation.client
 
