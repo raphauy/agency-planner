@@ -610,7 +610,7 @@ export async function processMessage(id: string) {
   console.log(messages)
   
   const result= await generateText({
-    model: openai('gpt-4o-mini'),
+    model: openai('gpt-4o'),
     messages: convertToCoreMessages(messages),
     tools: {
       ...leadTools,

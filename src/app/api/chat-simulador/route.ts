@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   }
   console.log("tools count:", Object.keys(tools).length)
   const result = await streamText({
-    model: openai('gpt-4o-mini'),
+    model: openai('gpt-4o'),
     messages: convertToCoreMessages(last20),
     tools: {
       ...leadTools,
