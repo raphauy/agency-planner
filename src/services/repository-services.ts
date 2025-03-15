@@ -655,3 +655,15 @@ export async function getClientTags(clientId: string){
   })
   return repositories.flatMap(repo => repo.tags)
 }
+
+export async function setMoveToStageIdOfRepository(repositoryId: string, moveToStageId: string) {
+  const updated= await prisma.repository.update({
+    where: {
+      id: repositoryId
+    },
+    data: {
+      moveToStageId
+    }
+  })
+  return updated
+}

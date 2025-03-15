@@ -2,29 +2,30 @@ import CodeBlock from "@/components/code-block"
 import { DescriptionForm } from "@/components/description-form"
 import { IconBadge } from "@/components/icon-badge"
 import { TitleForm } from "@/components/title-form"
-import { Separator } from "@/components/ui/separator"
 import { getFieldsDAO } from "@/services/field-services"
 import { getRepositoryDAO } from "@/services/repository-services"
+import { getStagesDAO } from "@/services/stage-services"
 import { Database, Tag } from "lucide-react"
-import { setExecutionResponseAction, setFunctionDescriptionAction, setFunctionNameAction, setNameAction, setNotifyPhonesAction } from "../repository-actions"
+import { setExecutionResponseAction, setFunctionNameAction, setNameAction, setNotifyPhonesAction } from "../repository-actions"
 import { DeleteRepositoryDialog } from "../repository-dialogs"
 import FieldsBox from "./fields-box"
-import { HookForm } from "./hook-form"
-import TagInputBox from "./tag-input-function"
 import { FunctionDescriptionForm } from "./function-description-form"
+import { HookForm } from "./hook-form"
+import SelectStage from "./select-stage"
+import TagInputBox from "./tag-input-function"
 
 type Props = {
-  clientId?: string
   repoId: string
 }
 
-export default async function FCConfig({ clientId, repoId }: Props) {
+export default async function FCConfig({ repoId }: Props) {
 
   const repository= await getRepositoryDAO(repoId)
   if (!repository) return <div>Repositorio no encontrado</div>
 
   const fields= await getFieldsDAO(repository.id)
 
+  const stages= await getStagesDAO(repository.clientId)
   
   const BASE_PATH= process.env.NEXTAUTH_URL!
 
@@ -102,6 +103,10 @@ export default async function FCConfig({ clientId, repoId }: Props) {
 
                     <div className="p-4 bg-muted border rounded-md mt-6">
                       <TagInputBox repoId={repository.id} initialTags={repository.tags} />
+                    </div>
+                    <div className="p-4 bg-muted border rounded-md mt-6">
+                      <p className="font-medium border-b pb-2">Cambiar estado:</p>
+                      <SelectStage repository={repository} stages={stages} />
                     </div>
 
 

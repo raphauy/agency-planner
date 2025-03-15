@@ -1,7 +1,7 @@
 "use server"
   
 import { checkValidPhone } from "@/lib/utils"
-import { RepositoryDAO, addTagToRepository, createRepository, deleteRepository, removeTagFromRepository, setExecutionResponse, setFunctionDescription, setFunctionName, setIsActive, setName, setNotifyPhones, setWebHookUrl } from "@/services/repository-services"
+import { RepositoryDAO, addTagToRepository, createRepository, deleteRepository, removeTagFromRepository, setExecutionResponse, setFunctionDescription, setFunctionName, setIsActive, setMoveToStageIdOfRepository, setName, setNotifyPhones, setWebHookUrl } from "@/services/repository-services"
 import { revalidatePath } from "next/cache"
 
 
@@ -127,6 +127,16 @@ export async function removeTagFromRepositoryAction(repoId: string, tag: string)
     if (!updated) return false
 
     revalidatePath("/[agencySlug]/[clientSlug]/whatsapp/repositories", "page")
+
+    return true
+}
+
+export async function setMoveToStageIdOfRepositoryAction(repoId: string, moveToStageId: string): Promise<boolean> {
+    const updated= await setMoveToStageIdOfRepository(repoId, moveToStageId)
+
+    if (!updated) return false
+
+    revalidatePath(`/[agencySlug]/[clientSlug]/whatsapp/repositories`, "page")
 
     return true
 }
