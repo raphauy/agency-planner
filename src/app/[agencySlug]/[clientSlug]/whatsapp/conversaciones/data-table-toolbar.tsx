@@ -16,7 +16,7 @@ export function DataTableToolbar<TData>({ table, statuses }: DataTableToolbarPro
 
   return (
     <div className="flex gap-1 dark:text-white">
-        <Input className="max-w-xs" placeholder="Filtrar celular..."
+        <Input placeholder="Buscar conversación..."
             value={(table.getColumn("phone")?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn("phone")?.setFilterValue(event.target.value)}                
         />

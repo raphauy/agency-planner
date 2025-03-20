@@ -194,6 +194,15 @@ export async function updateContact(id: string, data: ContactFormValues) {
 		},
   })
   if (!updated) throw new Error("Error al actualizar el contacto")
+
+  // find the las conversation of the contact and update the contact name and imageUrl
+  const lastConversation= await getLastConversationByContactId(id, data.clientId)
+  if (lastConversation) {
+    await prisma.conversation.update({
+      where: { id: lastConversation.id },
+      data: { name: data.name, imageUrl: data.imageUrl }
+    })
+  }
   
   return updated
 }
