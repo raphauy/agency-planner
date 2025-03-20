@@ -447,7 +447,7 @@ export async function getLastConversation(agencySlug: string, clientSlug: string
       }
     },
     orderBy: {
-      createdAt: 'desc',
+      lastMessageAt: 'desc',
     },
     include: {
       client: true,
