@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@/lib/utils';
 import { getClientDAO } from '@/services/client-services';
-import { createConversation, getConversationDAO, messageArrived } from '@/services/conversation-services';
+import { createConversation, getActiveConversation, getConversationDAO, messageArrived } from '@/services/conversation-services';
 import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
 import { createMessage, MessageFormValues } from '@/services/message-services';
 import { getRepositorysDAO, getToolFromDatabase } from '@/services/repository-services';
@@ -40,12 +40,41 @@ export async function POST(req: Request) {
 
   const lastMessage= last20[last20.length - 1]
   const input= lastMessage.content
-  let conversatioinId= ""
-
+  let conversatioinId= conversationId
+  
+  // Solo creamos una nueva conversación si el usuario envía un mensaje y
+  // no hay un ID válido de conversación
   if (lastMessage.role === "user" && input) {
     console.log("input: " + input)
-    const userMessage= await messageArrived(phone, input, clientId, "user")
-    conversatioinId= userMessage.conversationId
+    // Si ya tenemos una ID de conversación válida (no "new"), usamos createMessage en lugar de messageArrived
+    if (conversatioinId && conversatioinId !== "new") {
+      console.log("Usando conversación existente:", conversatioinId)
+      await createMessage({
+        conversationId: conversatioinId,
+        role: "user",
+        content: input,
+        tokens: 0
+      })
+    } else {
+      // Si no hay ID válido, verificamos si hay una conversación activa
+      const activeConversation = await getActiveConversation(phone, clientId)
+      if (activeConversation) {
+        // Si hay una conversación activa, la usamos
+        console.log("Usando conversación activa:", activeConversation.id)
+        conversatioinId = activeConversation.id
+        await createMessage({
+          conversationId: conversatioinId,
+          role: "user",
+          content: input,
+          tokens: 0
+        })
+      } else {
+        // Si no hay conversación activa, creamos una nueva
+        console.log("Creando nueva conversación para mensaje:", input)
+        const userMessage = await messageArrived(phone, input, clientId, "user")
+        conversatioinId = userMessage.conversationId
+      }
+    }
   }
 
   if (!conversatioinId) {

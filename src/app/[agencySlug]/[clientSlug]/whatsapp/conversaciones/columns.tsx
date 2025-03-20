@@ -45,7 +45,7 @@ export const columns: ColumnDef<ConversationShortDAO>[] = [
               <Button variant="link" className="pl-0 gap-2">
                 <div className="w-10 h-10 rounded-full bg-gray-200">
                   <Avatar className="w-10 h-10">
-                    <AvatarImage src={data.imageUrl ?? ""} />
+                    <AvatarImage src={data.imageUrl ? data.imageUrl : undefined} />
                     <AvatarFallback>
                       {data.name?.slice(0, 2)}
                     </AvatarFallback>
