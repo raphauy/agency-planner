@@ -3,7 +3,7 @@
 import { useMenuClientRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Settings, Undo2 } from "lucide-react"
+import { MessageSquareText, Settings, Undo2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
@@ -42,7 +42,13 @@ export default function MenuWhatsapp() {
             icon: Settings,
             text: "Configuración",
             roles: alowedRoles
-        }
+        },
+        {
+            href: `/${agencySlug}/${clientSlug}/whatsapp/agentes`,
+            icon: MessageSquareText,
+            text: "Agentes",
+            roles: alowedRoles
+        },
     ]
         
     return (

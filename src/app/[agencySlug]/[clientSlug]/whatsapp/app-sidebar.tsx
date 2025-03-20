@@ -1,7 +1,6 @@
 "use client"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { CodeXml, Globe, LayoutDashboard, Newspaper, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,13 +21,19 @@ export function AppSidebar({ items }: Props) {
     const [agencySlug, setAgencySlug] = useState("")
     const [clientSlug, setClientSlug] = useState("")
     const [finalPath, setFinalPath] = useState("")
-    const { open }= useSidebar()
+    const { open, setOpen }= useSidebar()
 
     useEffect(() => {
         const { agencySlug, clientSlug, channelPath } = parsePath(path)
         setAgencySlug(agencySlug)
         setClientSlug(clientSlug)
         setFinalPath(channelPath)
+        if (channelPath === "whatsapp/agentes") {
+            setOpen(false)
+        } else {
+            setOpen(true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path])
 
   
