@@ -41,9 +41,17 @@ function UserRowMessage({message}: {message: MessageDAO}) {
           {userName}:
         </div>
         
-        <div className="whitespace-pre-wrap text-sm mt-1 text-zinc-800 dark:text-zinc-200">
-          {message.content}
-        </div>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            // open links in new tab
+            a: (props) => (
+              <a {...props} target="_blank" rel="noopener noreferrer" />
+            ),
+          }}
+        >
+          {message.content}                
+        </ReactMarkdown>            
         
         <div className="text-xs text-right mt-1 text-zinc-500">
           {formattedDate}
@@ -70,12 +78,18 @@ function AssistantRowMessage({message}: {message: MessageDAO}) {
           Asistente:
         </div>
         
-        {/* Contenido del mensaje */}
-        <div className="whitespace-pre-wrap text-sm mt-1 text-zinc-800 dark:text-zinc-200">
-          {content}
-        </div>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            // open links in new tab
+            a: (props) => (
+              <a {...props} target="_blank" rel="noopener noreferrer" />
+            ),
+          }}
+        >
+          {message.content}                
+        </ReactMarkdown>            
         
-        {/* Hora del mensaje (simulada) */}
         <div className="text-xs text-right mt-1 text-zinc-500">
           {formattedDate}
         </div>
