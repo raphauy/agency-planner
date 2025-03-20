@@ -3,6 +3,7 @@ import { CTA1 } from "@/components/landing/cta1";
 import { Hero } from "@/components/landing/hero";
 import { getCurrentUser } from "@/lib/utils";
 import { getClientsOfCurrentUser } from "@/services/client-services";
+import { getSession, signOut } from "next-auth/react";
 import { Poppins } from "next/font/google";
 import { redirect } from "next/navigation";
 
@@ -27,6 +28,10 @@ export default async function Home() {
   if (role?.startsWith("CLIENT")){
     const agencySlug= user && user.agencySlug
     const clients= await getClientsOfCurrentUser()
+    if (clients && clients.length === 0){
+      // logout
+      await signOut({ redirectTo: "/sign-in" })
+    }
     const clientSlug= clients && clients[0]?.slug
     redirect(`/${agencySlug}/${clientSlug}`)
   }    

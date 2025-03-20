@@ -10,7 +10,7 @@ import Link from "next/link"
 
 export const columns: ColumnDef<ConversationShortDAO>[] = [
   {
-    accessorKey: "updatedAt",
+    accessorKey: "lastMessageAt",
     header: ({ column }) => {
       return (
         <Button variant="ghost" className="px-0 dark:text-white"
@@ -22,7 +22,7 @@ export const columns: ColumnDef<ConversationShortDAO>[] = [
     },
     cell: ({ row }) => {
       const data= row.original
-      return <p className="text-center">{formatWhatsAppStyle(data.updatedAt)}</p>
+      return <p className="text-center">{formatWhatsAppStyle(data.lastMessageAt)}</p>
     }
   },
   {

@@ -99,8 +99,9 @@ export async function POST(req: Request) {
     }
   }
   console.log("tools count:", Object.keys(tools).length)
+  const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
   const result = await streamText({
-    model: openai('gpt-4o'),
+    model: openai(model),
     messages: convertToCoreMessages(last20),
     tools: {
       ...leadTools,

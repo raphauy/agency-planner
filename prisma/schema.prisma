@@ -323,6 +323,7 @@ model Conversation {
 
   createdAt      DateTime @default(now())                          // gennext: skip.zod
   updatedAt      DateTime @updatedAt                              // gennext: skip.zod
+  lastMessageAt  DateTime @default(now())                          // gennext: skip.zod
 
   client         Client  @relation(fields: [clientId], references: [id], onDelete: Cascade) // gennext: skip.list
   clientId       String

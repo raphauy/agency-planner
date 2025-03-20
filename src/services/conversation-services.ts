@@ -28,6 +28,7 @@ export type ConversationDAO = {
   chatwootConversationId: number | null
 	createdAt: Date
 	updatedAt: Date
+  lastMessageAt: Date
 	messages: MessageDAO[]
 	client: ClientDAO
 	clientId: string
@@ -350,6 +351,13 @@ export async function updateConversationUsage(id: string, tokens: number) {
       credits: conversation.usageRecord.credits + credits
     }
   })
+  // update conversation lastMessageAt
+  await prisma.conversation.update({
+    where: {
+      id: conversation.id
+    },
+    data: { lastMessageAt: new Date() }
+  })
   return updatedUsage
 }
 
@@ -372,29 +380,25 @@ export async function closeConversation(conversationId: string) {
 
 // an active conversation is one that has a message in the last x minutes
 export async function getActiveConversation(phone: string, clientId: string) {
-
   let sessionTimeInMinutes= await getSessionTTL(clientId) || 10
     
+  // Buscamos una conversación activa basándonos en lastMessageAt
   const found = await prisma.conversation.findFirst({
     where: {
       phone,
       clientId,
       closed: false,
-      messages: {
-        some: {
-          createdAt: {
-            gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
-          }
-        }
+      lastMessageAt: {
+        gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
       }
     },
     orderBy: {
-      createdAt: 'desc',
+      lastMessageAt: 'desc', // Ordenamos por la última interacción de mensaje
     },
     include: {
       client: true
     }
-  })
+  });
 
   return found;
 }
@@ -546,17 +550,31 @@ export async function messageArrived(phone: string, text: string, clientId: stri
   }
 }
 
-function createMessage(conversationId: string, role: string, content: string, tokens?: number) {
-  const created= prisma.message.create({
-    data: {
-      role,
-      content,
-      conversationId,      
-      tokens,
-    }
-  })
+async function createMessage(conversationId: string, role: string, content: string, tokens?: number) {
+  // Usamos una transacción para garantizar que ambas operaciones se completen juntas
+  return await prisma.$transaction(async (tx) => {
+    // Crear el mensaje
+    const message = await tx.message.create({
+      data: {
+        role,
+        content,
+        conversationId,      
+        tokens,
+      }
+    });
 
-  return created
+    // Actualizar lastMessageAt en la conversación
+    await tx.conversation.update({
+      where: {
+        id: conversationId
+      },
+      data: {
+        lastMessageAt: new Date()
+      }
+    });
+
+    return message;
+  });
 }
 
 export async function processMessage(id: string) {
@@ -746,16 +764,12 @@ export async function getActiveConversationByChatwootConversationId(chatwootConv
       chatwootConversationId,
       clientId,        
       closed: false,
-      messages: {
-        some: {
-          createdAt: {
-            gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
-          }
-        }
+      lastMessageAt: {
+        gte: new Date(Date.now() - sessionTimeInMinutes * 60 * 1000)
       }
     },
     orderBy: {
-      createdAt: 'desc',
+      lastMessageAt: 'desc', // Ordenamos por la última interacción
     },
     include: {
       client: true,
@@ -765,15 +779,14 @@ export async function getActiveConversationByChatwootConversationId(chatwootConv
         }
       }
     }
-  })
+  });
 
   return found;
 }
 
 export type ConversationShortDAO = {
   id: string
-  createdAt: Date
-  updatedAt: Date
+  lastMessageAt: Date
   phone: string
   name: string
   imageUrl: string
@@ -785,12 +798,11 @@ export async function getConversationsShortOfClient(clientId: string): Promise<C
       clientId
     },
     orderBy: {
-      updatedAt: 'desc',
+      lastMessageAt: 'desc',
     },
     select: {
       id: true,
-      createdAt: true,
-      updatedAt: true,
+      lastMessageAt: true,
       phone: true,
       name: true,
       imageUrl: true,
