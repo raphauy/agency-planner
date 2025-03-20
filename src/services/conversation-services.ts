@@ -769,3 +769,34 @@ export async function getActiveConversationByChatwootConversationId(chatwootConv
 
   return found;
 }
+
+export type ConversationShortDAO = {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  phone: string
+  name: string
+  imageUrl: string
+}
+
+export async function getConversationsShortOfClient(clientId: string): Promise<ConversationShortDAO[]> {
+  const found = await prisma.conversation.findMany({
+    where: {
+      clientId
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      phone: true,
+      name: true,
+      imageUrl: true,
+    },
+    take: 500
+  })
+
+  return found as ConversationShortDAO[]
+}

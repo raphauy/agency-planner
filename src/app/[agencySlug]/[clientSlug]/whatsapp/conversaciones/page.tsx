@@ -97,7 +97,7 @@ export default function ChatPage(props: Props) {
   return (
     <div className="flex flex-grow w-full">
 
-      <div className="w-96">
+      {/* <div className="w-96">
 
         {
           loadingConversations ? 
@@ -108,7 +108,7 @@ export default function ChatPage(props: Props) {
         }
           
 
-      </div>
+      </div> */}
 
       <div className="flex flex-col items-center flex-grow">
         {

@@ -3,12 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { formatWhatsAppStyle } from "@/lib/utils"
-import { ConversationDAO } from "@/services/conversation-services"
+import { ConversationDAO, ConversationShortDAO } from "@/services/conversation-services"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import Link from "next/link"
 
-export const columns: ColumnDef<ConversationDAO>[] = [
+export const columns: ColumnDef<ConversationShortDAO>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => {
