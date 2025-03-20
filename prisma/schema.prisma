@@ -311,6 +311,7 @@ model Conversation {
   id             String   @id @default(cuid())
   phone          String                                           // gennext: skip.zod show.column
   name           String?  @default("")                            // gennext: skip.zod show.column
+  imageUrl       String?                                          // gennext: skip.zod show.column
   title          String                                           // gennext: show.column
   context        String @default("")
 

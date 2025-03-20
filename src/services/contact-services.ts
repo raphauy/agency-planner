@@ -511,7 +511,7 @@ export async function getLastChatwootConversationIdByPhoneNumber(phone: string, 
     if (!chatwootConversationId) throw new Error("Error al crear la conversación en Chatwoot")
 
     // create conversation in database
-    const createdConversation= await createContactConversation(dbContact.phone, clientId, dbContact.id, chatwootConversationId)
+    const createdConversation= await createContactConversation(clientId, dbContact, chatwootConversationId)
     if (!createdConversation) throw new Error("Error al crear la conversación en la base de datos")
 
     return chatwootConversationId

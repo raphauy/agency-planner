@@ -1,5 +1,6 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { formatWhatsAppStyle } from "@/lib/utils"
 import { ConversationDAO } from "@/services/conversation-services"
@@ -41,14 +42,28 @@ export const columns: ColumnDef<ConversationDAO>[] = [
       return (
         <div className="flex items-center justify-start flex-1">
           <Link href={`conversaciones?id=${data.id}`} prefetch={false}>
-              <Button variant="link" className="pl-0 dark:text-white">
-                {data.phone.slice(0, 17)}
+              <Button variant="link" className="pl-0 gap-2">
+                <div className="w-10 h-10 rounded-full bg-gray-200">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={data.imageUrl ?? ""} />
+                    <AvatarFallback>
+                      {data.name?.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="flex flex-col items-start w-full text-left">
+                  <p className="text-sm font-bold truncate max-w-[185px]">{data.name}</p>
+                  <p>{data.phone}</p>
+                </div>
               </Button>
           </Link>
         </div>
-
       )
     },
-
+    filterFn: (row, id, value) => {
+      const name = row.original.name ?? ""
+      const phone = row.original.phone ?? ""
+      return name.toLowerCase().includes(value.toLowerCase()) || phone.toLowerCase().includes(value.toLowerCase())
+    }
   },
 ]

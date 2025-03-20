@@ -11,7 +11,7 @@ import { convertToCoreMessages, generateText, Message } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { leadTools } from "./tools"
 import { createChatwootConversation, sendTextToConversation } from "./chatwoot"
-import { ContactFormValues, createContact, getContactByChatwootId, setNewStage } from "./contact-services"
+import { ContactFormValues, createContact, getContactByChatwootId, getContactDAO, setNewStage } from "./contact-services"
 import { addTagsToContact, ContactDAO } from "./contact-services"
 import { getUserByEmail } from "./login-services"
 import { getRepositorysDAO, getToolFromDatabase } from "./repository-services"
@@ -20,6 +20,7 @@ export type ConversationDAO = {
 	id: string
 	phone: string
   name: string | null
+  imageUrl: string | null
   title: string
   context: string
   closed: boolean
@@ -118,7 +119,7 @@ export async function createConversation(data: ConversationFormValues) {
   return created
 }
 
-export async function createContactConversation(phone: string | null, clientId: string, contactId: string, chatwootConversationId: number) {
+export async function createContactConversation(clientId: string, contact: ContactDAO, chatwootConversationId: number) {
   const client= await getClientDAO(clientId)
   if (!client) throw new Error("No se encontró Cliente")
 
@@ -136,12 +137,14 @@ export async function createContactConversation(phone: string | null, clientId: 
 
   const created= await prisma.conversation.create({
     data: {
-      phone: phone || "",
+      phone: contact.phone || "",
+      name: contact.name || "",
+      imageUrl: contact.imageUrl || "",
       title: "Contacto",
       type: DocumentType.LEAD,
       usageRecordId: createdUsage.id,
       clientId,
-      contactId,
+      contactId: contact.id,
       chatwootConversationId: chatwootConversationId
     }
   })
