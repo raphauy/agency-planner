@@ -47,7 +47,7 @@ export const columns: ColumnDef<ConversationShortDAO>[] = [
                   <Avatar className="w-10 h-10">
                     <AvatarImage src={data.imageUrl ? data.imageUrl : undefined} />
                     <AvatarFallback>
-                      {data.name?.slice(0, 2)}
+                      {data.name?.slice(0, 1)}
                     </AvatarFallback>
                   </Avatar>
                 </div>
