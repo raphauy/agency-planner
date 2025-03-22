@@ -1,6 +1,7 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { ConversationDAO, updateConversationUsage } from "./conversation-services"
+import { CoreAssistantMessage, CoreMessage, CoreSystemMessage, CoreToolMessage, CoreUserMessage, ToolContent } from "ai"
 
 export type MessageDAO = {
 	id: string
@@ -97,4 +98,44 @@ export async function getFullMessageDAO(id: string) {
 		}
   })
   return found as MessageDAO
+}
+
+    
+export async function getConversationDbMessages(conversationId: string, take: number = 20): Promise<CoreMessage[]> {
+  const found = await prisma.message.findMany({
+    where: {
+      conversationId,
+    },
+    orderBy: {
+      createdAt: 'asc'
+    },
+    take
+  })
+  const res: CoreMessage[] = []
+  for (const message of found) {
+    const role= message.role
+    if (role === "user") {
+      const coreUserMessage: CoreUserMessage = {        
+        role: "user",
+        content: message.content
+      }
+      res.push(coreUserMessage)
+    } else if (role === "assistant") { 
+      const coreAssistantMessage: CoreAssistantMessage = {
+        role: "assistant",
+        content: message.content
+      }
+      res.push(coreAssistantMessage)
+    } else if (role === "tool" || role === "data" || role === "function") {
+      const name= message.name || ""
+      if (name !== "obtenerDocumento") {
+        const coreToolMessage: CoreSystemMessage= {
+          role: "system",
+          content: message.content,        
+        }
+        res.push(coreToolMessage)  
+      }
+    }
+  }
+  return res
 }

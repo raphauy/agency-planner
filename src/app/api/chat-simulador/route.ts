@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/lib/utils';
 import { getClientDAO } from '@/services/client-services';
 import { getActiveConversation, messageArrived } from '@/services/conversation-services';
 import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
-import { createMessage } from '@/services/message-services';
+import { createMessage, getConversationDbMessages } from '@/services/message-services';
 import { getRepositorysDAO, getToolFromDatabase } from '@/services/repository-services';
 import { getStageByChatwootId } from '@/services/stage-services';
 import { leadTools } from '@/services/tools';
@@ -35,10 +35,7 @@ export async function POST(req: Request) {
     return new Response("Client prompt not found", { status: 404 })
   }
 
-  // take the last 20 messages
-  const last20= messages.slice(-20)
-
-  const lastMessage= last20[last20.length - 1]
+  const lastMessage= messages[messages.length - 1]
   const input= lastMessage.content
   let conversatioinId= conversationId
   
@@ -99,12 +96,16 @@ export async function POST(req: Request) {
     }
   }
   console.log("tools count:", Object.keys(tools).length)
-  const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
+  //const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
+  const model= "gpt-4o"
   console.log("model", model)
+  const dbMessages= await getConversationDbMessages(conversatioinId)
+  console.log("dbMessages", dbMessages)
   const result = await streamText({
     model: openai(model),
     //messages: convertToCoreMessages(last20),
-    messages: last20,
+    //messages: last20,
+    messages: dbMessages,
     tools: {
       ...leadTools,
       ...tools

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db"
 import { DocumentType } from "@prisma/client"
 import * as z from "zod"
 import { ClientDAO, getChatwootAccountId, getClientDAO, getSessionTTL, getWhatsappInstance } from "./client-services"
-import { getMessagesDAO, MessageDAO } from "./message-services"
+import { getConversationDbMessages, getMessagesDAO, MessageDAO } from "./message-services"
 import { createUsageRecord, UsageRecordFormValues } from "./usagerecord-services"
 import { getUsageTypeDAOByName } from "./usagetype-services"
 import { UserDAO } from "./user-services"
@@ -585,11 +585,11 @@ export async function processMessage(id: string) {
     include: {
       conversation: {
         include: {
-          messages: {
-            orderBy: {
-              createdAt: 'asc',
-            },
-          },
+          // messages: {
+          //   orderBy: {
+          //     createdAt: 'asc',
+          //   },
+          // },
           client: true,
           contact: {
             include: {
@@ -632,18 +632,14 @@ export async function processMessage(id: string) {
   }
   console.log("tools count:", Object.keys(tools).length)
   
-  const dbMessages= conversation.messages
-  const messages= dbMessages.map(message => ({
-    role: message.role as "user" | "assistant" | "system" | "function",
-    content: message.content
-  }))
+  const dbMessages= await getConversationDbMessages(conversation.id)
 
-  console.log("messages.count: " + messages.length)
-  console.log(messages)
+  console.log("messages.count: " + dbMessages.length)
+  console.log(dbMessages)
   
   const result= await generateText({
     model: openai('gpt-4o'),
-    messages: convertToCoreMessages(messages),
+    messages: dbMessages,
     tools: {
       ...leadTools,
       ...tools
