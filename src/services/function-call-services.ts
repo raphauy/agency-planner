@@ -112,8 +112,8 @@ export async function saveToolCallResponse(event: StepResult<any>, conversationI
   // Handle tool results
   for (const toolResult of toolResults) {
     const messageForm: MessageFormValues= {
-      role: "function",
-      content: "",
+      role: "data",
+      content: JSON.stringify(toolResult),
       name: toolResult.toolName,
       tokens: usage.completionTokens + (usage.promptTokens * 3),
       toolInvocations: JSON.stringify(toolResult),
