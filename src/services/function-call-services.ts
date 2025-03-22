@@ -15,6 +15,9 @@ export async function getGeneralContext(conversationId: string) {
   contextString+= "Para utilizar las herramientas, necesitarás el id de la conversación del usuario.\n"
   contextString+= "El id de la conversación es: " + conversationId + ".\n"  
 
+  const nowInUruguay= new Date().toLocaleString("es-UY", { timeZone: "America/Montevideo" })
+  contextString+= "La fecha y hora actual es: " + nowInUruguay + ".\n"
+
   return contextString
 }
 
