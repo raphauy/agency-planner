@@ -98,4 +98,3 @@ export async function getFullMessageDAO(id: string) {
   })
   return found as MessageDAO
 }
-    

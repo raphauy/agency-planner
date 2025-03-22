@@ -1,13 +1,13 @@
 import { getCurrentUser } from '@/lib/utils';
 import { getClientDAO } from '@/services/client-services';
-import { createConversation, getActiveConversation, getConversationDAO, messageArrived } from '@/services/conversation-services';
+import { getActiveConversation, messageArrived } from '@/services/conversation-services';
 import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
-import { createMessage, MessageFormValues } from '@/services/message-services';
+import { createMessage } from '@/services/message-services';
 import { getRepositorysDAO, getToolFromDatabase } from '@/services/repository-services';
 import { getStageByChatwootId } from '@/services/stage-services';
 import { leadTools } from '@/services/tools';
 import { openai } from '@ai-sdk/openai';
-import { convertToCoreMessages, streamText } from 'ai';
+import { streamText } from 'ai';
 import { revalidatePath } from 'next/cache';
 
 // Allow streaming responses up to 30 seconds
@@ -103,7 +103,8 @@ export async function POST(req: Request) {
   console.log("model", model)
   const result = await streamText({
     model: openai(model),
-    messages: convertToCoreMessages(last20),
+    //messages: convertToCoreMessages(last20),
+    messages: last20,
     tools: {
       ...leadTools,
       ...tools
