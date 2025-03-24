@@ -18,7 +18,7 @@ export default async function RepositoryPage(props: Props) {
   const basePath= `/${agencySlug}/${clientSlug}/whatsapp`
 
   const user= await getCurrentUser()
-  if (user?.email !== "rapha.uy@rapha.uy") {
+  if (user?.email !== "rapha.uy@rapha.uy" && user?.email !== "gabi@tinta.wine") {
     return notFound()
   }
 
