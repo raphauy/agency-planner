@@ -19,7 +19,7 @@ export default async function RepositoryPage(props: Props) {
 
   const user= await getCurrentUser()
   if (user?.email !== "rapha.uy@rapha.uy" && user?.email !== "gabi@tinta.wine") {
-    return <div>Solo administradores pueden editar los repositorios</div>
+    return <div className="text-center border-dashed border-2 p-4 rounded-md w-full">Solo administradores pueden editar los repositorios</div>
   }
 
   const clientId= await getClientIdBySlugs(agencySlug, clientSlug)
