@@ -33,7 +33,7 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, setMessages, input, setInput, handleSubmit, isLoading, error } = useChat({
+  const { messages, setMessages, input, setInput, handleSubmit, status, error } = useChat({
     api: '/api/chat-simulador',
     body: {
       clientId: client.id,
@@ -46,12 +46,39 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
     setFinishedCount(finishedCount + 1)
   }
 
+  // Función para transformar mensajes directamente al formato con la estructura mínima necesaria
+  // en lugar de intentar convertir los existentes
+  function createVercelAIMessages(messages: MessageDAO[]): Message[] {
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return [];
+    }
+    
+    return messages.map(msg => ({
+      id: msg.id,
+      content: msg.content,
+      role: msg.role as any,
+      createdAt: new Date(msg.createdAt),
+      // Propiedades esenciales para el SDK de Vercel AI
+      toolInvocations: []
+    }));
+  }
+
   useEffect(() => {
-    setMessages(initialMessages as Message[])
-    if (initialMessages.length > 0) {
-      setConversationId(initialMessages[0].conversationId)
+    // Depuración: ver los mensajes iniciales
+    console.log("initialMessages antes de transformar:", JSON.stringify(initialMessages));
+    
+    // Usamos la nueva función para crear mensajes compatibles
+    const aiCompatibleMessages = createVercelAIMessages(initialMessages);
+    
+    // Depuración: ver los mensajes transformados
+    console.log("aiCompatibleMessages:", JSON.stringify(aiCompatibleMessages));
+    
+    if (aiCompatibleMessages.length > 0) {
+      setMessages(aiCompatibleMessages);
+      setConversationId(initialMessages[0].conversationId);
     } else {
-      setConversationId("new")
+      setMessages([]);
+      setConversationId("new");
     }
   }, [initialMessages, setMessages])
 
@@ -70,7 +97,20 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
       console.log("getting conversation messages")
       getConversationMessagesAction(conversationId)
       .then(messages => {
-        setMessages(messages as Message[])
+        // Depuración: ver los mensajes de la BD
+        console.log("mensajes de la BD:", JSON.stringify(messages));
+        
+        // Usamos la nueva función para crear mensajes compatibles
+        const aiCompatibleMessages = createVercelAIMessages(messages);
+        
+        // Depuración: ver los mensajes transformados
+        console.log("aiCompatibleMessages:", JSON.stringify(aiCompatibleMessages));
+        
+        setMessages(aiCompatibleMessages);
+      })
+      .catch(err => {
+        console.error("Error al obtener mensajes de conversación:", err);
+        setMessages([]);
       })
     }
   }, [conversationId, setMessages, finishedCount])
@@ -80,7 +120,7 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
   
-  const disabled = isLoading || input.length === 0
+  const disabled = status === "streaming" || input.length === 0
 
   return (
     <main className="flex flex-col items-center justify-between w-full pb-40">
@@ -91,7 +131,7 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
         {messages.length > 0 ? (
           messages.map((message, i) => {
             return(
-              <ConversationMessageBox key={i} message={message as MessageDAO} />            
+              <ConversationMessageBox key={i} message={message} userName={userEmail} />            
             )})
         ) : client?.name && (
           <InitialBox clientName={client.name} />
@@ -136,7 +176,7 @@ export default function SimulatorBox({ client, userEmail, isAdmin, initialMessag
             disabled={disabled}
           >
             {
-              isLoading ? 
+              status === "streaming" ? 
                 <Loader className="animate-spin" />
                 : 
                 <SendIcon className={cn("h-4 w-4", input.length === 0 ? "text-gray-300" : "text-white",)} />

@@ -40,7 +40,7 @@ export function ChatComponent({ agencySlug, clientSlug, conversation }: Props) {
   const userEmail= session?.data?.user?.email
 
   const { messages, setMessages, input, setInput, handleInputChange, handleSubmit, isLoading, error, addToolResult } = useChat({
-    maxToolRoundtrips: 2,
+    maxSteps: 2,
     body: {
       conversationId: conversation.id,
       agencySlug,
@@ -121,7 +121,6 @@ export function ChatComponent({ agencySlug, clientSlug, conversation }: Props) {
             messages.map((message, i) => {
               if (!conversation.user) return <div key={i}>User not found</div>
 
-              const messageDAO= message as MessageDAO
               return (
                 <MessageBox key={i} 
                   message={message} 

@@ -69,6 +69,11 @@ export default async function DashboardPage({ params }: Props) {
             <SquareChevronRight className="h-4 w-4" /> Prompt
           </Button>
         </Link>
+        <Link href={`/${agencySlug}/${clientSlug}/whatsapp/simulador`} className="text-sm text-muted-foreground">
+          <Button className="w-48 gap-2">
+            <SquareChevronRight className="h-4 w-4" /> Simulador
+          </Button>
+        </Link>
       </div>
     </div>
   )

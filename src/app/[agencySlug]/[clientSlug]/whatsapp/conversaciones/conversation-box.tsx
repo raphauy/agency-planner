@@ -46,7 +46,7 @@ export default function ConversationBox({ conversation, isAdmin, showSystem, set
         <div className="w-full mt-5 space-y-2">
           {messages.map((message) => {
             return(
-              <ConversationMessageBox key={message.id} message={message} />            
+              <ConversationMessageBox key={message.id} message={message} userName={conversation.name || conversation.phone} />            
             )})
           }
         </div>

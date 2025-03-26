@@ -28,7 +28,7 @@ export default function MessageBox({ message }: Props) {
               <User width={20} />
               ) : message.role === "system" && message.content ? (
               <Terminal width={20} />
-              ) : message.role === "function" && message.toolInvocations ? (
+              ) : message.role === "data" && message.parts ? (
               <Terminal width={20} />
               ) : message.role === "assistant" && message.content ? (
               <Bot width={20} />
@@ -54,8 +54,8 @@ export default function MessageBox({ message }: Props) {
             </ReactMarkdown>            
           }
           {
-            message.role === "function" && message.toolInvocations &&
-            <FunctionData toolResultStr={message.toolInvocations.toString()} />
+            message.role === "data" && message.parts &&
+            <FunctionData toolResultStr={message.parts.toString()} />
           }
 
         </div>                         

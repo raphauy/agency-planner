@@ -96,15 +96,13 @@ export async function POST(req: Request) {
     }
   }
   console.log("tools count:", Object.keys(tools).length)
-  const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
-  //const model= "gpt-4o"
+  //const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
+  const model= "gpt-4o"
   console.log("model", model)
   const dbMessages= await getConversationDbMessages(conversatioinId)
   console.log("dbMessages", dbMessages)
   const result = await streamText({
     model: openai(model),
-    //messages: convertToCoreMessages(last20),
-    //messages: last20,
     messages: dbMessages,
     tools: {
       ...leadTools,
