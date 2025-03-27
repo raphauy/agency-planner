@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/lib/utils';
 import { getClientDAO } from '@/services/client-services';
 import { getActiveConversation, messageArrived } from '@/services/conversation-services';
-import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
+import { getContactContext, getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from '@/services/function-call-services';
 import { createMessage, getConversationDbMessages } from '@/services/message-services';
 import { getRepositorysDAO, getToolFromDatabase } from '@/services/repository-services';
 import { getStageByChatwootId } from '@/services/stage-services';
@@ -81,8 +81,9 @@ export async function POST(req: Request) {
 
   const generalContext= await getGeneralContext(conversatioinId)
   const prompt= client.leadPrompt || ""
+  const contactContext= await getContactContext(phone, client.id)
   const documentsContext= await getDocumentsContext(client.id)
-  const context= generalContext + "\n\n" + prompt + "\n\n" + documentsContext
+  const context= generalContext + "\n\n" + prompt + "\n\n" + contactContext + "\n\n" + documentsContext
   console.log("context", context)
 
   const repositories= await getRepositorysDAO(client.id)

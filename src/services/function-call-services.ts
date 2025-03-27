@@ -2,6 +2,7 @@ import { DocumentType } from "@prisma/client";
 import { StepResult } from "ai";
 import { getDocumentsDAOByClient } from "./document-services";
 import { createMessage, MessageFormValues } from "./message-services";
+import { getContactByPhone } from "./contact-services";
 
 export async function getGeneralContext(conversationId: string) {
   let contextString= "\n"
@@ -18,6 +19,19 @@ export async function getGeneralContext(conversationId: string) {
   const nowInUruguay= new Date().toLocaleString("es-UY", { timeZone: "America/Montevideo" })
   contextString+= "La fecha y hora actual es: " + nowInUruguay + ".\n"
 
+  return contextString
+}
+
+export async function getContactContext(phone: string, clientId: string) {
+  const contact= await getContactByPhone(phone, clientId)
+  if (!contact) {
+    return ""
+  }
+  let contextString= "\n"
+  contextString+= "<Contacto>\n"
+  contextString+= `Nombre: ${contact.name}\n`
+  contextString+= `Teléfono: ${contact.phone}\n`
+  contextString+= `</Contacto>\n`
   return contextString
 }
 

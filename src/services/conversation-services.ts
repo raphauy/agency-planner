@@ -6,7 +6,7 @@ import { getConversationDbMessages, getMessagesDAO, MessageDAO } from "./message
 import { createUsageRecord, UsageRecordFormValues } from "./usagerecord-services"
 import { getUsageTypeDAOByName } from "./usagetype-services"
 import { UserDAO } from "./user-services"
-import { getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from "./function-call-services"
+import { getContactContext, getDocumentsContext, getGeneralContext, saveLLMResponse, saveToolCallResponse } from "./function-call-services"
 import { convertToCoreMessages, generateText, Message } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { leadTools } from "./tools"
@@ -616,8 +616,9 @@ export async function processMessage(id: string) {
 
   const generalContext= await getGeneralContext(conversation.id)
   const prompt= client.leadPrompt || ""
+  const contactContext= await getContactContext(conversation.phone, client.id)
   const documentsContext= await getDocumentsContext(client.id)
-  const context= generalContext + "\n\n" + prompt + "\n\n" + documentsContext
+  const context= generalContext + "\n\n" + prompt + "\n\n" + contactContext + documentsContext
   console.log("context", context)
 
   const repositories= await getRepositorysDAO(client.id)
