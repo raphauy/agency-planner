@@ -10,6 +10,8 @@ import { getAudiencesDAO } from "@/services/audience-services";
 import { TestEmail } from "./test-email";
 import { Broadcast } from "./broadcast";
 
+export const maxDuration= 800
+
 type Props= {
   params: Promise<{
     agencySlug: string

@@ -1,9 +1,13 @@
+import { AIIntegration } from "@/components/landing/ai-integration";
+import { BenefitsSection } from "@/components/landing/benefits-section";
 import ContactSection from "@/components/landing/contact-section";
 import { CTA1 } from "@/components/landing/cta1";
 import { Hero } from "@/components/landing/hero";
+import { KeyFeatures } from "@/components/landing/key-features";
+import { WorkflowSection } from "@/components/landing/workflow-section";
 import { getCurrentUser } from "@/lib/utils";
 import { getClientsOfCurrentUser } from "@/services/client-services";
-import { getSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { Poppins } from "next/font/google";
 import { redirect } from "next/navigation";
 
@@ -40,6 +44,10 @@ export default async function Home() {
     <main className="flex flex-col gap-4">
       <Hero />
       <CTA1 />
+      {/* <KeyFeatures />
+      <BenefitsSection />
+      <WorkflowSection />
+      <AIIntegration /> */}
       <ContactSection />
     </main>
 )
