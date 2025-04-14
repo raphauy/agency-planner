@@ -98,8 +98,7 @@ export async function POST(req: Request) {
     }
   }
   console.log("tools count:", Object.keys(tools).length)
-  //const model= process.env.NODE_ENV === "development" ? "gpt-4o-mini" : "gpt-4o"
-  const model= "gpt-4o"
+  const model= "gpt-4.1"
   console.log("model", model)
   const dbMessages= await getConversationDbMessages(conversatioinId)
   console.log("dbMessages", dbMessages)

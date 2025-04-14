@@ -323,7 +323,7 @@ export async function generateDescription(id: string, template?: string) {
       Al final del índice, debes agregar una lista de palabras claves que se relacionan con el documento.
       El nombre del documento es: '{name}' El texto del documento es: '{content}'
       Tu índice es:`
-      
+
       await setValue("DOCUMENT_DESCRIPTION_PROMPT", defaultTemplate)
       template= defaultTemplate
     } else {
@@ -350,7 +350,7 @@ export async function generateDescription(id: string, template?: string) {
   ]
 
   const response= await generateText({
-    model: openai("gpt-4o"),
+    model: openai("gpt-4.1"),
     temperature: 0.1,
     messages
   })

@@ -639,7 +639,7 @@ export async function processMessage(id: string) {
   console.log(dbMessages)
   
   const result= await generateText({
-    model: openai('gpt-4o'),
+    model: openai('gpt-4.1'),
     messages: dbMessages,
     tools: {
       ...leadTools,
