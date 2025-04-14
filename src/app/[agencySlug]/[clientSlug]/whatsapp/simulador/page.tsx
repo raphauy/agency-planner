@@ -1,10 +1,9 @@
 
-import { getClientDAOBySlugs } from '@/services/client-services';
-import SimulatorBox from './simulator-box';
 import { getCurrentUser } from '@/lib/utils';
-import { redirect } from 'next/navigation';
+import { getClientDAOBySlugs } from '@/services/client-services';
 import { getActiveMessages } from '@/services/conversation-services';
-import { Message } from 'ai';
+import { redirect } from 'next/navigation';
+import SimulatorBox from './simulator-box';
 
 type Props = {
   params: Promise<{

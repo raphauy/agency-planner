@@ -7,6 +7,14 @@ import { revalidatePath } from "next/cache"
 import { Knock } from "@knocklabs/node";
 import { getPublicationPath } from "@/lib/utils"
 
+// Interfaz simple para representar un listener
+interface ListenerUser {
+    id: string;
+    name?: string | null;
+    email: string;
+    image?: string | null;
+    role: string;
+}
 
 const knock = new Knock(process.env.KNOCK_API_SECRET)
 
@@ -54,8 +62,8 @@ async function createNotificatioin(data: CommentFormValues) {
         }
 
         const recipients= listeners
-            .filter(listener => listener.id !== user.id)
-            .map(listener => {
+            .filter((listener: ListenerUser) => listener.id !== user.id)
+            .map((listener: ListenerUser) => {
                 let altImage= publication.client.image
                 if (listener.role.startsWith("AGENCY")) {
                     altImage= publication.client.agency.image

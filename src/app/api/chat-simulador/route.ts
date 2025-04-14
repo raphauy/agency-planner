@@ -10,11 +10,12 @@ import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { revalidatePath } from 'next/cache';
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+// Allow streaming responses up to 90 seconds
+export const maxDuration = 90;
 
 export async function POST(req: Request) {
-  const { messages, conversationId, clientId } = await req.json()
+  const { messages, input, conversationId, clientId } = await req.json()
+  console.log("input", input)
 
   const client= await getClientDAO(clientId)
   if (!client) return new Response("Client not found", { status: 404 })
@@ -36,20 +37,20 @@ export async function POST(req: Request) {
   }
 
   const lastMessage= messages[messages.length - 1]
-  const input= lastMessage.content
+  const inputLastMessage= lastMessage.content
   let conversatioinId= conversationId
   
   // Solo creamos una nueva conversación si el usuario envía un mensaje y
   // no hay un ID válido de conversación
-  if (lastMessage.role === "user" && input) {
-    console.log("input: " + input)
+  if (lastMessage.role === "user" && inputLastMessage) {
+    console.log("input: " + inputLastMessage)
     // Si ya tenemos una ID de conversación válida (no "new"), usamos createMessage en lugar de messageArrived
     if (conversatioinId && conversatioinId !== "new") {
       console.log("Usando conversación existente:", conversatioinId)
       await createMessage({
         conversationId: conversatioinId,
         role: "user",
-        content: input,
+        content: inputLastMessage,
         tokens: 0
       })
     } else {
@@ -62,13 +63,13 @@ export async function POST(req: Request) {
         await createMessage({
           conversationId: conversatioinId,
           role: "user",
-          content: input,
+          content: inputLastMessage,
           tokens: 0
         })
       } else {
         // Si no hay conversación activa, creamos una nueva
-        console.log("Creando nueva conversación para mensaje:", input)
-        const userMessage = await messageArrived(phone, input, clientId, "user")
+        console.log("Creando nueva conversación para mensaje:", inputLastMessage)
+        const userMessage = await messageArrived(phone, inputLastMessage, clientId, "user")
         conversatioinId = userMessage.conversationId
       }
     }
