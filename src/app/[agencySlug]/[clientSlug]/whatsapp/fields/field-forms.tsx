@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { FieldFormValues, repoFieldSchema } from '@/services/field-services'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FieldType } from "@prisma/client"
+import { FieldType } from ".prisma/client"
 import { Loader } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"

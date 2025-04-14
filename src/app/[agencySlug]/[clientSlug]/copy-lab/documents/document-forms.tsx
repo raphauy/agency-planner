@@ -12,7 +12,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Loader } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 type Props= {
   id?: string

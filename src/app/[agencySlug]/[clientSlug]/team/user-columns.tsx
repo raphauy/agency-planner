@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import { format } from "date-fns"
 import { DeleteUserDialog, UserDialog } from "@/app/admin/users/user-dialogs"
-import { UserRole } from "@prisma/client"
+import { UserRole } from ".prisma/client"
 import { getLabel } from "@/lib/utils"
 
 

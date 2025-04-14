@@ -13,7 +13,7 @@
 //     includeLastCopys  Boolean? @default(false)
 
 import { prisma } from "@/lib/db";
-import { Pilar } from "@prisma/client";
+import { Pilar } from ".prisma/client";
 
 //     createdAt         DateTime  @default(now()) // gennext: skip.zod
 //     updatedAt         DateTime  @updatedAt      // gennext: skip.zod

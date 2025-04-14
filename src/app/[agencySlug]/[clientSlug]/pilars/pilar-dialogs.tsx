@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { PilarForm, DeletePilarForm } from "./pilar-forms"
 import { getPilarDAOAction } from "./pilar-actions"
 import { useSession } from "next-auth/react";
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import { useMenuAdminRoles } from "@/app/admin/users/use-roles";
 
 type Props= {

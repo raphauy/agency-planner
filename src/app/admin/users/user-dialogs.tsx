@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";

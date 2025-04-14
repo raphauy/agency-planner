@@ -1,7 +1,7 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { NewsletterDAO } from "./newsletter-services"
-import { EmailSendStatus } from "@prisma/client"
+import { EmailSendStatus } from ".prisma/client"
 import { EmailEvent } from "@/app/api/resend/route"
 
 export type EmailSendDAO = {

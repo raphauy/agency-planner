@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { auth } from "./auth"
-import { PublicationStatus, PublicationType, UserRole } from "@prisma/client"
+import { PublicationStatus, PublicationType, UserRole } from ".prisma/client"
 import { format as formatTZ, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale";
 import { format, isThisWeek, isToday, isYesterday, parseISO } from "date-fns";

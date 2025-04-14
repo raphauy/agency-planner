@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { ChannelStatus } from "@prisma/client"
+import { ChannelStatus } from ".prisma/client"
 
 export type ChannelDAO = {
 	id: string

@@ -1,6 +1,6 @@
 import { DocumentDAO } from "@/services/document-services"
 import { DocumentCard } from "./document-card"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 type Props= {
   documents: DocumentDAO[]

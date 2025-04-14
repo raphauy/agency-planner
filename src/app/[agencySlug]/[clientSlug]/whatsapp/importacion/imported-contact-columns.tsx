@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import { DeleteImportedContactDialog, ImportedContactDialog } from "./imported-contact-dialogs"
 import { Badge } from "@/components/ui/badge"
-import { ImportedContactStatus, ImportedContactType } from "@prisma/client"
+import { ImportedContactStatus, ImportedContactType } from ".prisma/client"
 
 export const columns: ColumnDef<ImportedContactDAO>[] = [
   

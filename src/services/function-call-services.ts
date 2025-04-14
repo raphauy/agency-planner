@@ -1,4 +1,4 @@
-import { DocumentType } from "@prisma/client";
+import { DocumentType } from ".prisma/client";
 import { StepResult } from "ai";
 import { getDocumentsDAOByClient } from "./document-services";
 import { createMessage, MessageFormValues } from "./message-services";

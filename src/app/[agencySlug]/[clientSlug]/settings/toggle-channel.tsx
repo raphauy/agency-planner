@@ -7,7 +7,7 @@ import { ChannelDAO } from "@/services/channel-services"
 import { ClientDAO } from "@/services/client-services"
 import { useEffect, useState } from "react"
 import { changeClientChannelPermissionAction } from "../../permissions/permissions-actions"
-import { ChannelStatus } from "@prisma/client"
+import { ChannelStatus } from ".prisma/client"
 import { Loader } from "lucide-react"
 
 type Props = {

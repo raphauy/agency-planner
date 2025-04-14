@@ -10,7 +10,7 @@ import { cn, formatWhatsAppStyle } from '@/lib/utils'
 import { ComercialDAO } from '@/services/comercial-services'
 import { ContactEventDAO } from '@/services/contact-event-services'
 import { ContactDAO } from "@/services/contact-services"
-import { ContactEventType, FieldType } from '@prisma/client'
+import { ContactEventType, FieldType } from '.prisma/client'
 import { DatabaseZapIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'

@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { InvitationStatus } from "@prisma/client"
+import { InvitationStatus } from ".prisma/client"
 
 export type InvitationDAO = {
 	id: string

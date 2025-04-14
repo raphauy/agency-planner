@@ -5,7 +5,7 @@ import { createContactEvent, getContactEventsDAO } from "@/services/contact-even
 import { ContactDAO, ContactFormValues, createContact, deleteContact, getContactDAO, getContactsByStage, getStageByContactId, getTagsOfContact, assignContactToComercial, setTagsOfContact, updateContact, updateStageContacts } from "@/services/contact-services"
 import { getRepoDataCount } from "@/services/repodata-services"
 import { getClientTags } from "@/services/repository-services"
-import { ContactEventType } from "@prisma/client"
+import { ContactEventType } from ".prisma/client"
 import { revalidatePath } from "next/cache"
 
 export async function getContactDAOAction(id: string): Promise<ContactDAO | null> {

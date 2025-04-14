@@ -15,7 +15,7 @@ import { ClientDAO } from "@/services/client-services"
 import { PilarDAO } from "@/services/pilar-services"
 import { PublicationFormValues, publicationSchema } from '@/services/publication-services'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PublicationStatus, PublicationType } from "@prisma/client"
+import { PublicationStatus, PublicationType } from ".prisma/client"
 import { useCompletion } from "ai/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"

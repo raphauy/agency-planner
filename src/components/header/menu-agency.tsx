@@ -3,7 +3,7 @@
 import { useMenuAdminRoles } from "@/app/admin/users/use-roles"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { UserRole } from "@prisma/client"
+import { UserRole } from ".prisma/client"
 import { BarChartBig, CalendarCheck2, LayoutDashboard, LockKeyhole, Receipt, User } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"

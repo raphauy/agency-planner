@@ -1,7 +1,7 @@
 "use server"
 
 import { getActiveConversation, getConversationDAO, getFullConversationsBySlugs, getLastConversation } from "@/services/conversation-services"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 export async function getActiveConversationIdAction(phone: string, clientId: string) {
   const conversation= await getActiveConversation(phone, clientId)

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Loader } from "lucide-react"
-import { EmailSendStatus } from "@prisma/client"
+import { EmailSendStatus } from ".prisma/client"
 
 
 

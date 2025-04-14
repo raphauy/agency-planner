@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { UserRole } from "@prisma/client"
+import { UserRole } from ".prisma/client"
 import { getCurrentUser } from "@/lib/utils"
 import { sendAgencyInvitationEmail, sendClientInvitationEmail } from "./email-services"
 

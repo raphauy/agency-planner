@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { PublicationForm, DeletePublicationForm } from "./publication-forms"
 import { getPublicationDAOAction } from "./publication-actions"
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import { useMenuAdminRoles } from "@/app/admin/users/use-roles";
 import { useSession } from "next-auth/react";
 

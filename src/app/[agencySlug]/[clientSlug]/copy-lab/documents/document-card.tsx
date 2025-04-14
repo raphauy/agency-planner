@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DocumentDAO } from "@/services/document-services"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 import { Briefcase, CalendarIcon, WholeWord } from "lucide-react"

@@ -6,7 +6,7 @@ import { Clipboard, ExternalLink, LayoutDashboard, LockKeyhole, LogOut, User } f
 import Link from "next/link";
 import { ExtendedUser } from "@/next-auth";
 import { useRouter } from "next/navigation";
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import { LinealToggle } from "../shadcn/toggle-theme";
 
 

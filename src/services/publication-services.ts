@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { PublicationListener, PublicationStatus, PublicationType } from "@prisma/client"
+import { PublicationListener, PublicationStatus, PublicationType } from ".prisma/client"
 import { ClientDAO } from "./client-services"
 import { PilarDAO } from "./pilar-services"
 import { CommentDAO, CommentFormValues, createComment } from "./comment-services"

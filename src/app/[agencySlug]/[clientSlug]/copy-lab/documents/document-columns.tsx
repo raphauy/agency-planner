@@ -7,7 +7,7 @@ import { format } from "date-fns"
 import { ArrowUpDown, WholeWord } from "lucide-react"
 import Link from "next/link"
 import { DeleteDocumentDialog } from "./document-dialogs"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 
 export const columns: ColumnDef<DocumentDAO>[] = [

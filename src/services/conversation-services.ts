@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 import * as z from "zod"
 import { ClientDAO, getChatwootAccountId, getClientDAO, getSessionTTL, getWhatsappInstance } from "./client-services"
 import { getConversationDbMessages, getMessagesDAO, MessageDAO } from "./message-services"

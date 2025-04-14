@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db"
 import { colorPalette } from "@/lib/utils"
-import { FieldType } from "@prisma/client"
+import { FieldType } from ".prisma/client"
 import { CoreTool, tool } from "ai"
 import * as z from "zod"
 import { getWhatsappInstance } from "./client-services"

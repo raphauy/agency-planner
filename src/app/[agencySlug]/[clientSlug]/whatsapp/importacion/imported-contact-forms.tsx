@@ -10,7 +10,7 @@ import { Loader } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { createOrUpdateImportedContactAction, deleteImportedContactAction, getImportedContactDAOAction } from "./imported-contact-actions"
-import { ImportedContactType } from "@prisma/client"
+import { ImportedContactType } from ".prisma/client"
 
 type Props= {
   clientId: string

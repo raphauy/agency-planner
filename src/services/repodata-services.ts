@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db"
-import { JsonValue } from "@prisma/client/runtime/library"
+import { JsonValue } from ".prisma/client/runtime/library"
 import * as z from "zod"
 import { getFieldsDAOByRepositoryId } from "./field-services"
 import { getClientDAOBySlugs } from "./client-services"

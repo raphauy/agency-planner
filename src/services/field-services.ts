@@ -1,9 +1,9 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { RepositoryDAO } from "./repository-services"
-import { FieldType } from "@prisma/client"
+import { FieldType } from ".prisma/client"
 import { updateRepositoryToolDefinition } from "./repository-services"
-import { JsonValue } from "@prisma/client/runtime/library"
+import { JsonValue } from ".prisma/client/runtime/library"
 
 export type FieldDAO = {
 	id: string

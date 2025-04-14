@@ -1,6 +1,6 @@
 "use client"
 
-import { UserRole } from "@prisma/client"
+import { UserRole } from ".prisma/client"
 import { useSession } from "next-auth/react"
 import { useParams, usePathname } from "next/navigation"
 import MenuAdmin from "./menu-admin"

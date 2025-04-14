@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { Message } from "@prisma/client";
+import { Message } from ".prisma/client";
 import { addMilliseconds } from "date-fns";
 import { getClientDAO, getMessageArrivedDelayByMessageId } from "./client-services";
 import { messageArrived, processMessage } from "./conversation-services";

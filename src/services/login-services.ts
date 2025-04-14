@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db"
-import { InvitationStatus } from "@prisma/client";
+import { InvitationStatus } from ".prisma/client";
 import { z } from "zod";
 
 export const LoginSchema = z.object({

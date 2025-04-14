@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
-import { SubscriptionStatus } from "@prisma/client"
+import { SubscriptionStatus } from ".prisma/client"
 import { getPlanDAOByPriceId, PlanDAO } from "./plan-services"
 import { AgencyDAO, getAgencyDAO } from "./agency-services"
 

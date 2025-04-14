@@ -2,7 +2,7 @@ import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { JSONContent } from "novel"
 import { colorPalette } from "@/lib/utils"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 export type DocumentDAO = {
 	id: string

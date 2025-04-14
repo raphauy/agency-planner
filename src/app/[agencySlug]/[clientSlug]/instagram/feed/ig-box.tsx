@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentRole } from "@/lib/utils"
 import { getListeners, getTeamMembers, PublicationDAO } from "@/services/publication-services"
-import { PublicationType, UserRole } from "@prisma/client"
+import { PublicationType, UserRole } from ".prisma/client"
 import { format as formatTz, toZonedTime } from 'date-fns-tz'
 import { es } from "date-fns/locale"
 import { Camera, Download, GalleryHorizontal, GalleryHorizontalEnd, Heart, MessageCircle, Pencil, Send, Video } from "lucide-react"

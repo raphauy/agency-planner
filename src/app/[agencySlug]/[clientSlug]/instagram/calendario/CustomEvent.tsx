@@ -3,7 +3,7 @@ import { isBefore } from "date-fns"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { Camera, GalleryHorizontalEnd, Video } from "lucide-react"
-import { PublicationType } from "@prisma/client"
+import { PublicationType } from ".prisma/client"
 
 export interface Event {
   fechaImportante: string

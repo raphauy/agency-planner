@@ -1,7 +1,7 @@
 import * as z from "zod"
 import { prisma } from "@/lib/db"
 import { ContactDAO } from "./contact-services"
-import { ContactEventType } from "@prisma/client"
+import { ContactEventType } from ".prisma/client"
 
 export type ContactEventDAO = {
 	id: string

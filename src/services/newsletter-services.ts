@@ -1,6 +1,6 @@
 import Newsletter from "@/components/email/newsletter"
 import { prisma } from "@/lib/db"
-import { EmailSendStatus, NewsletterStatus } from "@prisma/client"
+import { EmailSendStatus, NewsletterStatus } from ".prisma/client"
 import { Resend } from "resend"
 import * as z from "zod"
 import { AudienceDAO } from "./audience-services"

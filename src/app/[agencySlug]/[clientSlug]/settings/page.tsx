@@ -6,7 +6,7 @@ import { TitleForm } from "@/components/title-form";
 import { Button } from "@/components/ui/button";
 import { getCurrentRole } from "@/lib/utils";
 import { getClientDAOBySlugs } from "@/services/client-services";
-import { ChannelStatus, UserRole } from "@prisma/client";
+import { ChannelStatus, UserRole } from ".prisma/client";
 import { LayoutDashboard, ListCollapse, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { DeleteClientDialog } from "../../clients/client-dialogs";

@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import NextAuth from "next-auth";
 import authConfig from "@/lib/auth.config";
 import { prisma as db } from "@/lib/db";

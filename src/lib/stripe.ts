@@ -1,7 +1,7 @@
 import { getAgencyDAO, getAgencyDAOBySlug, getAgencyDAOByStripeCustomerId } from "@/services/agency-services";
 import { getPlanDAOByPriceId } from "@/services/plan-services";
 import { changePlan, createSubscription, getSubscriptionDAOByStripeSubscriptionId, SubscriptionFormValues, SubscriptionUpdateFormValues, updateSubscription } from "@/services/subscription-services";
-import { Subscription, SubscriptionStatus } from "@prisma/client";
+import { Subscription, SubscriptionStatus } from ".prisma/client";
 import { revalidatePath } from "next/cache";
 import Stripe from "stripe"
 

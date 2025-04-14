@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState, useEffect } from "react";
 import { setAudienceAction, setEmailFromAction, setNameFromAction, setReplyToAction } from "../newsletter-actions";
 import { Button } from "@/components/ui/button";
-import { NewsletterStatus } from "@prisma/client";
+import { NewsletterStatus } from ".prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader, Save } from "lucide-react";

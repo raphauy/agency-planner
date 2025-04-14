@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { DeleteDocumentForm, DocumentForm } from "./document-forms";
-import { DocumentType } from "@prisma/client";
+import { DocumentType } from ".prisma/client";
 
 type Props= {
   id?: string

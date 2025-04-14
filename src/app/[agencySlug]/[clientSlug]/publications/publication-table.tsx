@@ -10,7 +10,7 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRende
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { PublicationStatus, PublicationType } from "@prisma/client"
+import { PublicationStatus, PublicationType } from ".prisma/client"
 
 const types= Object.values(PublicationType)
 const statuses= Object.values(PublicationStatus)

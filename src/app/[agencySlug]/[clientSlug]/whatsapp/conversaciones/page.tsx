@@ -2,7 +2,7 @@
 
 import { toast } from "@/components/ui/use-toast"
 import { ConversationDAO } from "@/services/conversation-services"
-import { DocumentType, UserRole } from "@prisma/client"
+import { DocumentType, UserRole } from ".prisma/client"
 import { Loader } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useEffect, useState, use } from "react";

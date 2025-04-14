@@ -11,7 +11,7 @@ import { DocumentDialog } from "./document-dialogs"
 import { DataTable } from "./document-table"
 import { columns } from "./document-columns"
 import DocumentGrid from "./document-grid"
-import { DocumentType } from "@prisma/client"
+import { DocumentType } from ".prisma/client"
 
 type Props= {
     documents: DocumentDAO[]

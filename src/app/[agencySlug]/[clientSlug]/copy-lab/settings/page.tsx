@@ -3,7 +3,7 @@ import { IconBadge } from "@/components/icon-badge";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentRole } from "@/lib/utils";
 import { getClientDAOBySlugs } from "@/services/client-services";
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 import { LayoutDashboard, SparklesIcon } from "lucide-react";
 import { setBrandVoiceAction, setIncludeBrandVoiceAction } from "../../settings/actions";
 import { setPromptAction } from "./actions";

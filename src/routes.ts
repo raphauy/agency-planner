@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole } from ".prisma/client";
 
 /**
  * An array of routes that are accessible to the public

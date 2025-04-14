@@ -5,7 +5,7 @@ import { cn, getPostStatusColor } from "@/lib/utils"
 import { updatePublicationStatus } from "@/services/publication-services"
 import { useEffect, useState } from "react"
 import { updatePublicationStatusAction } from "./publication-actions"
-import { PublicationStatus } from "@prisma/client"
+import { PublicationStatus } from ".prisma/client"
 import { toast } from "@/components/ui/use-toast"
 
 interface Props {

@@ -2,7 +2,7 @@
   
 import { revalidatePath } from "next/cache"
 import { PublicationDAO, PublicationFormValues, createPublication, updatePublication, getFullPublicationDAO, deletePublication, updatePublicationStatus, addListener, removeListener } from "@/services/publication-services"
-import { PublicationStatus } from "@prisma/client"
+import { PublicationStatus } from ".prisma/client"
 
 
 export async function getPostDAOAction(id: string): Promise<PublicationDAO | null> {

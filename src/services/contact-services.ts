@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db"
 import { ApiError } from "@figuro/chatwoot-sdk"
-import { ContactEventType } from "@prisma/client"
+import { ContactEventType } from ".prisma/client"
 import * as z from "zod"
 import { assignConversationToAgent, createChatwootConversation, createContactInChatwoot, deleteContactInChatwoot } from "./chatwoot"
 import { getChatwootAccountId, getSlugsByClientId, getWhatsappInstance } from "./client-services"
