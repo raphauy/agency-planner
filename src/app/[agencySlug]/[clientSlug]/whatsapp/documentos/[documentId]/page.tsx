@@ -1,7 +1,12 @@
 import { getDocumentDAO } from "@/services/document-services";
 import { redirect } from "next/navigation";
-import { DocumentDialog } from "../../../copy-lab/documents/document-dialogs";
-import NovelOnClient from "../../../copy-lab/documents/[documentId]/editor-on-client";
+import { DocumentDialog } from "../document-dialogs";
+import NovelOnClient from "./editor-on-client";
+import { cn, getCurrentUser } from "@/lib/utils";
+import GenerateDescriptionButton from "./generate-description-button";
+import { getValue } from "@/services/config-services";
+import { DescriptionForm } from "@/components/description-form";
+import { updateTemplateAction } from "../document-actions";
 
 type Props = {
     params: Promise<{
@@ -28,6 +33,13 @@ export default async function Page(props: Props) {
         redirect(`/${agencySlug}/${clientSlug}/leads/documentos`)
     }
 
+    const label= document.automaticDescription ? "generada con IA" : "manual"
+
+    const descriptionTemplate= await getValue("DOCUMENT_DESCRIPTION_PROMPT")
+    
+    const currentUser= await getCurrentUser()
+    const isAdmin= currentUser?.role === "ADMIN"
+
     return (
         <div className="flex flex-col w-full p-1 md:p-4 xl:p-8">
                         
@@ -38,6 +50,25 @@ export default async function Page(props: Props) {
 
             <NovelOnClient document={document} initialContent={content} />
 
+            <div className="gap-4 mt-10 space-y-5 mb-40">
+                <p className="text-2xl font-bold">Descripción ({label})</p>
+                <p className="whitespace-pre-wrap border rounded-md p-4">{document.description}</p>
+                <GenerateDescriptionButton id={document.id} />
+
+                <div className={cn(!isAdmin && "hidden")}>
+                {
+                    descriptionTemplate ?
+                    <DescriptionForm 
+                        id={"DOCUMENT_DESCRIPTION_PROMPT"} 
+                        label="Descripción (este prompt se utiliza para generar la descripción automática para todos los clientes que estén en automático)"
+                        initialValue={descriptionTemplate} 
+                        update={updateTemplateAction} 
+                    />
+                    :
+                    <p className="text-sm text-muted-foreground bg-background rounded-md p-2">No hay template de descripción</p>
+                }
+                </div>
+            </div>                
         </div>
     )
 }

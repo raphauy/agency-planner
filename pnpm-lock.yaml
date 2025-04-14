@@ -295,6 +295,9 @@ importers:
       eslint-config-next:
         specifier: 15.2.1
         version: 15.2.1(eslint@8.57.1)(typescript@5.8.3)
+      next-transpile-modules:
+        specifier: ^10.0.1
+        version: 10.0.1
       postcss:
         specifier: ^8
         version: 8.5.3
@@ -5061,6 +5064,9 @@ packages:
     peerDependencies:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
+
+  next-transpile-modules@10.0.1:
+    resolution: {integrity: sha512-4VX/LCMofxIYAVV58UmD+kr8jQflpLWvas/BQ4Co0qWLWzVh06FoZkECkrX5eEZT6oJFqie6+kfbTA3EZCVtdQ==}
 
   next@14.1.4:
     resolution: {integrity: sha512-1WTaXeSrUwlz/XcnhGTY7+8eiaFvdet5z9u3V2jb+Ek1vFo0VhHKSAIJvDWfQpttWjnyw14kBeq28TPq7bTeEQ==}
@@ -12040,6 +12046,10 @@ snapshots:
     dependencies:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+
+  next-transpile-modules@10.0.1:
+    dependencies:
+      enhanced-resolve: 5.18.1
 
   next@14.1.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:

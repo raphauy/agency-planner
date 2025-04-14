@@ -1,6 +1,6 @@
 import { getClientDAOBySlugs } from "@/services/client-services"
 import { getDocumentsDAOByClient } from "@/services/document-services"
-import DocumentsTabs from "./documents-tabs"
+import DocumentsTabs from "../../whatsapp/documentos/documents-tabs"
 import { DocumentType } from ".prisma/client"
 
 type Props= {

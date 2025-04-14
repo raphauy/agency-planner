@@ -39,9 +39,9 @@ export function DescriptionForm({ id, label, initialValue, update }: Props) {
 
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4 dark:bg-black">
+    <div className="mt-6 border rounded-md p-4 bg-muted">
       <div className="font-medium flex flex-col">
-        {label ? <p>{label}:</p> : "Descripción:"}
+        {label ? <p className="border-b pb-2 mb-2">{label}:</p> : "Descripción:"}
 
             {
               isEditing ? (

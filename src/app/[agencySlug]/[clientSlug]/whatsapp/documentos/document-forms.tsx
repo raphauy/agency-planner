@@ -13,6 +13,8 @@ import { Loader } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import { DocumentType } from ".prisma/client"
+import { Switch } from "@/components/ui/switch"
+import { cn } from "@/lib/utils"
 
 type Props= {
   id?: string
@@ -28,11 +30,13 @@ export function DocumentForm({ id, clientId, type, closeDialog }: Props) {
       name: "",
       description: "",
       clientId: clientId,
-      type: type
+      type: type,
+      automaticDescription: true
     },
     mode: "onChange",
   })
   const [loading, setLoading] = useState(false)
+  const automaticDescription = form.watch("automaticDescription")
 
   const onSubmit = async (data: DocumentFormValues) => {
     setLoading(true)
@@ -56,6 +60,7 @@ export function DocumentForm({ id, clientId, type, closeDialog }: Props) {
           form.setValue("description", data.description)
           form.setValue("clientId", data.clientId)
           form.setValue("type", data.type)
+          form.setValue("automaticDescription", data.automaticDescription)
         }
       })
     }
@@ -80,23 +85,47 @@ export function DocumentForm({ id, clientId, type, closeDialog }: Props) {
               </FormItem>
             )}
           />
-      
+
           <FormField
             control={form.control}
-            name="description"
+            name="automaticDescription"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descripción</FormLabel>
-                <FormControl>
-                  <Textarea rows={10} placeholder="ej: En este documento se detallan las características de la cerveza Super Rubia, tanto organoléptica como nutricional. También se menciona el uso de la cerveza en diferentes contextos, como en eventos deportivos o en la vida cotidiana." {...field} />
-                </FormControl>
-                <FormDescription>Esta descripción será utilizada para seleccionar información relevante para la IA entre todos los documentos.</FormDescription>
-                <FormDescription>No es información que le llegará al usuario, pero es muy importante para poder filtrar los documentos relevantes.</FormDescription>
+              <FormItem className="pt-10">
+                <FormLabel>Descripción automática</FormLabel>
+                  <div className="flex items-center gap-2 border rounded-md p-2">
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <div>
+                      <FormDescription>Si está marcado, la descripción se generará automáticamente una vez el documento tenga información, de lo contrario se deberá escribir manualmente.</FormDescription>
+                    </div>
+                  </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-        
+          <FormDescription className={cn(!automaticDescription && "hidden")}>
+            <span className="font-bold">Nota:</span> Esta descripción será utilizada para seleccionar información relevante para la IA entre todos los documentos.  
+          </FormDescription>
+
+      
+          <div className={cn(automaticDescription && "hidden")}>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descripción</FormLabel>
+                  <FormControl>
+                    <Textarea rows={10} placeholder="ej: En este documento se detallan las características de la cerveza Super Rubia, tanto organoléptica como nutricional. También se menciona el uso de la cerveza en diferentes contextos, como en eventos deportivos o en la vida cotidiana." {...field} />
+                  </FormControl>
+                  <FormDescription>Esta descripción será utilizada para seleccionar información relevante para la IA entre todos los documentos.</FormDescription>
+                  <FormDescription>No es información que le llegará al usuario, pero es muy importante para poder filtrar los documentos relevantes.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
         <div className="flex justify-end">
             <Button onClick={() => closeDialog()} type="button" variant={"secondary"} className="w-32">Cancelar</Button>

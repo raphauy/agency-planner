@@ -301,6 +301,8 @@ model Document {
   color                  String   @default("#000000")         // gennext: skip.zod
   type                   DocumentType @default(COPY_LAB)      // gennext: skip.zod
 
+  automaticDescription   Boolean   @default(false)            // gennext: show.column
+
   createdAt             DateTime  @default(now())             // gennext: skip.zod
   updatedAt             DateTime  @updatedAt @default(now())  // gennext: skip.zod show.column
 
@@ -830,4 +832,12 @@ model ContactEvent {
   contactId     String
 
   createdAt     DateTime   @default(now())             // gennext: skip.zod
+}
+
+model Config {
+  id             String       @id @default(cuid())
+  name           String       @unique
+  value          String?      @db.Text
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt  
 }

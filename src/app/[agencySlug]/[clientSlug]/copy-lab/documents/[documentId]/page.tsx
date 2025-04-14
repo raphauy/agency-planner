@@ -1,7 +1,7 @@
 import { getDocumentDAO } from "@/services/document-services";
 import { redirect } from "next/navigation";
-import { DocumentDialog } from "../document-dialogs";
-import NovelOnClient from "./editor-on-client";
+import { DocumentDialog } from "../../../whatsapp/documentos/document-dialogs";
+import NovelOnClient from "../../../whatsapp/documentos/[documentId]/editor-on-client";
 
 type Props = {
     params: Promise<{

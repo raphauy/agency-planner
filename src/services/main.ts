@@ -1,8 +1,9 @@
+import { generateDescription } from "./document-services"
 import { getResendEmail } from "./newsletter-services"
 import { connectionState, createInstanceBasic, deleteInstance, enableChatwoot, fetchInstances } from "./wrc-sdk"
 import { ChatwootParams } from "./wrc-sdk-types"
-//import { config } from "dotenv"
-//config()
+import { config } from "dotenv"
+config()
 
 async function main() {
     console.log('main')
@@ -42,10 +43,10 @@ async function main() {
     // const res= await enableChatwoot(instanceName, params)
     // console.log(res)
 
-    const resendId= "55914735-58c1-486a-ae33-742c40c82960"
-    const resendEmail= await getResendEmail(resendId)
-    console.log(resendEmail)    
+    const documentId= "cm7uv38jj0007128hqqrqhrl1"
+    const template= "Genara el índice de un documento llamado {name} con el siguiente contenido: {content}"
+    const description= await generateDescription(documentId)
 
 }
 
-main()
+//main()
