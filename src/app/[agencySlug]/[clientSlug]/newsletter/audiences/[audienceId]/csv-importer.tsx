@@ -19,8 +19,11 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 
 function isValidEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false
+  const emailTrimmed = email.trim()
+  if (emailTrimmed.length === 0) return false
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  return emailRegex.test(emailTrimmed)
 }
 
 type Props= {
@@ -110,7 +113,7 @@ export function CsvImporter({ audienceId }: Props) {
         name: useSeparateNameFields
           ? `${row[firstNameField] || ""} ${row[lastNameField] || ""}`.trim()
           : row[nameField] || "",
-        email: row[emailField],
+        email: (row[emailField] || "").trim(),
       })) as CSVContact[]
 
       const invalidEmails = mappedContacts
