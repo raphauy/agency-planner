@@ -48,9 +48,9 @@ export async function POST(req: Request) {
   }
 
   // take the last 20 messages
-  const last20= messages.slice(-20)
+  const lastMessages= messages.slice(-100)
 
-  const lastMessage= last20[last20.length - 1]
+  const lastMessage= lastMessages[lastMessages.length - 1]
   const input= lastMessage.content
   if (lastMessage.role === "user" && input) {
     console.log("input: " + input)
@@ -70,8 +70,8 @@ export async function POST(req: Request) {
   console.log("systemMessage", systemMessage)
   
 
-  console.log("messages.count: " + last20.length)
-  console.log("messages", JSON.stringify(last20, (key, value) => {
+  console.log("messages.count: " + lastMessages.length)
+  console.log("messages", JSON.stringify(lastMessages, (key, value) => {
     if (typeof value === 'object' && value !== null) {
       return value;
     }
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
   const result= await streamText({
     model: openai("gpt-4.1"),
     system: systemMessage,
-    messages: convertToCoreMessages(last20),
+    messages: convertToCoreMessages(lastMessages),
     tools: copyLabTools,
     onFinish: async ({text, toolCalls, toolResults, finishReason, usage,}) => {
       console.log("onFinish")
