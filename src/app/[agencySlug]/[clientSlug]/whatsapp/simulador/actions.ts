@@ -4,7 +4,7 @@ import { getActiveMessages, getConversationMessages } from "@/services/conversat
 import { MessageDAO } from "@/services/message-services"
 
 export async function getConversationMessagesAction(conversationId: string): Promise<MessageDAO[]> {
-    const take= 20
+    const take= 100
     const messages= await getConversationMessages(conversationId, take)
     return messages
 }

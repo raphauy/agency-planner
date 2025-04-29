@@ -380,7 +380,7 @@ export async function closeConversation(conversationId: string) {
 
 // an active conversation is one that has a message in the last x minutes
 export async function getActiveConversation(phone: string, clientId: string) {
-  let sessionTimeInMinutes= await getSessionTTL(clientId) || 10
+  let sessionTimeInMinutes= await getSessionTTL(clientId) || 30
     
   // Buscamos una conversación activa basándonos en lastMessageAt
   const found = await prisma.conversation.findFirst({
