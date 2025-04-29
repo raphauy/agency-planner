@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   }
 
   // take the last 20 messages
-  const lastMessages= messages.slice(-100)
+  const lastMessages= messages.slice(-200)
 
   const lastMessage= lastMessages[lastMessages.length - 1]
   const input= lastMessage.content

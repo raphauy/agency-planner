@@ -100,7 +100,7 @@ export async function POST(req: Request) {
   console.log("tools count:", Object.keys(tools).length)
   const model= "gpt-4.1"
   console.log("model", model)
-  const dbMessages= await getConversationDbMessages(conversatioinId)
+  const dbMessages= await getConversationDbMessages(conversatioinId, 200)
   console.log("dbMessages", dbMessages)
   const result = await streamText({
     model: openai(model),
