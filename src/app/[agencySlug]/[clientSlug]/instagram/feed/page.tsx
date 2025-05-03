@@ -42,7 +42,10 @@ export default async function FeedPage(props: Props) {
   const allPosts= await getPublicationsDAOByClient(client.id)
 
   const filteredByRole= filterPublicationsByRole(allPosts, currentRole)
-  const posts= filteredByRole.filter((post) => post.type !== PublicationType.INSTAGRAM_STORY)
+  const posts= filteredByRole.filter((post) => 
+    post.type !== PublicationType.INSTAGRAM_STORY && 
+    post.type !== PublicationType.CALENDAR_NOTE
+  )
 
   let postId= searchParams.post
   if (!postId && postId !== "new-post" && posts.length > 0) {

@@ -114,7 +114,7 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
       {
         event.title && (
           <div className="relative border rounded-md p-0.5" style={{ backgroundColor: `${event.color}`}}> 
-            {show && <div className={cn("absolute bottom-0 border border-white right-0 rounded-full w-5 h-5", statusColor)}/>}
+            {show && !isNote && <div className={cn("absolute bottom-0 border border-white right-0 rounded-full w-5 h-5", statusColor)}/>}
             
             {isNote ? (
               <div onClick={handleNoteClick} className="cursor-pointer">
