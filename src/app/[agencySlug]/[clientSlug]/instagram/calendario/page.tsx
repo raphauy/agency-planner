@@ -35,7 +35,17 @@ export default async function CalendarPage(props: Props) {
       const image= images?.length && images?.length > 0 ? images[0] :  "/image-placeholder.png"
       const videos= post.images?.split(",").filter((video) => video.includes(".mp4") || video.includes(".mov") || video.includes(".webm"))
       
+      // Crear la URL adecuada según el tipo de publicación
+      let href = `/${agencySlug}/${clientSlug}/instagram/feed?post=${post.id}`;
+      
+      // Para las notas, no usamos una URL normal sino un identificador especial
+      // que será manejado en el componente CustomEvent
+      if (post.type === "CALENDAR_NOTE") {
+        href = `note:${post.id}`;
+      }
+      
       return {
+        id: post.id,
         title: post.title,
         start: post.publicationDate,
         end: post.publicationDate,
@@ -44,7 +54,7 @@ export default async function CalendarPage(props: Props) {
         fechaImportante: "",
         status: post.status,
         content: post.copy || "",
-        href: `/${agencySlug}/${clientSlug}/instagram/feed?post=${post.id}`,
+        href,
         compact: filteredPosts.filter((p) => isSameDay(p.publicationDate, post.publicationDate)).length > 1,
         type: post.type,
       }
@@ -58,7 +68,11 @@ export default async function CalendarPage(props: Props) {
       </div>
 
       <div className="w-full flex flex-col h-full p-2 bg-gray-200 border border-gray-300 rounded-xl min-w-[600px]"> 
-        <CalendarBox events={events} />
+        <CalendarBox 
+          events={events} 
+          agencySlug={agencySlug} 
+          clientSlug={clientSlug} 
+        />
       </div>
     </div>
   )

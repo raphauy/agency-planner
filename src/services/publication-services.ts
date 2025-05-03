@@ -160,6 +160,9 @@ function mapTypes(filter: string) {
   if (filter.toUpperCase().includes("S")) 
     types.push(PublicationType.INSTAGRAM_STORY)
   
+  if (filter.toUpperCase().includes("N")) 
+    types.push(PublicationType.CALENDAR_NOTE)
+  
   return types
 }
 
@@ -252,6 +255,8 @@ function getText(type: PublicationType) {
       return "Reel creado"
     case PublicationType.INSTAGRAM_STORY:
       return "Historia creada"
+    case PublicationType.CALENDAR_NOTE:
+      return "Nota creada"
     default:
       return "Publicación"
   }
@@ -497,4 +502,54 @@ export async function getTeamMembers(publicationId: string) {
   return res
 
 
+}
+
+export async function createCalendarNote(title: string, agencySlug: string, clientSlug: string, publicationDate: Date) {
+  const client = await prisma.client.findFirst({
+    where: {
+      slug: clientSlug,
+      agency: {
+        slug: agencySlug
+      }
+    }
+  });
+
+  if (!client) {
+    throw new Error("Cliente no encontrado");
+  }
+
+  const created = await prisma.publication.create({
+    data: {
+      title,
+      type: "CALENDAR_NOTE",
+      status: "BORRADOR",
+      publicationDate,
+      clientId: client.id,
+      usageIsPending: true
+    }
+  });
+
+  if (!created) return null;
+
+  return created;
+}
+
+export async function updateCalendarNote(id: string, title: string) {
+  const updated = await prisma.publication.update({
+    where: {
+      id
+    },
+    data: {
+      title
+    },
+    include: {
+      client: true,
+      pilar: true,
+      listeners: true
+    }
+  });
+
+  if (!updated) return null;
+
+  return updated;
 }

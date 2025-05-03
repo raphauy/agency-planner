@@ -29,3 +29,17 @@ export async function deletePublicationAction(id: string): Promise<PublicationDA
     return deleted as PublicationDAO
 }
 
+export async function createCalendarNoteAction(data: Omit<PublicationFormValues, 'type' | 'status'>): Promise<PublicationDAO | null> {
+    const noteData: PublicationFormValues = {
+        ...data,
+        type: "CALENDAR_NOTE",
+        status: "BORRADOR"
+    }
+    
+    const created = await createPublication(noteData)
+    
+    revalidatePath("/[agencySlug]/[clientSlug]", "page")
+    
+    return created as PublicationDAO
+}
+

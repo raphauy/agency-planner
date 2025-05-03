@@ -21,7 +21,7 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { CalendarIcon, Loader, SparklesIcon, Trash2, X } from "lucide-react"
 import Image from "next/image"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import TextareaAutosize from "react-textarea-autosize"
@@ -60,6 +60,8 @@ export function PostForm({ id, type: typeProp, defaultHashtags, cloudinaryPreset
   })
   const agencySlug= useParams().agencySlug as string
   const clientSlug= useParams().clientSlug as string
+  const searchParams = useSearchParams()
+  const dateParam = searchParams.get('date')
 
   const [loading, setLoading] = useState(false)
   const [openCalendar, setOpenCalendar] = useState(false)
@@ -144,6 +146,20 @@ export function PostForm({ id, type: typeProp, defaultHashtags, cloudinaryPreset
       })
     }
   }, [form, id])
+
+  useEffect(() => {
+    // Si hay un parámetro de fecha en la URL, establecerlo en el formulario
+    if (dateParam) {
+      try {
+        const date = new Date(dateParam)
+        if (!isNaN(date.getTime())) {
+          form.setValue("publicationDate", date)
+        }
+      } catch (error) {
+        console.error("Error parsing date from URL parameter:", error)
+      }
+    }
+  }, [dateParam, form]);
 
   const onSubmit = async (data: PublicationFormValues) => {
     data.images= images.join(",")

@@ -9,6 +9,7 @@ export default function PublicationTypeFilter() {
     const [post, setPost] = useState(true)
     const [reel, setReel] = useState(true)
     const [story, setStory] = useState(true)
+    const [note, setNote] = useState(true)
 
     const router = useRouter()
 
@@ -17,10 +18,11 @@ export default function PublicationTypeFilter() {
         if (post) filter+= "P"
         if (reel) filter+= "R"
         if (story) filter+= "S"
+        if (note) filter+= "N"
 
         router.push(`?filter=${filter}`)
 
-    }, [post, reel, story, router])
+    }, [post, reel, story, note, router])
     
 
     return (
@@ -35,6 +37,10 @@ export default function PublicationTypeFilter() {
 
             <div className="flex items-center gap-1 md:w-40">
                 Historias <Switch checked={story} onCheckedChange={(e) => setStory(!story)} />
+            </div>
+
+            <div className="flex items-center gap-1 md:w-40">
+                Notas <Switch checked={note} onCheckedChange={(e) => setNote(!note)} />
             </div>
         </div>
     )

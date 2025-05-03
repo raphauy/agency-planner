@@ -1,0 +1,41 @@
+/* Añadir cursor pointer a las celdas del calendario */
+.custom-calendar .rbc-day-bg {
+  cursor: pointer !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Añadir un sutil efecto hover en las celdas */
+.custom-calendar .rbc-day-bg:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Añadir cursor pointer a los números del día */
+.custom-calendar .rbc-date-cell {
+  cursor: pointer !important;
+}
+
+/* Añadir cursor pointer a las celdas de la semana */
+.custom-calendar .rbc-row-bg .rbc-day-bg {
+  cursor: pointer !important;
+}
+
+/* Añadir cursor pointer a los labels de los días */
+.custom-calendar .rbc-header {
+  cursor: pointer !important;
+}
+
+/* Mejorar visualmente los eventos */
+.custom-calendar .rbc-event {
+  border-radius: 4px;
+}
+
+/* Hacer que las celdas sean más clickables */
+.custom-calendar .rbc-month-view .rbc-month-row {
+  overflow: visible;
+}
+
+/* Asegurarse de que el cursor pointer permanece en todos los elementos del calendario */
+.custom-calendar .rbc-month-view, 
+.custom-calendar .rbc-month-view * {
+  cursor: pointer;
+} 

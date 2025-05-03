@@ -182,6 +182,7 @@ enum PublicationType {
   INSTAGRAM_STORY
   INSTAGRAM_REEL
   LINKEDIN_POST
+  CALENDAR_NOTE
 }
 
 enum PublicationStatus {

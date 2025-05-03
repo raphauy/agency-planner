@@ -4,10 +4,13 @@ import { format } from 'date-fns'
 import { getDay } from 'date-fns'
 import { parse } from 'date-fns'
 import { startOfWeek } from 'date-fns'
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import { Calendar, dateFnsLocalizer, SlotInfo } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import CustomEvent, { Event } from './CustomEvent'
 import { es } from 'date-fns/locale'
+import { useRef, useState } from 'react'
+import { ContentSelector } from './content-selector'
+import './custom-calendar.css'
 
 const locales = {
   'es': es,
@@ -24,12 +27,30 @@ const localizer = dateFnsLocalizer({
 
 type Props= {
   events: Event[];
+  agencySlug: string;
+  clientSlug: string;
 }
 
-export default function CalendarBox({ events }: Props) {
+export default function CalendarBox({ events, agencySlug, clientSlug }: Props) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showSelector, setShowSelector] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  
+  // Capturar los clics en el calendario
+  const handleSelectSlot = (slotInfo: SlotInfo) => {
+    if (slotInfo.action === 'click') {
+      setSelectedDate(slotInfo.start);
+      setShowSelector(true);
+    }
+  };
+
+  const handleCloseSelector = () => {
+    setShowSelector(false);
+    setSelectedDate(null);
+  };
+
   return (
-    // <div className="w-full flex-grow bg-white h-[calc(100vh-180px)] p-3 border rounded-md">
-    <div className="w-full flex-grow bg-white h-[1000px] p-3 border rounded-md">
+    <div ref={calendarRef} className="w-full flex-grow bg-white h-[1000px] p-3 border rounded-md">
       <Calendar
         localizer={localizer}
         events={events}
@@ -41,8 +62,20 @@ export default function CalendarBox({ events }: Props) {
         culture='es'
         messages={messages}
         eventPropGetter={customEventPropGetter}
-        style={{ height: '100%' }} // Asegurando que el calendario ocupe todo el espacio disponible
+        selectable={true}
+        onSelectSlot={handleSelectSlot}
+        className="custom-calendar"
+        style={{ height: '100%' }}
       />
+
+      {showSelector && selectedDate && (
+        <ContentSelector 
+          date={selectedDate}
+          agencySlug={agencySlug}
+          clientSlug={clientSlug}
+          onClose={handleCloseSelector}
+        />
+      )}
     </div>
   )
 }
