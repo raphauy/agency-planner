@@ -522,7 +522,7 @@ export async function createCalendarNote(title: string, agencySlug: string, clie
     data: {
       title,
       type: "CALENDAR_NOTE",
-      status: "BORRADOR",
+      status: "PUBLICADO",
       publicationDate,
       clientId: client.id,
       usageIsPending: true
