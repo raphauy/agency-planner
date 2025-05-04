@@ -2,7 +2,8 @@ import { prisma } from "@/lib/db"
 import { JsonValue } from ".prisma/client/runtime/library"
 import * as z from "zod"
 import { getFieldsDAOByRepositoryId } from "./field-services"
-import { getClientDAOBySlugs } from "./client-services"
+import { getClientDAO, getClientDAOBySlugs } from "./client-services"
+import { toZonedTime } from "date-fns-tz"
 
 export type RepoDataDAO = {
 	id: string
@@ -112,13 +113,27 @@ export async function deleteRepoData(id: string) {
 }
 
 
-export async function getFullRepoDatasDAO(clientId: string) {
-  const found = await prisma.repoData.findMany({
+export async function getFullRepoDatasDAO(clientId: string, startStr?: string, endStr?: string, repoName?: string) {
+    const client= await getClientDAO(clientId)
+    if (!client) throw new Error("Client not found")
+    const timezone= client.timezone
+  
+    const start= startStr ? toZonedTime(startStr, timezone) : undefined
+    const end= endStr ? toZonedTime(endStr, timezone) : undefined
+  
+    console.log("start: ", start, "end: ", end, "repoName: ", repoName, "slug: ", client.slug)
+
+    const found = await prisma.repoData.findMany({
     where: {
-      clientId
+      clientId,
+      createdAt: {
+        gte: start,
+        lte: end
+      },
+      repoName: repoName ? repoName : undefined
     },
     orderBy: {
-      updatedAt: "desc"
+      createdAt: "desc"
     },
     include: {
 			repository: true,
@@ -187,4 +202,12 @@ export async function getRepoDataCount(contactId: string) {
     }
   })
   return count
+}
+
+export async function getRepoNames(clientId: string): Promise<string[]> {
+  const results = await prisma.$queryRaw`SELECT DISTINCT "repoName" FROM "RepoData" WHERE "clientId" = ${clientId}` as any[]
+
+  const resp= results.map((repo: any) => repo.repoName)
+
+  return resp
 }
