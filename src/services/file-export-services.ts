@@ -75,19 +75,34 @@ export async function exportRepoData(agencySlug: string, clientSlug: string, rep
         } as FlattenedData
     })
 
-    // Obtenemos todas las columnas únicas
-    const allColumns = new Set<string>()
-    flattenedData.forEach(item => {
-        Object.keys(item).forEach(key => allColumns.add(key))
+    // Mantener un array ordenado con las columnas, preservando el orden de aparición
+    const baseColumns = ['id', 'repoName', 'phone', 'functionName', 'createdAt']
+    const dataColumnsOrdered: string[] = []
+    const dataColumnsSet = new Set<string>() // Solo para verificar unicidad
+
+    // Preservamos el primer objeto como referencia para el orden
+    if (flattenedData.length > 0) {
+      Object.keys(flattenedData[0])
+        .filter(key => !baseColumns.includes(key))
+        .forEach(key => {
+          if (!dataColumnsSet.has(key)) {
+            dataColumnsSet.add(key)
+            dataColumnsOrdered.push(key)
+          }
+        })
+    }
+
+    // Comprobamos otros objetos por si tienen columnas adicionales
+    flattenedData.slice(1).forEach(item => {
+      Object.keys(item)
+        .filter(key => !baseColumns.includes(key) && !dataColumnsSet.has(key))
+        .forEach(key => {
+          dataColumnsSet.add(key)
+          dataColumnsOrdered.push(key)
+        })
     })
 
-    // Convertimos el Set a Array y ordenamos las columnas
-    // Primero los campos base, luego los campos de data alfabéticamente
-    const baseColumns = ['id', 'repoName', 'phone', 'functionName', 'createdAt']
-    const dataColumns = Array.from(allColumns)
-        .filter(col => !baseColumns.includes(col))
-        .sort()
-    const columns = [...baseColumns, ...dataColumns]
+    const columns = [...baseColumns, ...dataColumnsOrdered]
 
     // Creamos una matriz con los datos ordenados según las columnas
     const excelData = [
