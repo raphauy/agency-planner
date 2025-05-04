@@ -163,6 +163,14 @@ export async function getContactStats(clientId: string): Promise<IndicatorStats>
 
   const stats = result[0];
   
+  if (!stats) {
+    return {
+      total: 0,
+      percentageFromLastMonth: 0,
+      currentMonthCount: 0
+    };
+  }
+  
   return {
     total: Number(stats.total),
     percentageFromLastMonth: Number(stats.percentage_change),
@@ -242,6 +250,14 @@ export async function getConversationsStats(clientId: string): Promise<Indicator
 
   const stats = result[0];
   
+  if (!stats) {
+    return {
+      total: 0,
+      percentageFromLastMonth: 0,
+      currentMonthCount: 0
+    };
+  }
+  
   return {
     total: Number(stats.total),
     percentageFromLastMonth: Number(stats.percentage_change),
@@ -275,6 +291,14 @@ export async function getDocumentsStats(clientId: string): Promise<IndicatorStat
   `;
 
   const stats = result[0];
+  
+  if (!stats) {
+    return {
+      total: 0,
+      percentageFromLastMonth: 0,
+      currentMonthCount: 0
+    };
+  }
   
   return {
     total: Number(stats.total),

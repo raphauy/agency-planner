@@ -42,7 +42,7 @@ export default async function AgencyLayout(props: Props) {
 
   return (
     <div className="flex flex-col h-full w-full text-muted-foreground">
-      <div className="fixed top-0 left-0 right-0 z-10 bg-background">
+      <div className="fixed top-0 left-0 right-0 z-30 bg-background">
         <div className="px-3 sm:px-4 md:px-5 lg:px-3 border-b border-b-gray-300 w-full">
           <div className="flex justify-between items-center">
             <Logo />

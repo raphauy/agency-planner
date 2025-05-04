@@ -38,8 +38,8 @@ export function AppSidebar({ items }: Props) {
 
   
     return (
-        <div>
-            <Sidebar className="pt-[90px] z-0 h-full" collapsible="icon">
+        <div className="relative z-20">
+            <Sidebar className="pt-[90px] z-20 h-full" collapsible="icon">
             { !open && <SidebarTrigger className="h-5 w-5 ml-3"/>}
             <SidebarContent>
                 {/* Agrupar los items por su propiedad 'group' */}
