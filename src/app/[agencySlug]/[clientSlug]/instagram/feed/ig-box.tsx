@@ -6,7 +6,7 @@ import { getListeners, getTeamMembers, PublicationDAO } from "@/services/publica
 import { PublicationType, UserRole } from ".prisma/client"
 import { format as formatTz, toZonedTime } from 'date-fns-tz'
 import { es } from "date-fns/locale"
-import { Camera, Download, GalleryHorizontal, GalleryHorizontalEnd, Heart, MessageCircle, Pencil, Send, Video } from "lucide-react"
+import { Camera, Download, GalleryHorizontal, GalleryHorizontalEnd, Heart, MessageCircle, Pencil, Send, Video, Archive } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import slugify from 'slugify'
@@ -127,18 +127,34 @@ export default async function IgBox({ post, clientImage, clientHandle, agencySlu
             const isImage= url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")
 
             return (
-              <Link  key={index} href={`/api/download?title=${title}&url=${url}`} prefetch={false}>
-                <button className='flex items-center gap-1 p-1 border rounded'>
+              <Link key={index} href={`/api/download?title=${title}&url=${url}`} prefetch={false}>
+                <button className='flex items-center gap-2 p-1 border rounded h-full w-full bg-gray-100'>
                   {
                     isImage ?
-                    <Image src={url} width={100} height={100} alt={title} />
+                    <div className="flex-1">
+                      <Image src={url} width={100} height={100} alt={title} className="object-cover" />
+                    </div>
                     :
-                    <p>video</p>
+                    <div className="flex-1 flex items-center justify-center gap-2 h-[100px]">
+                      <Video size={30} className='text-gray-600'/>
+                      <span className='text-gray-700 font-medium'>VID</span>
+                    </div>
                   }                
-                  <Download size={30} className='text-gray-600'/>
+                  <Download size={24} className='text-gray-600 min-w-6'/>
                 </button>
               </Link>
             )})}
+            
+          {/* Botón de descarga ZIP, solo visible si hay más de una imagen */}
+          {images.length > 1 && (
+            <Link href={`/api/download-zip?title=${slugifiedTitle}&urls=${encodeURIComponent(post.images || '')}`} prefetch={false}>
+              <button className='flex items-center justify-center gap-2 p-1 border rounded bg-gray-100 h-full w-full'>
+                <Archive size={30} className='text-gray-600'/>
+                <span className='text-gray-700 font-medium'>ZIP</span>
+                <Download size={24} className='text-gray-600 min-w-6'/>
+              </button>
+            </Link>
+          )}
           </div>
 
           <div className='p-4 mt-4 bg-white border rounded gap-4' id="comments">
