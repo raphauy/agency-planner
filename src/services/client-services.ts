@@ -20,6 +20,7 @@ export type ClientDAO = {
   defaultHashtags: string | undefined
   includeBrandVoice: boolean
   includeLastCopys: boolean
+  haveAudioResponse: boolean
   leadPrompt: string | undefined
   ignoredNumbers: string | undefined
   messageArrivedDelay: number

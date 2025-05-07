@@ -10,11 +10,12 @@ import { getContactContext, getDocumentsContext, getGeneralContext, saveLLMRespo
 import { convertToCoreMessages, generateText, Message } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { leadTools } from "./tools"
-import { createChatwootConversation, sendTextToConversation } from "./chatwoot"
+import { createChatwootConversation, sendAudioToConversation, sendTextToConversation } from "./chatwoot"
 import { ContactFormValues, createContact, getContactByChatwootId, getContactDAO, setNewStage } from "./contact-services"
 import { addTagsToContact, ContactDAO } from "./contact-services"
 import { getUserByEmail } from "./login-services"
 import { getRepositorysDAO, getToolFromDatabase } from "./repository-services"
+import { generateAudioFromElevenLabs } from "./elevenlabs-services"
 
 export type ConversationDAO = {
 	id: string
@@ -24,6 +25,7 @@ export type ConversationDAO = {
   title: string
   context: string
   closed: boolean
+  lastMessageWasAudio: boolean
   type: DocumentType
   chatwootConversationId: number | null
 	createdAt: Date
@@ -585,11 +587,6 @@ export async function processMessage(id: string) {
     include: {
       conversation: {
         include: {
-          // messages: {
-          //   orderBy: {
-          //     createdAt: 'asc',
-          //   },
-          // },
           client: true,
           contact: {
             include: {
@@ -661,8 +658,21 @@ export async function processMessage(id: string) {
   const chatwootAccountId= await getChatwootAccountId(client.id)
   if (!chatwootAccountId) throw new Error("Chatwoot accountId not found")
   if (!conversation.chatwootConversationId) throw new Error("Chatwoot conversationId not found")
-  await sendTextToConversation(chatwootAccountId, conversation.chatwootConversationId, text)
 
+
+  // await sendTextToConversation(chatwootAccountId, conversation.chatwootConversationId, text)
+
+  const lastMessageWasAudio= conversation.lastMessageWasAudio
+  console.log("lastMessageWasAudio", lastMessageWasAudio)
+  console.log("client.haveAudioResponse", client.haveAudioResponse)
+  if (lastMessageWasAudio && client.haveAudioResponse) {
+    //const audioBase64 = await generateAudioFromOpenAI(assistantResponse, "ash")
+    const audioBase64 = await generateAudioFromElevenLabs(text, "gbTn1bmCvNgk0QEAVyfM")
+    await sendAudioToConversation(chatwootAccountId, conversation.chatwootConversationId, audioBase64)
+  } else {
+    await sendTextToConversation(chatwootAccountId, conversation.chatwootConversationId, text)
+  }
+  return
 
 }
 
@@ -733,6 +743,29 @@ export async function removeContactFromAllConversations(contactId: string, clien
     data: {
       contactId: null,
       chatwootConversationId: null
+    }
+  })
+}
+
+export async function getLastMessageWasAudio(id: string) {
+  const conversation= await prisma.conversation.findUnique({
+    where: {
+      id
+    },
+    select: {
+      lastMessageWasAudio: true
+    }
+  })
+  return conversation?.lastMessageWasAudio
+}
+
+export async function setLastMessageWasAudio(id: string, lastMessageWasAudio: boolean) {
+  await prisma.conversation.update({
+    where: { 
+      id 
+    },
+    data: { 
+      lastMessageWasAudio 
     }
   })
 }

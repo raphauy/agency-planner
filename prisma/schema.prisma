@@ -129,6 +129,7 @@ model Client {
   defaultHashtags   String? @default("")
   includeBrandVoice Boolean? @default(false)
   includeLastCopys  Boolean? @default(false)
+  haveAudioResponse Boolean  @default(false)
 
   messageArrivedDelay   Int       @default(5)
   sessionTTL            Int       @default(5)
@@ -320,6 +321,7 @@ model Conversation {
   context        String @default("")
 
   closed         Boolean  @default(false)
+  lastMessageWasAudio Boolean @default(false)
 
   type           DocumentType @default(COPY_LAB)                  // gennext: skip.zod
   
