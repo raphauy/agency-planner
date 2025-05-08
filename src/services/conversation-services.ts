@@ -669,7 +669,7 @@ export async function processMessage(id: string) {
   if (lastMessageWasAudio && client.haveAudioResponse) {
     let audioBase64
     const elevenLabsEnabled= await getValue("ELEVENLABS_ENABLED")
-    if (elevenLabsEnabled) {
+    if (elevenLabsEnabled === "true") {
       audioBase64 = await generateAudioFromElevenLabs(text, "gbTn1bmCvNgk0QEAVyfM")
     } else {
       audioBase64 = await generateAudioFromOpenAI(text, "ash")
