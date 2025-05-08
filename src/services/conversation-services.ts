@@ -15,7 +15,8 @@ import { ContactFormValues, createContact, getContactByChatwootId, getContactDAO
 import { addTagsToContact, ContactDAO } from "./contact-services"
 import { getUserByEmail } from "./login-services"
 import { getRepositorysDAO, getToolFromDatabase } from "./repository-services"
-import { generateAudioFromElevenLabs } from "./elevenlabs-services"
+import { generateAudioFromElevenLabs, generateAudioFromOpenAI } from "./tts-services"
+import { getValue } from "./config-services"
 
 export type ConversationDAO = {
 	id: string
@@ -666,8 +667,13 @@ export async function processMessage(id: string) {
   console.log("lastMessageWasAudio", lastMessageWasAudio)
   console.log("client.haveAudioResponse", client.haveAudioResponse)
   if (lastMessageWasAudio && client.haveAudioResponse) {
-    //const audioBase64 = await generateAudioFromOpenAI(assistantResponse, "ash")
-    const audioBase64 = await generateAudioFromElevenLabs(text, "gbTn1bmCvNgk0QEAVyfM")
+    let audioBase64
+    const elevenLabsEnabled= await getValue("ELEVENLABS_ENABLED")
+    if (elevenLabsEnabled) {
+      audioBase64 = await generateAudioFromElevenLabs(text, "gbTn1bmCvNgk0QEAVyfM")
+    } else {
+      audioBase64 = await generateAudioFromOpenAI(text, "ash")
+    }
     await sendAudioToConversation(chatwootAccountId, conversation.chatwootConversationId, audioBase64)
   } else {
     await sendTextToConversation(chatwootAccountId, conversation.chatwootConversationId, text)
