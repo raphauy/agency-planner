@@ -11,7 +11,7 @@ export const maxDuration = 299
 
 export async function POST(req: Request) {
 
-  const { messages, conversationId, agencySlug, clientSlug, prompt } = await req.json()
+  const { messages, conversationId, agencySlug, clientSlug} = await req.json()
 
   const currentUser= await getCurrentUser()
   if (!currentUser || !currentUser.email || !currentUser.id) return new Response("No se encontró un usuario logueado", { status: 404 })

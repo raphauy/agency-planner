@@ -31,6 +31,12 @@ export async function GET(request: NextRequest) {
             
             // Determinar la extensión apropiada para el archivo
             let extension = contentType?.split('/')[1] || 'file'
+            
+            // Limpiar la extensión eliminando cualquier parámetro adicional después del punto y coma
+            if (extension) {
+                extension = extension.split(';')[0]
+            }
+            
             if (extension.includes("quicktime")) {
                 extension = "mov"
             }
@@ -47,7 +53,7 @@ export async function GET(request: NextRequest) {
         const zipBuffer = zip.toBuffer()
         
         // Devolver el archivo ZIP como respuesta
-        return new Response(zipBuffer, {
+        return new Response(new Uint8Array(zipBuffer), {
             status: 200,
             headers: {
                 'Content-Disposition': `attachment; filename="${title}.zip"`,

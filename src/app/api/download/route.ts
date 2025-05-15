@@ -17,6 +17,12 @@ export async function GET(request: NextRequest) {
         const image = await fetch(url)
         const contentType = image.headers.get('content-type')
         let type = contentType?.split('/')[1]
+        
+        // Limpiar la extensión eliminando cualquier parámetro adicional después del punto y coma
+        if (type) {
+            type = type.split(';')[0]
+        }
+        
         if (type?.includes("quicktime")) {
             type = "mov"
         }
