@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
             type = "mov"
         }
 
+        console.log('file name:', `${title}.${type}`)
+
         // the url is a image
         return new Response(image.body, {
             status: 200,
