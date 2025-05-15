@@ -1,5 +1,7 @@
 import { type NextRequest } from "next/server"
 
+export const maxDuration = 299
+
 export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams
